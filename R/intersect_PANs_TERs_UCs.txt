@@ -1,0 +1,651 @@
+# Load packages ####
+
+suppressMessages({
+  suppressWarnings({
+    suppressPackageStartupMessages({
+
+      library(dplyr)
+      library(sf)
+      library(rvest)
+      library(tidyr)
+      library(purrr)
+      library(filesstrings)
+      library(gtools)
+      library(data.table)
+      library(stringr)
+
+    })
+  })
+})
+
+
+# Intersection analysis ####
+
+# Get local path of the downloaded list of species file ####
+
+listOfSpecies_localPath <-
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_intersect_UCs_PANs_TERs.csv"
+
+  )
+
+
+# Import the list of species file from local path ####
+
+message("Importing the list of species file...")
+
+listOfSpecies <- fread(
+
+  listOfSpecies_localPath,
+  header = F,
+  sep = ";",
+  encoding = "UTF-8"
+
+)
+
+message("List of species file imported.")
+
+print(listOfSpecies)
+
+# Load shapefiles ####
+
+message("Loading shapefiles...")
+
+## UCs ####
+
+## Get local path of UCs shapefile ####
+
+shapefile_UCs_localPath <-
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/inputs/shapefiles/UCs/UCs.shp"
+
+  )
+
+## Import the shapefile of UCs from local path ####
+
+shapefile_UCs <- read_sf(
+
+  shapefile_UCs_localPath
+
+)
+
+shapefile_UCs <- st_make_valid(st_transform(shapefile_UCs, "+proj=eqc +datum=WGS84"))
+
+
+## PANs ####
+
+## Get local path of PANs shapefile ####
+
+shapefile_PANs_localPath <-
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/inputs/shapefiles/PANs/PANs.shp"
+
+  )
+
+## Import the shapefile of PANs from local path ####
+
+shapefile_PANs <- read_sf(
+
+  shapefile_PANs_localPath
+
+)
+
+shapefile_PANs <- st_make_valid(st_transform(shapefile_PANs, "+proj=eqc +datum=WGS84"))
+
+
+## TERs ####
+
+## Get local path of TERs shapefile ####
+
+shapefile_TERs_localPath <-
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/inputs/shapefiles/TERs/TERs.shp"
+
+  )
+
+## Import the shapefile of TERs from local path ####
+
+shapefile_TERs <- read_sf(
+
+  shapefile_TERs_localPath
+
+)
+
+shapefile_TERs <- st_make_valid(st_transform(shapefile_TERs, "+proj=eqc +datum=WGS84"))
+
+message("Shapefiles loaded.")
+
+
+# Create empty variables ####
+
+UCs <- NULL
+PANs <- NULL
+TERs <- NULL
+
+
+# Loop start ####
+
+Species <- "ESPECIEselect"
+
+message(paste0("Analyzing ", Species, " ..."))
+
+## Get local path of the downloaded occurrences file ####
+
+occurrences_localPath <-
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/inputs/occurrences/oldSystem/",
+    Species,
+    ".html"
+
+  )
+
+## Import the occurrences file from local path ####
+
+input <- read_html(occurrences_localPath)
+
+
+## Info records ####
+
+STATES <-
+  input %>%
+  html_nodes("#stateProvince") %>%
+  html_attr("value")
+STATES <- str_trim(STATES, side = c("both"))
+
+URNs <-
+  input %>%
+  html_nodes("a") %>%
+  html_attr("name")
+URNs <- as.data.frame(URNs)
+URNs <- URNs %>% drop_na()
+URNs <- as.data.frame(URNs[-1,])
+URNs_n <- 1:nrow(URNs)
+toKeep <- which(even(URNs_n))
+URNs <- as.data.frame(URNs[toKeep,])
+
+validation <-
+  input %>%
+  html_nodes(".label-valid") %>%
+  html_text()
+validation <- str_extract(validation, "\\w+")
+
+validation_SIG <-
+  input %>%
+  html_nodes(".label-sig") %>%
+  html_text()
+validation_SIG <- str_extract(validation_SIG, "\\w+\\s\\w+")
+
+coords <-
+  input %>%
+  html_elements(".col-md-6") %>%
+  html_elements("input") %>%
+  html_attr("value")
+coords2 <- matrix(coords, ncol = 6, byrow = TRUE)
+coords_df <- as.data.frame(coords2)
+coords_df <- coords_df[,-6]
+coords_df <- coords_df[,-5]
+coords_df <- data.frame(STATES, URNs, validation, validation_SIG, coords_df)
+colnames(coords_df) <-
+  c("Estado", "URN", "validation", "validation_SIG", "lat", "lon", "precision", "protocol")
+
+print(coords_df)
+
+## Validation of Occurrence records  ####
+
+### Possibly Threatened ####
+
+if(as.character(listOfSpecies[listOfSpecies$V1 == Species, 2]) == "PA"){
+
+  coords_df_valid <-
+    coords_df %>%
+    dplyr::filter(validation == "Válido" & validation_SIG == "SIG OK")
+
+}
+
+
+### Possibly Not Threatened ####
+
+if(as.character(listOfSpecies[listOfSpecies$V1 == Species, 2]) == "PNA"){
+
+
+  ### Possibly Not Threatened with records NOT validated ####
+
+  if(as.character(listOfSpecies[listOfSpecies$V1 == Species, 3]) == "0"){
+
+    coords_df_valid <- coords_df
+
+  }
+
+
+  ### Possibly Not Threatened with records validated and SIG revised ####
+
+  if(listOfSpecies[listOfSpecies$V1 == Species, 3] == "x" &
+     listOfSpecies[listOfSpecies$V1 == Species, 4] == "x"){
+
+    coords_df_valid <-
+      coords_df %>%
+      dplyr::filter(validation == "Válido" & validation_SIG == "SIG OK")
+
+  }
+
+
+  ### Possibly Not Threatened with records validated and SIG NOT revised ####
+
+  if(listOfSpecies[listOfSpecies$V1 == Species, 3] == "x" &
+     listOfSpecies[listOfSpecies$V1 == Species, 4] == "0"){
+
+    coords_df_valid <-
+      coords_df %>%
+      dplyr::filter(validation == "Válido")
+
+  }
+
+}
+
+print(coords_df_valid)
+
+coords_df_valid$lat <- sub("^$", "EMPTY", coords_df_valid$lat)
+EMPTY_row <- grep("EMPTY", coords_df_valid$lat)
+
+if(length(EMPTY_row) == 0){} else{
+
+  coords_df_valid <- coords_df_valid[-EMPTY_row,]
+  URNs <- URNs[-EMPTY_row,]
+
+}
+
+coords_df_valid_for_UCs <-
+  coords_df_valid %>%
+  dplyr::filter (!str_detect(precision, "município|municipio|Município|Municipio"))
+
+dots <- data.frame(
+
+  longitude = coords_df_valid$lon,
+  latitude = coords_df_valid$lat,
+  URNs = coords_df_valid$URN,
+  STATES = coords_df_valid$Estado
+
+)
+
+dots_UCs <- data.frame(
+
+  longitude = coords_df_valid_for_UCs$lon,
+  latitude = coords_df_valid_for_UCs$lat,
+  URNs = coords_df_valid_for_UCs$URN,
+  STATES = coords_df_valid_for_UCs$Estado
+
+)
+
+sites <- st_as_sf(
+
+  dots,
+  coords = c("longitude", "latitude"),
+  crs = 4326,
+  agr = "constant"
+
+)
+sites <- st_make_valid(
+
+  st_transform(sites, "+proj=eqc +datum=WGS84")
+
+)
+
+sites_for_UCs <- st_as_sf(
+
+  dots,
+  coords = c("longitude", "latitude"),
+  crs = 4326,
+  agr = "constant"
+
+)
+sites_for_UCs <- st_make_valid(
+
+  st_transform(sites_for_UCs, "+proj=eqc +datum=WGS84")
+
+)
+
+
+## UCs ####
+
+UCs_out <- st_intersection(sites_for_UCs, shapefile_UCs)
+UCs_out <- as.data.frame(UCs_out)
+
+if(as.numeric(nrow(UCs_out)) > 0){
+
+  UCs_out <- data.frame(
+
+    nome_aceit = Species,
+    id_da_ocor = UCs_out$URN,
+    Nome_Uc1 = UCs_out$NOME_UC1
+
+  )
+  UCs <- rbind(UCs, UCs_out)
+
+}
+
+
+## PANs ####
+
+PANs_out <- st_intersection(sites, shapefile_PANs)
+PANs_out <- as.data.frame(PANs_out)
+
+if(as.numeric(nrow(PANs_out))>0){
+
+  PANs_out <- data.frame(
+
+    nome_aceit = Species,
+    id_da_ocor = PANs_out$URNs,
+    PAN = PANs_out$PAN
+
+  )
+  PANs <- rbind(PANs, PANs_out)
+
+}
+
+
+## TERs ####
+
+TERs_out <- st_intersection(sites, shapefile_TERs)
+TERs_out <- as.data.frame(TERs_out)
+
+if(as.numeric(nrow(TERs_out)) > 0){
+
+  TERs_out <- data.frame(
+
+    species = Species,
+    id_da_ocor = TERs_out$URNs,
+    territorio = TERs_out$territorio,
+    Nome_compl = TERs_out$Nome_compl,
+    state = TERs_out$STATES
+
+  )
+  TERs <- rbind(TERs, TERs_out)
+
+}
+
+
+
+message("All done!")
+
+# Fix and validation of data ####
+
+## PANs ####
+
+if(length(PANs) > 1){
+
+  names(PANs) <- sub("nome_aceito", "nome_aceit", names(PANs))
+  names(PANs) <- sub("specie", "nome_aceit", names(PANs))
+  names(PANs) <- sub("id", "id_da_ocor", names(PANs))
+
+  PANs$PAN <- gsub("Plano\\sde\\sAc\\?a\\?o\\sNacional\\spara\\sa\\sconservac\\?a\\?o\\sda\\sflora\\sameac\\?ada\\sde\\sextinc\\?a\\?o\\sda\\sSerra\\sdo\\sEspinhac\\?o\\sMeridional","Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Serra do Espinhaço Meridional",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAção\\sNacional\\spara\\sa\\sconservação\\sda\\sflora\\sameaçada\\sde\\sExtinção\\sda\\sSerra\\sdo\\sEspinhaço\\sMeridional","Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Serra do Espinhaço Meridional",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAção\\sNacional\\spara\\sa\\sconservação\\sda\\sflora\\sameaçada\\sde\\sextinção\\sda\\sregião\\sde\\sGrão Mogol-Francisco\\sSá","Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Região de Grão Mogol - Francisco Sá",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAção\\sNacional\\spara\\sa\\sconservação\\sda\\sflora\\sameaçada\\sde\\sextinção\\sda\\sregião\\sde\\sGrão Mogol\\s-\\sFrancisco\\sSá","Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Região de Grão Mogol - Francisco Sá",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAção\\sNacional\\spara\\sa\\sconservação\\sda\\sflora\\sameaçada\\sde\\sextinção\\sda\\sSerra\\sdo\\sEspinhaço\\sMeridional","Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Serra do Espinhaço Meridional",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAção\\sNacional\\spara\\sa\\sConservação\\sda\\sFlora\\sEndêmica\\sAmeaçada\\sde Extinção\\sdo\\sestado\\sdo\\sRio\\sde\\sJaneiro","Plano de Ação Nacional para a Conservação da Flora Endêmica Ameaçada de Extinção do Estado do Rio de Janeiro",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAÃ§Ã£o\\sNacional\\spara\\sa\\sConservaÃ§Ã£o\\sda\\sFlora\\sEndÃªmica\\sAmeaÃ§ada\\sde\\sExtinÃ§Ã£o\\sdo\\sestado\\sdo\\sRio\\sde\\sJaneiro","Plano de Ação Nacional para a Conservação da Flora Endêmica Ameaçada de Extinção do Estado do Rio de Janeiro",PANs$PAN)
+  PANs$PAN <- gsub("Plano\\sde\\sAc.a~o\\sNacional\\spara\\sa\\sconservac.a~o\\sda\\sflora\\sameac.ada\\sde\\sextinc.a~o\\sda\\sSerra\\sdo\\sEspinhac.o\\sMeridional","Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Serra do Espinhaço Meridional",PANs$PAN)
+
+  PANs_fixed <- data.frame(
+
+    nome_aceit = PANs$nome_aceit,
+    id_da_ocor = PANs$id_da_ocor,
+    PAN = PANs$PAN
+
+  )
+
+  PANs_check<-c("Plano de Ação Nacional para a Conservação da Flora Endêmica Ameaçada de Extinção do Estado do Rio de Janeiro",
+                "Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Serra do Espinhaço Meridional",
+                "Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Região de Grão Mogol - Francisco Sá",
+                "Plano de Ação Nacional Lagoas do Sul")
+
+  a <- PANs_fixed$PAN %in% PANs_check
+  b <- data.frame(PANs_fixed,a)
+
+  validation_PANs <-
+    b %>%
+    filter(a == FALSE) %>%
+    dplyr::select(PAN)
+
+  if(nrow(validation_PANs) != 0){
+
+    cat("Há PAN(s) escrito(s) errado(s):")
+    validation_PANs
+
+  }
+
+}
+
+# TERs ####
+
+if(length(TERs) > 1){
+
+  names(TERs) <- sub("nome_aceito", "nome_aceit", names(TERs))
+  names(TERs) <- sub("state", "Estado", names(TERs))
+  names(TERs) <- sub("specie", "nome_aceit", names(TERs))
+  names(TERs) <- sub("id", "id_da_ocor", names(TERs))
+  names(TERs) <- sub("Nome_compl", "info_Nome", names(TERs))
+
+  TERs$info_Nome <- gsub("TER1\\s\\-\\sPAT\\sMeio\\sNorte\\\n","TER1 - PAT Meio Norte",TERs$info_Nome)
+  TERs$info_Nome <- sub("TER[0-9]*\\s-\\s", "", TERs$info_Nome)
+  TERs$info_Nome <- sub("TER[0-9]*\\/[0-9]*\\s-\\s", "", TERs$info_Nome)
+
+  TERs_fixed <-
+    data.frame(
+
+      nome_aceit = TERs$nome_aceit,
+      id_da_ocor = TERs$id_da_ocor,
+      Estado = TERs$Estado,
+      territorio = TERs$territorio,
+      info_Nome = TERs$info_Nome
+
+    )
+
+  check_territorio <- TERs_fixed %>% filter(territorio == "")
+
+  if(nrow(check_territorio) != 0){
+
+    cat("Coluna de Território com dados faltantes.")
+
+  }
+  check_info_Nome <- TERs_fixed %>%
+    filter(info_Nome == "")
+
+  if(nrow(check_info_Nome) != 0){
+
+    cat("Coluna de info_Nome com dados faltantes.")
+
+  }
+
+  check_states <- TERs_fixed %>%
+    filter(Estado == "")
+
+  if(nrow(check_states) != 0){
+
+    cat("Coluna de Estados com dados faltantes.")
+
+  }
+
+  Estados <- c(
+
+    "Acre", "Alagoas","Amapá", "Amapa", "Amazonas", "Bahia", "Ceará", "Ceara", "Distrito Federal", "Espírito Santo", "Espirito Santo", "Goiás", "Goias", "Maranhão", "Maranhao", "Mato Grosso do Sul", "Mato Grosso", "Minas Gerais", "Paraná", "Parana", "Paraíba", "Paraiba", "Pará", "Para", "Pernambuco", "Piauí", "Piaui", "Rio de Janeiro", "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Rondonia", "Roraima","Santa Catarina", "São Paulo", "Sao Paulo", "Sergipe", "Tocantins"
+
+  )
+
+  a <- TERs_fixed$Estado %in% Estados
+  b <- data.frame(TERs_fixed, a)
+
+  validation_states <-
+    b %>%
+    filter(a == FALSE) %>%
+    dplyr::select(Estado)
+
+  if(nrow(validation_states) != 0){
+
+    cat("Há estado(s) escrito(s) errado(s):")
+    validation_states
+
+  }
+
+}
+
+
+
+## UCs ####
+
+if(length(UCs) > 1){
+
+  names(UCs) <- sub("NOME_UC1", "Nome_Uc1", names(UCs))
+  names(UCs) <- sub("nome_aceito", "nome_aceit", names(UCs))
+  names(UCs) <- sub("specie", "nome_aceit", names(UCs))
+  names(UCs) <- sub("^id$", "id_da_ocor", names(UCs))
+
+  UCs$Nome_Uc1 <- as.matrix(UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- str_to_title(UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sE\\s", " e ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sDe\\s", " de ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sDo\\s", " do ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sDa\\s", " da ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sDas\\s", " das ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sDos\\s", " dos ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\s\\s", " ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\s\\s", " ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Àrea\\s", "Área ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Area\\s", "Área ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("daÁrea\\s", "da Área ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Ecologica", "Ecológica", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Estacao", "Estação", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sIii", " III", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sIi", " II", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sIv", " IV", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sVii", " VII", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub('""', '"', UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\s-\\sRvs\\sPalmares", "", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Ciriáco", "Ciriaco", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Municípal", "Municipal", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Caetétaperaçu", "Caeté-Taperaçu", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Iguatemí", "Iguatemi", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Rppn\\s", "Reserva Particular do Patrimônio Natural ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Arie\\s", "Área de Relevante Interesse Ecológico ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Arie\\s", "Área de Relevante Interesse Ecológico ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("(\\s|^)Apa\\s", "Área de Proteção Ambiental ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Ecológico-\\sIlhas", "Ecológico - Ilhas", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Metrolpolitana", "Metropolitana", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Tamandare", "Tamandaré", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Refugio", "Refúgio", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Palacio", "Palácio", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Antonio", "Antônio", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Piraque", "Piraquê", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Bugiu", "Bugio", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Iguaçú", "Iguaçu", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Zabele", "Zabelê", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Muncipal", "Municipal", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Chapadao", "Chapadão", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Araucarias", "Araucárias", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Cabreuva", "Cabreúva", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Munumento", "Monumento", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Arquipelago", "Arquipélago", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sAndre\\s", " André ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Patriomônio", "Patrimônio", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Paraiba", "Paraíba", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Caparao", "Caparaó", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sCapao\\s", " Capão ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Corrego", "Córrego", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Chaua", "Chauá", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Parnaiba", "Parnaíba", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Pracuuba", "Pracuúba", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Biologica", "Biológica", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Sassafras", "Sassafrás", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Lençois", "Lençóis", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Aguas\\s", "Águas ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Patrimonio", "Patrimônio", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sOrgãos", " Órgãos", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sPerimetro\\s", " Perímetro ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sTejupa\\s", " Tejupá ", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Área\\sde\\sProteção\\sAmbiental\\s-Área\\sde\\sProteção\\sAmbiental\\sda\\sPerdição", "Área de Proteção Ambiental da Perdição", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Ambiental\\sCorumbataí\\sBotucatu\\sTejupá\\sPerímetro", "Ambiental Corumbataí, Botucatu e Tejupá - Perímetro", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Alegre\\s1a", "Alegre 1A", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Cb\\s-\\sCartonagem", "CB - Cartonagem", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\sApaep", "", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\s\\/", "/", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\/\\s", "/", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("D(´|')água", "d'Água", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Dágua", "d'Água", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Caixa\\sD\\sÁgua", "Caixa d'Água", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("D(´|')Ouro", "d'Ouro", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\.", "", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Botujuru-Serra", "Botujuru - Serra", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("Sustentavel", "Sustentável", UCs$Nome_Uc1)
+  UCs$Nome_Uc1 <- gsub("\\s\\(Sc\\)", "", UCs$Nome_Uc1)
+
+  UCs_fixed <-
+    data.frame(
+
+      nome_aceit = UCs$nome_aceit,
+      id_da_ocor = UCs$id_da_ocor,
+      Nome_Uc1 = UCs$Nome_Uc1
+
+    )
+
+}
+
+
+
+# Export files ####
+
+write.csv(
+
+  PANs,
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/Intersect_PANs_TERs_UCs results/PANs/",
+    Species,
+    ".csv"
+
+  ),
+  row.names = F
+
+)
+
+write.csv(
+
+  TERs,
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/Intersect_PANs_TERs_UCs results/TERs/",
+    Species,
+    ".csv"
+
+  ),
+  row.names = F
+
+)
+
+write.csv(
+
+  UCs,
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/Intersect_PANs_TERs_UCs results/UCs/",
+    Species,
+    ".csv"
+
+  ),
+  row.names = F
+
+)
+
+message("Files generated.")
