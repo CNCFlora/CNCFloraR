@@ -1,4 +1,4 @@
-overlayAnalysis_execute_scripts <- function(){
+overlayAnalysis_QuadOfGrid_execute_scripts <- function(){
 
   library(data.table)
 
@@ -35,7 +35,7 @@ overlayAnalysis_execute_scripts <- function(){
       path = paste0(
 
         sub("Packages/CNCFloraR", "", getwd()),
-        "/CNCFlora_data/outputs/overlayAnalysis scripts/TodosOsAnos/",
+        "/CNCFlora_data/outputs/overlayAnalysis scripts/QuadOfGrid/",
         element,
         " - script.R"
 

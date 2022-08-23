@@ -1,4 +1,4 @@
-overlayAnalysis_check_files <- function(){
+overlayAnalysis_QuadOfGrid_check_files <- function(){
 
   library(data.table)
   library(colorDF)
@@ -41,7 +41,7 @@ overlayAnalysis_check_files <- function(){
         paste0(
 
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/outputs/overlayAnalysis scripts/TodosOsAnos/",
+          "/CNCFlora_data/outputs/overlayAnalysis scripts/QuadOfGrid/",
           element,
           " - script.R"
 
@@ -58,7 +58,7 @@ overlayAnalysis_check_files <- function(){
           paste0(
 
             sub("Packages/CNCFloraR", "", getwd()),
-            "/CNCFlora_data/outputs/overlayAnalysis scripts/TodosOsAnos/",
+            "/CNCFlora_data/outputs/overlayAnalysis scripts/QuadOfGrid/",
             element,
             " - script.R"
 
@@ -75,7 +75,7 @@ overlayAnalysis_check_files <- function(){
         paste0(
 
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/outputs/overlayAnalysis results/TodosOsAnos/",
+          "/CNCFlora_data/outputs/overlayAnalysis results/QuadOfGrid/",
           element,
           ".csv"
 
@@ -92,7 +92,7 @@ overlayAnalysis_check_files <- function(){
           paste0(
 
             sub("Packages/CNCFloraR", "", getwd()),
-            "/CNCFlora_data/outputs/overlayAnalysis results/TodosOsAnos/",
+            "/CNCFlora_data/outputs/overlayAnalysis results/QuadOfGrid/",
             element,
             ".csv"
 
@@ -116,7 +116,7 @@ overlayAnalysis_check_files <- function(){
 
     blue(bgWhite(bold(underline(
 
-      "Overlay Analysis with MapBiomas Land Cover 1985-2020 (Collection 6)\n"
+      "Overlay Analysis by QuadOfGrid with MapBiomas Land Cover 1985-2020 (Collection 6)\n"
 
     ))))
 
@@ -126,7 +126,7 @@ overlayAnalysis_check_files <- function(){
 
   colorDF(
     df,
-    theme="dark"
+    theme = "dark"
   )
 
 

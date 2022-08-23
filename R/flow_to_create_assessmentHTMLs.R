@@ -27,7 +27,7 @@ flow_to_create_assessmentHTMLs <- function(){
 
     # Actions
     cat("Nothing done\n"),
-    cat("Por enquanto, nada.\n"),
+    menu_overlayAnalysis_QuadOfGrid(),
     cat("Por enquanto, nada.\n"),
     cat("Por enquanto, nada.\n"),
     cat("Por enquanto, nada.\n"),

@@ -1,4 +1,4 @@
-overlayAnalysis_create_scripts <- function(){
+overlayAnalysis_QuadOfGrid_create_scripts <- function(){
 
   library(data.table)
   library(readtext)
@@ -77,7 +77,7 @@ overlayAnalysis_create_scripts <- function(){
         paste0(
 
           getwd(),
-          "/Packages/CNCFloraR/R/overlayAnalysis.txt"
+          "/Packages/CNCFloraR/R/overlayAnalysis_QuadOfGrid.txt"
 
         )
 
@@ -94,7 +94,7 @@ overlayAnalysis_create_scripts <- function(){
       paste0(
 
         sub("Packages/CNCFloraR", "", getwd()),
-        "/CNCFlora_data/outputs/overlayAnalysis scripts/TodosOsAnos/",
+        "/CNCFlora_data/outputs/overlayAnalysis scripts/QuadOfGrid/",
         element,
         " - script.R"
 
