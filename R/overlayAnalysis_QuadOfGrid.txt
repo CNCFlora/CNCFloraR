@@ -257,7 +257,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
     # Estabelecimento do Grid (AOO) ####
     if(is.na(sites_AOO)==T){
       final_output_mapbiomas_urbano <- data.frame(Species = ESPECIE,
-                                                  Ameaca = "Infraestrutura Urbana",
+                                                  Classe = "Infraestrutura Urbana",
                                                   Area_AOO_sites_km2 = NA,
                                                   Area_AOO_km2 = NA,
                                                   Porcentagem_AOO = NA,
@@ -267,7 +267,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_urbano)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_urbano)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_mineracao <- data.frame(Species = ESPECIE,
-                                                     Ameaca = "Mineração",
+                                                     Classe = "Mineração",
                                                      Area_AOO_sites_km2 = NA,
                                                      Area_AOO_km2 = NA,
                                                      Porcentagem_AOO = NA,
@@ -277,7 +277,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_mineracao)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mineracao)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_silvicultura <- data.frame(Species = ESPECIE,
-                                                        Ameaca = "Silvicultura",
+                                                        Classe = "Silvicultura",
                                                         Area_AOO_sites_km2 = NA,
                                                         Area_AOO_km2 = NA,
                                                         Porcentagem_AOO = NA,
@@ -287,7 +287,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_silvicultura)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_silvicultura)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_outras_lavouras_temporarias <- data.frame(Species = ESPECIE,
-                                                                       Ameaca = "Outras lavouras temporárias",
+                                                                       Classe = "Outras lavouras temporárias",
                                                                        Area_AOO_sites_km2 = NA,
                                                                        Area_AOO_km2 = NA,
                                                                        Porcentagem_AOO = NA,
@@ -297,7 +297,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_outras_lavouras_temporarias)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_lavouras_temporarias)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_soja <- data.frame(Species = ESPECIE,
-                                                Ameaca = "Soja",
+                                                Classe = "Soja",
                                                 Area_AOO_sites_km2 = NA,
                                                 Area_AOO_km2 = NA,
                                                 Porcentagem_AOO = NA,
@@ -307,7 +307,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_soja)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_soja)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_cana <- data.frame(Species = ESPECIE,
-                                                Ameaca = "Cana-de-açúcar",
+                                                Classe = "Cana-de-açúcar",
                                                 Area_AOO_sites_km2 = NA,
                                                 Area_AOO_km2 = NA,
                                                 Porcentagem_AOO = NA,
@@ -317,7 +317,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_cana)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_cana)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_lavouras_perenes <- data.frame(Species = ESPECIE,
-                                                            Ameaca = "Lavouras perenes",
+                                                            Classe = "Lavouras perenes",
                                                             Area_AOO_sites_km2 = NA,
                                                             Area_AOO_km2 = NA,
                                                             Porcentagem_AOO = NA,
@@ -327,7 +327,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_lavouras_perenes)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_lavouras_perenes)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_pastagem <- data.frame(Species = ESPECIE,
-                                                    Ameaca = "Pastagem",
+                                                    Classe = "Pastagem",
                                                     Area_AOO_sites_km2 = NA,
                                                     Area_AOO_km2 = NA,
                                                     Porcentagem_AOO = NA,
@@ -337,7 +337,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_pastagem)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_pastagem)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_mosaic_past_agric <- data.frame(Species = ESPECIE,
-                                                             Ameaca = "Mosaico Agricultura e Pastagem",
+                                                             Classe = "Mosaico Agricultura e Pastagem",
                                                              Area_AOO_sites_km2 = NA,
                                                              Area_AOO_km2 = NA,
                                                              Porcentagem_AOO = NA,
@@ -347,7 +347,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_mosaic_past_agric)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mosaic_past_agric)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_floresta <- data.frame(Species = ESPECIE,
-                                                    Ameaca = "Floresta",
+                                                    Classe = "Floresta",
                                                     Area_AOO_sites_km2 = NA,
                                                     Area_AOO_km2 = NA,
                                                     Porcentagem_AOO = NA,
@@ -357,7 +357,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_floresta)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_floresta)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_savana <- data.frame(Species = ESPECIE,
-                                                  Ameaca =" Savana",
+                                                  Classe =" Savana",
                                                   Area_AOO_sites_km2 = NA,
                                                   Area_AOO_km2 = NA,
                                                   Porcentagem_AOO = NA,
@@ -367,7 +367,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_savana)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_savana)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_mangue <- data.frame(Species = ESPECIE,
-                                                  Ameaca = "Mangue",
+                                                  Classe = "Mangue",
                                                   Area_AOO_sites_km2 = NA,
                                                   Area_AOO_km2 = NA,
                                                   Porcentagem_AOO = NA,
@@ -377,7 +377,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_mangue)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mangue)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_alagado_pantanosa <- data.frame(Species = ESPECIE,
-                                                             Ameaca = "Campo Alagado e Área Pantanosa",
+                                                             Classe = "Campo Alagado e Área Pantanosa",
                                                              Area_AOO_sites_km2 = NA,
                                                              Area_AOO_km2 = NA,
                                                              Porcentagem_AOO = NA,
@@ -387,7 +387,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_alagado_pantanosa)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_alagado_pantanosa)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_campos <- data.frame(Species = ESPECIE,
-                                                  Ameaca = "Formação Campestre",
+                                                  Classe = "Formação Campestre",
                                                   Area_AOO_sites_km2 = NA,
                                                   Area_AOO_km2 = NA,
                                                   Porcentagem_AOO = NA,
@@ -397,7 +397,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_campos)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_campos)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_outras_nao_florestais <- data.frame(Species = ESPECIE,
-                                                                 Ameaca = "Outras Formações não Florestais",
+                                                                 Classe = "Outras Formações não Florestais",
                                                                  Area_AOO_sites_km2 = NA,
                                                                  Area_AOO_km2 = NA,
                                                                  Porcentagem_AOO = NA,
@@ -407,7 +407,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_outras_nao_florestais)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_nao_florestais)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_lavouras_temporarias <- data.frame(Species = ESPECIE,
-                                                                Ameaca = "Lavoura Temporária",
+                                                                Classe = "Lavoura Temporária",
                                                                 Area_AOO_sites_km2 = NA,
                                                                 Area_AOO_km2 = NA,
                                                                 Porcentagem_AOO = NA,
@@ -417,7 +417,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_lavouras_temporarias)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_lavouras_temporarias)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_praia_duna_areal <- data.frame(Species = ESPECIE,
-                                                            Ameaca = "Praia, Duna e Areal",
+                                                            Classe = "Praia, Duna e Areal",
                                                             Area_AOO_sites_km2 = NA,
                                                             Area_AOO_km2 = NA,
                                                             Porcentagem_AOO = NA,
@@ -427,7 +427,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_praia_duna_areal)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_praia_duna_areal)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_outras_nao_vegetadas <- data.frame(Species = ESPECIE,
-                                                                Ameaca = "Outras Áreas não Vegetadas",
+                                                                Classe = "Outras Áreas não Vegetadas",
                                                                 Area_AOO_sites_km2 = NA,
                                                                 Area_AOO_km2 = NA,
                                                                 Porcentagem_AOO = NA,
@@ -437,7 +437,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_outras_nao_vegetadas)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_nao_vegetadas)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_nao_observado <- data.frame(Species = ESPECIE,
-                                                         Ameaca = "Não Observado",
+                                                         Classe = "Não Observado",
                                                          Area_AOO_sites_km2 = NA,
                                                          Area_AOO_km2 = NA,
                                                          Porcentagem_AOO = NA,
@@ -447,7 +447,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_nao_observado)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_nao_observado)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_afloramento_rochoso <- data.frame(Species = ESPECIE,
-                                                               Ameaca = "Afloramento Rochoso",
+                                                               Classe = "Afloramento Rochoso",
                                                                Area_AOO_sites_km2 = NA,
                                                                Area_AOO_km2 = NA,
                                                                Porcentagem_AOO = NA,
@@ -457,7 +457,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_afloramento_rochoso)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_afloramento_rochoso)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_aquicultura <- data.frame(Species = ESPECIE,
-                                                       Ameaca = "Aquicultura",
+                                                       Classe = "Aquicultura",
                                                        Area_AOO_sites_km2 = NA,
                                                        Area_AOO_km2 = NA,
                                                        Porcentagem_AOO = NA,
@@ -467,7 +467,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_aquicultura)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_aquicultura)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_apicum <- data.frame(Species = ESPECIE,
-                                                  Ameaca = "Apicum",
+                                                  Classe = "Apicum",
                                                   Area_AOO_sites_km2 = NA,
                                                   Area_AOO_km2 = NA,
                                                   Porcentagem_AOO = NA,
@@ -477,7 +477,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_apicum)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_apicum)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_rio_lago_oceano <- data.frame(Species = ESPECIE,
-                                                           Ameaca = "Rio, Lago e Oceano",
+                                                           Classe = "Rio, Lago e Oceano",
                                                            Area_AOO_sites_km2 = NA,
                                                            Area_AOO_km2 = NA,
                                                            Porcentagem_AOO = NA,
@@ -487,7 +487,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_rio_lago_oceano)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_rio_lago_oceano)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_arroz <- data.frame(Species = ESPECIE,
-                                                 Ameaca="Arroz",
+                                                 Classe="Arroz",
                                                  Area_AOO_sites_km2 = NA,
                                                  Area_AOO_km2 = NA,
                                                  Porcentagem_AOO = NA,
@@ -497,7 +497,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_arroz)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_arroz)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_cafe <- data.frame(Species = ESPECIE,
-                                                Ameaca = "Café",
+                                                Classe = "Café",
                                                 Area_AOO_sites_km2 = NA,
                                                 Area_AOO_km2 = NA,
                                                 Porcentagem_AOO = NA,
@@ -507,7 +507,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_cafe)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_cafe)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_citrus <- data.frame(Species = ESPECIE,
-                                                  Ameaca = "Citrus",
+                                                  Classe = "Citrus",
                                                   Area_AOO_sites_km2 = NA,
                                                   Area_AOO_km2 = NA,
                                                   Porcentagem_AOO = NA,
@@ -517,7 +517,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_citrus)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_citrus)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_outras_lavouras_perenes <- data.frame(Species = ESPECIE,
-                                                                   Ameaca = "Outras Lavouras Perenes",
+                                                                   Classe = "Outras Lavouras Perenes",
                                                                    Area_AOO_sites_km2 = NA,
                                                                    Area_AOO_km2 = NA,
                                                                    Porcentagem_AOO = NA,
@@ -527,7 +527,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       colnames(final_output_mapbiomas_outras_lavouras_perenes)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_lavouras_perenes)[c(3:6)], "_", MapBiomas_ANO)
 
       final_output_mapbiomas_restinga_arborizada <- data.frame(Species = ESPECIE,
-                                                               Ameaca = "Restinga Arborizada",
+                                                               Classe = "Restinga Arborizada",
                                                                Area_AOO_sites_km2 = NA,
                                                                Area_AOO_km2 = NA,
                                                                Porcentagem_AOO = NA,
@@ -2321,10 +2321,6 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
         }
       }
 
-      # Exportando pontos coordenadas
-      crs(sites)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-      shapefile(sites, paste0("/POINTS ", ESPECIE, ".shp"), overwrite=T)
-
       # Agregação de objetos de diferentes CRSs ####
       if(length(UTM_zone)==1){
         crs(sites_AOO_grid_AOO_1)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -2334,26 +2330,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
         AOO_km2 <- length(sites_AOO_grid_AOO_1)*4
         AOO_ha <- length(sites_AOO_grid_AOO_1)*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_AOO_grid_AOO_1, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_AOO_grid_AOO_1, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_AOO_grid_AOO_1, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_AOO_grid_AOO_1,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F, quiet = T)
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F, quiet = T)
+        #
+        # }
 
       }
 
@@ -2371,25 +2380,38 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
         AOO_ha <- (length(sites_AOO_grid_AOO_1) +
                      length(sites_AOO_grid_AOO_2))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
+
+          sites_grid_AOO,
+          paste0(
+
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
+
+          ),
+          overwrite = T
+
+        )
 
         if(area_EOO_km2 == 0){} else {
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
-
-          # EOO Buffer
-          sites_EOO<-gConvexHull(sites_AOO)
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+          # # EOO
+          # sites_EOO<-gConvexHull(sites)
+          # crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+          # shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+          #
+          # # EOO Buffer
+          # sites_EOO<-gConvexHull(sites_AOO)
+          # EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+          # EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+          # st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+          # invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
 
         }
 
@@ -2413,26 +2435,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_2) +
                      length(sites_AOO_grid_AOO_3))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+        #
+        # }
 
       }
 
@@ -2458,26 +2493,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_3) +
                      length(sites_AOO_grid_AOO_4))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+        #
+        # }
 
       }
 
@@ -2507,26 +2555,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_4) +
                      length(sites_AOO_grid_AOO_5))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+        #
+        # }
 
       }
 
@@ -2560,22 +2621,35 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_5) +
                      length(sites_AOO_grid_AOO_6))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        # EOO
-        sites_EOO<-gConvexHull(sites)
-        crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-        shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+          sites_grid_AOO,
+          paste0(
 
-        # EOO Buffer
-        EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-        EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-        st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-        invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
+
+          ),
+          overwrite = T
+
+        )
+
+        # # EOO
+        # sites_EOO<-gConvexHull(sites)
+        # crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        # shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        # # EOO Buffer
+        # EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        # EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        # st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        # invisible(capture.output(invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))))
       }
 
       if(length(UTM_zone)==7){
@@ -2612,26 +2686,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_6) +
                      length(sites_AOO_grid_AOO_7))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+        #
+        # }
 
       }
 
@@ -2673,26 +2760,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_7) +
                      length(sites_AOO_grid_AOO_8))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+        #
+        # }
 
       }
 
@@ -2738,26 +2838,39 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_8) +
                      length(sites_AOO_grid_AOO_9))*4*100
 
-        # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
+        # # Exportando shapefile AOO
+        # shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite = T)
 
         # Exportando shapefile AOO_QuadOfGrid
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO_QuadOfGrid ", ESPECIE, ".shp"), overwrite = T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+        #
+        # }
 
       }
 
@@ -2808,22 +2921,35 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
                      length(sites_AOO_grid_AOO_10))*4*100
 
         # Exportando shapefile AOO
-        shapefile(sites_grid_AOO, paste0(getwd(), "/AOO ", ESPECIE, ".shp"), overwrite=T)
+        shapefile(
 
-        if(area_EOO_km2 == 0){} else {
+          sites_grid_AOO,
+          paste0(
 
-          # EOO
-          sites_EOO<-gConvexHull(sites)
-          crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/shapefiles results/AOO_QuadOfGrid/",
+            ESPECIE,
+            ".shp"
 
-          # EOO Buffer
-          EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
-          EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
-          st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+          ),
+          overwrite = T
 
-        }
+        )
+
+        # if(area_EOO_km2 == 0){} else {
+        #
+        #   # EOO
+        #   sites_EOO<-gConvexHull(sites)
+        #   crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   shapefile(sites_EOO, paste0(getwd(), "/EOO ", ESPECIE, ".shp"), overwrite=T)
+        #
+        #   # EOO Buffer
+        #   EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+        #   EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+        #   st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        #   invisible(capture.output(st_write(EOOcontorno_buffer, paste0(getwd(), "/EOO-buffer ", ESPECIE, ".shp"), append = F)))
+        #
+        # }
 
       }
 
@@ -3710,7 +3836,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
       # Output Mapbiomas final ####
       final_output_mapbiomas_urbano <- data.frame(Species = ESPECIE,
                                                   Quad_AOO = count_area_sites_intersected_mapbiomas_df_urbana$QuadAOO,
-                                                  Ameaca = "Infraestrutura Urbana",
+                                                  Classe = "Infraestrutura Urbana",
                                                   Area_AOO_sites_km2 = as.numeric(area_km2_urbana$n),
                                                   Area_AOO_km2 = AOO_km2,
                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_urbana$n), 2),
@@ -3721,7 +3847,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_mineracao <- data.frame(Species = ESPECIE,
                                                      Quad_AOO = count_area_sites_intersected_mapbiomas_df_mineracao$QuadAOO,
-                                                     Ameaca = "Mineração",
+                                                     Classe = "Mineração",
                                                      Area_AOO_sites_km2 = as.numeric(area_km2_mineracao$n),
                                                      Area_AOO_km2 = AOO_km2,
                                                      Porcentagem_AOO = round(as.numeric(porc_area_km2_mineracao$n), 2),
@@ -3732,7 +3858,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_silvicultura <- data.frame(Species = ESPECIE,
                                                         Quad_AOO = count_area_sites_intersected_mapbiomas_df_silvicultura$QuadAOO,
-                                                        Ameaca = "Silvicultura",
+                                                        Classe = "Silvicultura",
                                                         Area_AOO_sites_km2 = as.numeric(area_km2_silvicultura$n),
                                                         Area_AOO_km2 = AOO_km2,
                                                         Porcentagem_AOO = round(as.numeric(porc_area_km2_silvicultura$n), 2),
@@ -3743,7 +3869,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_outras_lavouras_temporarias <- data.frame(Species = ESPECIE,
                                                                        Quad_AOO = count_area_sites_intersected_mapbiomas_df_outras_lavouras_temporarias$QuadAOO,
-                                                                       Ameaca = "Outras lavouras temporárias",
+                                                                       Classe = "Outras lavouras temporárias",
                                                                        Area_AOO_sites_km2 = as.numeric(area_km2_outras_lavouras_temporarias$n),
                                                                        Area_AOO_km2 = AOO_km2,
                                                                        Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_lavouras_temporarias$n), 2),
@@ -3754,7 +3880,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_soja <- data.frame(Species = ESPECIE,
                                                 Quad_AOO = count_area_sites_intersected_mapbiomas_df_soja$QuadAOO,
-                                                Ameaca = "Soja",
+                                                Classe = "Soja",
                                                 Area_AOO_sites_km2 = as.numeric(area_km2_soja$n),
                                                 Area_AOO_km2 = AOO_km2,
                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_soja$n), 2),
@@ -3765,7 +3891,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_cana <- data.frame(Species = ESPECIE,
                                                 Quad_AOO = count_area_sites_intersected_mapbiomas_df_cana$QuadAOO,
-                                                Ameaca = "Cana-de-açúcar",
+                                                Classe = "Cana-de-açúcar",
                                                 Area_AOO_sites_km2 = as.numeric(area_km2_cana$n),
                                                 Area_AOO_km2 = AOO_km2,
                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_cana$n), 2),
@@ -3776,7 +3902,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_lavouras_perenes <- data.frame(Species = ESPECIE,
                                                             Quad_AOO = count_area_sites_intersected_mapbiomas_df_lavouras_perenes$QuadAOO,
-                                                            Ameaca = "Lavouras perenes",
+                                                            Classe = "Lavouras perenes",
                                                             Area_AOO_sites_km2 = as.numeric(area_km2_lavouras_perenes$n),
                                                             Area_AOO_km2 = AOO_km2,
                                                             Porcentagem_AOO = round(as.numeric(porc_area_km2_lavouras_perenes$n), 2),
@@ -3787,7 +3913,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_pastagem <- data.frame(Species = ESPECIE,
                                                     Quad_AOO = count_area_sites_intersected_mapbiomas_df_pastagem$QuadAOO,
-                                                    Ameaca = "Pastagem",
+                                                    Classe = "Pastagem",
                                                     Area_AOO_sites_km2 = as.numeric(area_km2_pastagem$n),
                                                     Area_AOO_km2 = AOO_km2,
                                                     Porcentagem_AOO = round(as.numeric(porc_area_km2_pastagem$n), 2),
@@ -3798,7 +3924,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_mosaic_past_agric <- data.frame(Species = ESPECIE,
                                                              Quad_AOO = count_area_sites_intersected_mapbiomas_df_mosaic_past_agric$QuadAOO,
-                                                             Ameaca = "Mosaico Agricultura e Pastagem",
+                                                             Classe = "Mosaico Agricultura e Pastagem",
                                                              Area_AOO_sites_km2 = as.numeric(area_km2_mosaic_past_agric$n),
                                                              Area_AOO_km2 = AOO_km2,
                                                              Porcentagem_AOO = round(as.numeric(porc_area_km2_mosaic_past_agric$n), 2),
@@ -3809,7 +3935,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_floresta <- data.frame(Species = ESPECIE,
                                                     Quad_AOO = count_area_sites_intersected_mapbiomas_df_floresta$QuadAOO,
-                                                    Ameaca = "Floresta",
+                                                    Classe = "Floresta",
                                                     Area_AOO_sites_km2 = as.numeric(area_km2_floresta$n),
                                                     Area_AOO_km2 = AOO_km2,
                                                     Porcentagem_AOO = round(as.numeric(porc_area_km2_floresta$n), 2),
@@ -3820,7 +3946,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_savana <- data.frame(Species = ESPECIE,
                                                   Quad_AOO = count_area_sites_intersected_mapbiomas_df_savana$QuadAOO,
-                                                  Ameaca = "Savana",
+                                                  Classe = "Savana",
                                                   Area_AOO_sites_km2 = as.numeric(area_km2_savana$n),
                                                   Area_AOO_km2 = AOO_km2,
                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_savana$n), 2),
@@ -3831,7 +3957,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_mangue <- data.frame(Species = ESPECIE,
                                                   Quad_AOO = count_area_sites_intersected_mapbiomas_df_mangue$QuadAOO,
-                                                  Ameaca = "Mangue",
+                                                  Classe = "Mangue",
                                                   Area_AOO_sites_km2 = as.numeric(area_km2_mangue$n),
                                                   Area_AOO_km2 = AOO_km2,
                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_mangue$n), 2),
@@ -3842,7 +3968,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_alagado_pantanosa <- data.frame(Species = ESPECIE,
                                                              Quad_AOO = count_area_sites_intersected_mapbiomas_df_alagado_pantanosa$QuadAOO,
-                                                             Ameaca = "Campo Alagado e Área Pantanosa",
+                                                             Classe = "Campo Alagado e Área Pantanosa",
                                                              Area_AOO_sites_km2 = as.numeric(area_km2_alagado_pantanosa$n),
                                                              Area_AOO_km2 = AOO_km2,
                                                              Porcentagem_AOO = round(as.numeric(porc_area_km2_alagado_pantanosa$n), 2),
@@ -3853,7 +3979,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_campos <- data.frame(Species = ESPECIE,
                                                   Quad_AOO = count_area_sites_intersected_mapbiomas_df_campos$QuadAOO,
-                                                  Ameaca = "Formação Campestre",
+                                                  Classe = "Formação Campestre",
                                                   Area_AOO_sites_km2 = as.numeric(area_km2_campos$n),
                                                   Area_AOO_km2 = AOO_km2,
                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_campos$n), 2),
@@ -3864,7 +3990,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_outras_nao_florestais <- data.frame(Species = ESPECIE,
                                                                  Quad_AOO = count_area_sites_intersected_mapbiomas_df_outras_nao_florestais$QuadAOO,
-                                                                 Ameaca = "Outras Formações não Florestais",
+                                                                 Classe = "Outras Formações não Florestais",
                                                                  Area_AOO_sites_km2 = as.numeric(area_km2_outras_nao_florestais$n),
                                                                  Area_AOO_km2 = AOO_km2,
                                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_nao_florestais$n), 2),
@@ -3875,7 +4001,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_lavouras_temporarias <- data.frame(Species = ESPECIE,
                                                                 Quad_AOO = count_area_sites_intersected_mapbiomas_df_lavouras_temporarias$QuadAOO,
-                                                                Ameaca = "Lavoura Temporária",
+                                                                Classe = "Lavoura Temporária",
                                                                 Area_AOO_sites_km2 = as.numeric(area_km2_lavouras_temporarias$n),
                                                                 Area_AOO_km2 = AOO_km2,
                                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_lavouras_temporarias$n), 2),
@@ -3886,7 +4012,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_praia_duna_areal <- data.frame(Species = ESPECIE,
                                                             Quad_AOO = count_area_sites_intersected_mapbiomas_df_praia_duna_areal$QuadAOO,
-                                                            Ameaca = "Praia, Duna e Areal",
+                                                            Classe = "Praia, Duna e Areal",
                                                             Area_AOO_sites_km2 = as.numeric(area_km2_praia_duna_areal$n),
                                                             Area_AOO_km2 = AOO_km2,
                                                             Porcentagem_AOO = round(as.numeric(porc_area_km2_praia_duna_areal$n), 2),
@@ -3897,7 +4023,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_outras_nao_vegetadas <- data.frame(Species = ESPECIE,
                                                                 Quad_AOO = count_area_sites_intersected_mapbiomas_df_outras_nao_vegetadas$QuadAOO,
-                                                                Ameaca = "Outras Áreas não Vegetadas",
+                                                                Classe = "Outras Áreas não Vegetadas",
                                                                 Area_AOO_sites_km2 = as.numeric(area_km2_outras_nao_vegetadas$n),
                                                                 Area_AOO_km2 = AOO_km2,
                                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_nao_vegetadas$n), 2),
@@ -3908,7 +4034,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_nao_observado <- data.frame(Species = ESPECIE,
                                                          Quad_AOO = count_area_sites_intersected_mapbiomas_df_nao_observado$QuadAOO,
-                                                         Ameaca = "Não Observado",
+                                                         Classe = "Não Observado",
                                                          Area_AOO_sites_km2 = as.numeric(area_km2_nao_observado$n),
                                                          Area_AOO_km2 = AOO_km2,
                                                          Porcentagem_AOO = round(as.numeric(porc_area_km2_nao_observado$n), 2),
@@ -3919,7 +4045,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_afloramento_rochoso <- data.frame(Species = ESPECIE,
                                                                Quad_AOO = count_area_sites_intersected_mapbiomas_df_afloramento_rochoso$QuadAOO,
-                                                               Ameaca = "Afloramento Rochoso",
+                                                               Classe = "Afloramento Rochoso",
                                                                Area_AOO_sites_km2 = as.numeric(area_km2_afloramento_rochoso$n),
                                                                Area_AOO_km2 = AOO_km2,
                                                                Porcentagem_AOO = round(as.numeric(porc_area_km2_afloramento_rochoso$n), 2),
@@ -3930,7 +4056,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_aquicultura <- data.frame(Species = ESPECIE,
                                                        Quad_AOO = count_area_sites_intersected_mapbiomas_df_aquicultura$QuadAOO,
-                                                       Ameaca = "Aquicultura",
+                                                       Classe = "Aquicultura",
                                                        Area_AOO_sites_km2 = as.numeric(area_km2_aquicultura$n),
                                                        Area_AOO_km2 = AOO_km2,
                                                        Porcentagem_AOO = round(as.numeric(porc_area_km2_aquicultura$n), 2),
@@ -3941,7 +4067,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_apicum <- data.frame(Species = ESPECIE,
                                                   Quad_AOO = count_area_sites_intersected_mapbiomas_df_apicum$QuadAOO,
-                                                  Ameaca = "Apicum",
+                                                  Classe = "Apicum",
                                                   Area_AOO_sites_km2 = as.numeric(area_km2_apicum$n),
                                                   Area_AOO_km2 = AOO_km2,
                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_apicum$n), 2),
@@ -3952,7 +4078,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_rio_lago_oceano <- data.frame(Species = ESPECIE,
                                                            Quad_AOO = count_area_sites_intersected_mapbiomas_df_rio_lago_oceano$QuadAOO,
-                                                           Ameaca = "Rio, Lago e Oceano",
+                                                           Classe = "Rio, Lago e Oceano",
                                                            Area_AOO_sites_km2 = as.numeric(area_km2_rio_lago_oceano$n),
                                                            Area_AOO_km2 = AOO_km2,
                                                            Porcentagem_AOO = round(as.numeric(porc_area_km2_rio_lago_oceano$n), 2),
@@ -3962,7 +4088,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_arroz <- data.frame(Species = ESPECIE,
                                                  Quad_AOO = count_area_sites_intersected_mapbiomas_df_arroz$QuadAOO,
-                                                 Ameaca = "Arroz",
+                                                 Classe = "Arroz",
                                                  Area_AOO_sites_km2 = as.numeric(area_km2_arroz$n),
                                                  Area_AOO_km2 = AOO_km2,
                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_arroz$n), 2),
@@ -3973,7 +4099,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_cafe <- data.frame(Species = ESPECIE,
                                                 Quad_AOO = count_area_sites_intersected_mapbiomas_df_cafe$QuadAOO,
-                                                Ameaca = "Café",
+                                                Classe = "Café",
                                                 Area_AOO_sites_km2 = as.numeric(area_km2_cafe$n),
                                                 Area_AOO_km2 = AOO_km2,
                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_cafe$n), 2),
@@ -3984,7 +4110,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_citrus <- data.frame(Species = ESPECIE,
                                                   Quad_AOO = count_area_sites_intersected_mapbiomas_df_citrus$QuadAOO,
-                                                  Ameaca = "Citrus",
+                                                  Classe = "Citrus",
                                                   Area_AOO_sites_km2 = as.numeric(area_km2_citrus$n),
                                                   Area_AOO_km2 = AOO_km2,
                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_citrus$n), 2),
@@ -3995,7 +4121,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_outras_lavouras_perenes <- data.frame(Species = ESPECIE,
                                                                    Quad_AOO = count_area_sites_intersected_mapbiomas_df_outras_lavouras_perenes$QuadAOO,
-                                                                   Ameaca = "Outras Lavouras Perenes",
+                                                                   Classe = "Outras Lavouras Perenes",
                                                                    Area_AOO_sites_km2 = as.numeric(area_km2_outras_lavouras_perenes$n),
                                                                    Area_AOO_km2 = AOO_km2,
                                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_lavouras_perenes$n), 2),
@@ -4006,7 +4132,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
       final_output_mapbiomas_restinga_arborizada <- data.frame(Species = ESPECIE,
                                                                Quad_AOO = count_area_sites_intersected_mapbiomas_df_restinga_arborizada$QuadAOO,
-                                                               Ameaca = "Restinga Arborizada",
+                                                               Classe = "Restinga Arborizada",
                                                                Area_AOO_sites_km2 = as.numeric(area_km2_restinga_arborizada$n),
                                                                Area_AOO_km2 = AOO_km2,
                                                                Porcentagem_AOO = round(as.numeric(porc_area_km2_restinga_arborizada$n), 2),
@@ -4027,7 +4153,7 @@ for(mapaMapBiomas in MapBiomas_Brazil_set){
 
     # Output final ####
     output <- bind_rows(final_output_mapbiomas_soja, final_output_mapbiomas_cana, final_output_mapbiomas_lavouras_perenes, final_output_mapbiomas_outras_lavouras_temporarias, final_output_mapbiomas_pastagem, final_output_mapbiomas_mosaic_past_agric, final_output_mapbiomas_urbano, final_output_mapbiomas_mineracao, final_output_mapbiomas_silvicultura, final_output_mapbiomas_floresta, final_output_mapbiomas_savana, final_output_mapbiomas_mangue, final_output_mapbiomas_alagado_pantanosa, final_output_mapbiomas_campos, final_output_mapbiomas_outras_nao_florestais, final_output_mapbiomas_lavouras_temporarias, final_output_mapbiomas_praia_duna_areal, final_output_mapbiomas_outras_nao_vegetadas, final_output_mapbiomas_nao_observado, final_output_mapbiomas_afloramento_rochoso, final_output_mapbiomas_aquicultura, final_output_mapbiomas_apicum, final_output_mapbiomas_rio_lago_oceano, final_output_mapbiomas_arroz, final_output_mapbiomas_cafe, final_output_mapbiomas_citrus, final_output_mapbiomas_outras_lavouras_perenes, final_output_mapbiomas_restinga_arborizada)
-    Ameacas <- output %>% dplyr::select(contains("Ameaca")) %>% unique()
+    Ameacas <- output %>% dplyr::select(contains("Classe")) %>% unique()
     output_sites_AOO_km2_total <- output %>% dplyr::summarise(sum(get(paste0("Area_AOO_sites_km2_", MapBiomas_ANO))))
     if(exists("output[10,7]")==T){
       if(is.na(output[1,7])==T){
@@ -4085,7 +4211,7 @@ if(AOO_area_s_centr_mun == 0){
 
   final_output <- data.frame(Species = ESPECIE,
                              Quad_AOO = "",
-                             Ameaca = "",
+                             Classe = "",
                              Area_AOO_km2 = AOO_area_c_centr_mun,
                              AOO_util_km2 = AOO_area_s_centr_mun,
                              anosMapBiomas,
@@ -4095,7 +4221,7 @@ if(AOO_area_s_centr_mun == 0){
 } else{
   final_output <- data.frame(Species = ESPECIE,
                              Quad_AOO = output_Quads,
-                             Ameaca = Ameacas_quad,
+                             Classe = Ameacas_quad,
                              Area_AOO_km2 = AOO_km2,
                              AOO_util_km2 = sites_aggregated_area_km2,
                              final_output,
@@ -4120,7 +4246,7 @@ write.csv(
     ESPECIE,
     ".csv"
 
-    ),
+  ),
   row.names = F
 
 )

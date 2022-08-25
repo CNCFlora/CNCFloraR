@@ -1,0 +1,206 @@
+library(rvest)
+library(stringr)
+library(tidyr)
+library(dplyr)
+library(sf)
+library(raster)
+library(rgeos)
+
+sf_use_s2(FALSE)
+
+ESPECIE <- "ESPECIEselect"
+
+REGISTROS <- paste0(
+  
+  sub("Packages/CNCFloraR", "", getwd()),
+  "/CNCFlora_data/inputs/occurrences/oldSystem/",
+  ESPECIE,
+  ".html"
+  
+)
+
+input <- read_html(REGISTROS)
+
+
+# Obtenção do status de validação dos registros ####
+registros<-input %>% html_nodes(".label-valid") %>% html_text()
+registros<-str_extract(registros, "\\w+")
+
+# Obtenção da data de coleta
+AnoColeta<-input %>% html_nodes(".col-md-5") %>% html_nodes(".form-control") %>% html_attr("value")
+AnoColeta<-as.numeric(AnoColeta)
+AnoColeta<-matrix(AnoColeta, nrow = 2)
+AnoColeta<-AnoColeta[1,]
+
+# Obtenção do status de validação SIG ####
+validation_SIG<-input %>% html_nodes(".label-sig") %>% html_text()
+validation_SIG<-str_extract(validation_SIG, "\\w+\\s\\w+")
+
+# Obtenção dos códigos URN ####
+URNs<-input %>% html_nodes("a") %>% html_attr("name")
+URNs<-as.data.frame(URNs)
+URNs<-URNs %>% drop_na()
+URNs<-as.data.frame(URNs[-1,])
+toDelete <- seq(2, nrow(URNs), 2)
+URNs<-as.data.frame(URNs[toDelete,])
+
+# Obtenção das coordenadas geográficas ####
+#' Adicionar na linha 84 do script do HTML
+coords<-input %>% html_elements(".col-md-6") %>% html_elements("input") %>% html_attr("value")
+coords2 <- matrix(coords, ncol = 6, byrow = TRUE)
+coords_df <- as.data.frame(coords2)
+coords_df<-coords_df[,-6]
+coords_df<-coords_df[,-5]
+coords_df<-coords_df %>% dplyr::select(V2, V1, V3, V4)
+coords_df<-data.frame(coords_df,URNs,registros,validation_SIG,AnoColeta)
+colnames(coords_df) <- c("lon","lat","precision","protocol","URNs","Validade","Validade_SIG","ano_coleta")
+
+# Triagem dos registros válidos ####
+coords_df_valid <- coords_df %>% filter(Validade=="Válido" & Validade_SIG=="SIG OK")
+
+if(nrow(coords_df_valid) == 0){
+  
+  # Apagamento das coordenadas vazias ####
+  coords_df <- coords_df %>% mutate_all(na_if,"")
+  coords_df_n_row <- as.numeric(1:(nrow(coords_df)))
+  
+  for(j in coords_df_n_row){
+    
+    if(is.na(coords_df$precision[j])){
+      
+      coords_df <- coords_df[-j,]
+      
+    }
+    
+  }
+  
+  coords_df$lon<-as.numeric(coords_df$lon)
+  coords_df$lat<-as.numeric(coords_df$lat)
+  sites <- SpatialPointsDataFrame(coords_df[,1:2], coords_df[,3:8])
+  
+  # Coords ####
+  crs(sites)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  shapefile(
+    
+    sites,
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/shapefiles results/points/",
+      ESPECIE,
+      ".shp"
+      
+    )
+    
+  )
+    
+} else {
+  
+  # Apagamento das coordenadas vazias ####
+  coords_df_valid <- coords_df_valid %>% mutate_all(na_if,"")
+  coords_df_valid_n_row <- as.numeric(1:(nrow(coords_df_valid)))
+  for(j in coords_df_valid_n_row){
+    
+    if(is.na(coords_df_valid$precision[j])){
+      
+      coords_df_valid <- coords_df_valid[-j,]
+      
+    }
+    
+  }
+  
+  # Apagamento das coordenadas com precisão de centroide de município ####
+  coords_df_valid_AOO <- coords_df_valid %>% filter (!str_detect(precision, "[C|c]entr[o|ó]ide"))
+  
+  # Criação do dataframe das coordenadas geográficas (AOO) ####
+  coords_df_valid_AOO[,1] <- as.numeric(coords_df_valid_AOO[,1])
+  coords_df_valid_AOO[,2] <- as.numeric(coords_df_valid_AOO[,2])
+  
+  if(dplyr::count(coords_df_valid_AOO) == 0){
+    
+    sites_AOO <- NA
+    
+    sites <- SpatialPointsDataFrame(coords_df_valid_AOO[,1:2], coords_df_valid_AOO[,3:8])
+    
+  } else{
+    
+    sites <- SpatialPointsDataFrame(coords_df_valid_AOO[,1:2], coords_df_valid_AOO[,3:8])
+    
+  }
+  
+  sites_AOO_as_sf<-st_as_sf(sites)
+  if(as.numeric(nrow(unique(sites@coords))) == 1){
+    
+    sites_AOO_grid<-gBuffer(as_Spatial(sites_AOO_as_sf), byid = TRUE, capStyle = "SQUARE", width = 0.01)
+    sites_AOO_grid_AOO<-st_as_sf(sites_AOO_grid)
+    
+  } else {
+    
+    sites_AOO_grid<-st_make_grid(sites_AOO_as_sf, cellsize = .02)
+    sites_AOO_grid_AOO<-sites_AOO_grid[sites_AOO_as_sf]
+    
+  }
+  
+  st_crs(sites_AOO_grid_AOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  st_write(
+    
+    sites_AOO_grid_AOO,
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/shapefiles results/AOO/",
+      ESPECIE,
+      ".shp"
+      
+    ),
+    append=F
+    
+  )
+  
+  # EOO ####
+  sites_EOO<-gConvexHull(sites)
+  crs(sites_EOO)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  shapefile(
+    
+    sites_EOO,
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/shapefiles results/EOO/",
+      ESPECIE,
+      ".shp"
+      
+    ),
+    overwrite=TRUE
+    
+  )
+  
+  # EOO Buffer
+  if(class(sites_EOO)[1] == "SpatialPoints"){
+    
+    EOOcontorno <- st_as_sf(sites_EOO)
+    
+  } else{
+    
+    EOOcontorno <- st_cast(st_as_sf(sites_EOO), 'MULTILINESTRING')
+    
+  }
+  
+  EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+  st_crs(EOOcontorno_buffer)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  st_write(
+    
+    EOOcontorno_buffer,
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/shapefiles results/EOObuffer/",
+      ESPECIE,
+      ".shp"
+      
+    ),
+    append=F
+    
+  )
+  
+}

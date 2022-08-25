@@ -1,0 +1,2876 @@
+# Carregando pacotes ####
+library(sf)
+library(rvest)
+library(raster)
+library(rgeos)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(rlist)
+library(units)
+library(spdplyr)
+library(exactextractr)
+library(installr)
+library(tibble)
+
+# Função customFloor
+customCeiling <- function(x, Decimals=1) {
+  x2<-x*10^Decimals
+  ceiling(x2)/10^Decimals
+}
+customFloor <- function(x, Decimals=1) {
+  x2<-x*10^Decimals
+  floor(x2)/10^Decimals
+}
+
+# Paths dos Mapas
+MapBiomas_Brazil_set <- NULL
+for(ANO in 1985:2020){
+  MapBiomas_Brazil_set_ <- paste0("D:/MapBiomas_Brazil_6.0_30m/MapBiomas_Brazil_6.0_", ANO, "_30m.tif")
+  MapBiomas_Brazil_set <- rbind (MapBiomas_Brazil_set, MapBiomas_Brazil_set_)
+}
+
+# Species
+ESPECIE <- "ESPECIEselect"
+
+REGISTROS <- paste0(
+
+  sub("Packages/CNCFloraR", "", getwd()),
+  "/CNCFlora_data/inputs/occurrences/oldSystem/",
+  ESPECIE,
+  ".html"
+
+)
+
+input<-read_html(REGISTROS)
+
+final_output <- NULL
+for(mapaMapBiomas in MapBiomas_Brazil_set){
+
+
+    MapBiomas_ANO <- str_extract(mapaMapBiomas, "[0-9][0-9][0-9][0-9]")
+    MapBiomas_Brazil <- raster(mapaMapBiomas)
+
+    # Obtenção do status de validação dos registros ####
+    registros<-input %>% html_nodes(".label-valid") %>% html_text()
+    registros<-str_extract(registros, "\\w+")
+
+    # Obtenção do status de validação SIG ####
+    validation_SIG<-input %>% html_nodes(".label-sig") %>% html_text()
+    validation_SIG<-str_extract(validation_SIG, "\\w+\\s\\w+")
+
+    # Obtenção dos códigos URN ####
+    URNs<-input %>% html_nodes("a") %>% html_attr("name")
+    URNs<-as.data.frame(URNs)
+    URNs<-URNs %>% drop_na()
+    URNs<-as.data.frame(URNs[-1,])
+    toDelete <- seq(2, nrow(URNs), 2)
+    URNs<-as.data.frame(URNs[toDelete,])
+
+    # Obtenção dos Estados ####
+    ESTADOS<-input %>% html_nodes("#stateProvince") %>% html_attr("value")
+    ESTADOS<-toupper(ESTADOS)
+    ESTADOS <- sub("AMAPA", "AMAPÁ",ESTADOS)
+    ESTADOS <- sub("CEARA", "CEARÁ",ESTADOS)
+    ESTADOS <- sub("ESPIRITO SANTO", "ESPÍRITO SANTO",ESTADOS)
+    ESTADOS <- sub("GOIAS", "GOIÁS",ESTADOS)
+    ESTADOS <- sub("MARANHAO", "MARANHÃO",ESTADOS)
+    ESTADOS <- sub("PARAIBA", "PARAÍBA",ESTADOS)
+    ESTADOS <- sub("PARANA", "PARANÁ",ESTADOS)
+    ESTADOS <- sub("PARA", "PARÁ",ESTADOS)
+    ESTADOS <- sub("PARÁNÁ", "PARANÁ",ESTADOS)
+    ESTADOS <- sub("PIAUI", "PIAUÍ",ESTADOS)
+    ESTADOS <- sub("RONDONIA", "RONDÔNIA",ESTADOS)
+    ESTADOS <- sub("SAO PAULO", "SÃO PAULO",ESTADOS)
+    ESTADOS <- str_trim(ESTADOS, side = c("both"))
+
+    # Obtenção dos municípios ####
+    MUNICIPIOS<-input %>% html_nodes("#municipality") %>% html_attr("value")
+    MUNICIPIOS <- str_trim(MUNICIPIOS, side = c("both"))
+    MUNICIPIOS <- toupper(MUNICIPIOS)
+
+    # Obtenção das coordenadas geográficas ####
+    #' Adicionar na linha 84 do script do HTML
+    coords<-input %>% html_elements(".col-md-6") %>% html_elements("input") %>% html_attr("value")
+    coords2 <- matrix(coords, ncol = 6, byrow = TRUE)
+    coords_df <- as.data.frame(coords2)
+    coords_df<-coords_df[,-6]
+    coords_df<-coords_df[,-5]
+    coords_df<-coords_df %>% dplyr::select(V2, V1, V3, V4)
+    coords_df<-data.frame(coords_df,URNs,registros,validation_SIG,ESTADOS,MUNICIPIOS)
+    colnames(coords_df) <- c("lon","lat","precision","protocol","URNs","Validade","Validade_SIG","ESTADOS","MUNICIPIOS")
+
+    # Triagem dos registros válidos ####
+    coords_df_valid <- coords_df %>% filter(Validade=="Válido" & Validade_SIG=="SIG OK")
+
+    # Verificação do grau da coordenada ####
+    coords_df_valid$Degree_zone <- sub("\\..*", "", coords_df_valid$lon)
+    coords_df_valid$Degree_zone <- sub("^$", "EMPTY", coords_df_valid$Degree_zone)
+
+    coords_df_valid$UTMzone <- grepl("-",coords_df_valid$lat)
+    coords_df_valid$UTMzone <- sub(TRUE, "S", coords_df_valid$UTMzone)
+    coords_df_valid$UTMzone <- sub(FALSE, "N", coords_df_valid$UTMzone)
+
+    coords_df_valid$Degree_zone <- sub("-", "", coords_df_valid$Degree_zone)
+
+    EMPTY_row<-grep("EMPTY", coords_df_valid$Degree_zone)
+
+    coords_df_valid$UTMzone[EMPTY_row]<-""
+    coords_df_valid$Degree_zone[EMPTY_row]<-""
+
+    # Verificação da Zona UTM ####
+    coords_df_valid_n_row <- as.numeric(1:(length(coords_df_valid$Degree_zone)))
+
+
+    for(i in coords_df_valid_n_row){
+      coords_df_valid$UTMzone[i]<-paste(ceiling((-as.numeric(coords_df_valid$Degree_zone[i])+180)/6),coords_df_valid$UTMzone[i], sep = "")
+    }
+    coords_df_valid$UTMzone<-sub("NA","",coords_df_valid$UTMzone)
+
+    # Apagamento das coordenadas vazias ####
+    coords_df_valid <- coords_df_valid %>% mutate_all(na_if,"")
+    for(i in coords_df_valid_n_row){
+      if(is.na(coords_df_valid$precision[i])){
+        coords_df_valid <- coords_df_valid[-i,]}
+    }
+
+    # Estipulação do Sistema de Coordenadas Geograficas Projetado para UTM/WGS84 ####
+    coords_df_valid$CRS <- coords_df_valid$UTMzone
+    coords_df_valid$CRS <- sub("18S", "+proj=utm +zone=18 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("19S", "+proj=utm +zone=19 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("20S", "+proj=utm +zone=20 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("21S", "+proj=utm +zone=21 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("22S", "+proj=utm +zone=22 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("23S", "+proj=utm +zone=23 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("24S", "+proj=utm +zone=24 +south +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("25S", "+proj=utm +zone=25 +south +datum=WGS84", coords_df_valid$CRS)
+
+    coords_df_valid$CRS <- sub("18N", "+proj=utm +zone=18 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("19N", "+proj=utm +zone=19 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("20N", "+proj=utm +zone=20 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("21N", "+proj=utm +zone=21 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("22N", "+proj=utm +zone=22 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("23N", "+proj=utm +zone=23 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("24N", "+proj=utm +zone=24 +north +datum=WGS84", coords_df_valid$CRS)
+    coords_df_valid$CRS <- sub("25N", "+proj=utm +zone=25 +north +datum=WGS84", coords_df_valid$CRS)
+
+    # Apagamento das coordenadas com precisão de centroide de município ####
+    coords_df_valid_AOO <- coords_df_valid %>% filter (!str_detect(precision, "[C|c]entr[o|ó]ide"))
+
+    # Criação do dataframe das coordenadas geográficas (AOO) ####
+    coords_df_valid_AOO[,1] <- as.numeric(coords_df_valid_AOO[,1])
+    coords_df_valid_AOO[,2] <- as.numeric(coords_df_valid_AOO[,2])
+    if(dplyr::count(coords_df_valid_AOO)==0){sites_AOO<-NA} else{
+      sites_AOO <- SpatialPointsDataFrame(coords_df_valid_AOO[,1:2], coords_df_valid_AOO[,3:11])
+    }
+
+    # Criação do dataframe das coordenadas geográficas (EOO) ####
+    coords_df_valid[,1] <- as.numeric(coords_df_valid[,1])
+    coords_df_valid[,2] <- as.numeric(coords_df_valid[,2])
+    if(dplyr::count(coords_df_valid)==0){sites<-NA} else{
+      sites <- SpatialPointsDataFrame(coords_df_valid[,1:2], coords_df_valid[,3:11])
+    }
+
+    # EOO
+    if(is.na(sites)==T|nrow(unique(data.frame(lat=coords_df_valid$lat, lon=coords_df_valid$lon))) < 3){
+      EOO <- 0
+      EOOvalue <- 0
+      EOOexists <- F
+      area_EOO_km2 <- 0
+    } else {
+      EOO <- gConvexHull(sites)
+      EOOvalue <- 1
+      EOOexists <- T
+
+      # EOO contorno e buffer
+      EOOcontorno <- st_cast(st_as_sf(EOO), 'MULTILINESTRING')
+      EOOcontorno_buffer <- st_buffer(EOOcontorno, dist=0.05)
+
+    }
+
+    if(EOOexists == F){} else{
+      # Diferença de área AOO com/sem centroide de municípios
+      sites_as_sf<-st_as_sf(sites)
+      if(as.numeric(nrow(unique(sites@coords)))==1){
+        sites_grid<-gBuffer(as_Spatial(sites_as_sf), byid = TRUE, capStyle = "SQUARE", width = 0.01)
+        sites_grid_AOO<-st_as_sf(sites_grid)
+      } else{
+        sites_grid<-st_make_grid(sites_as_sf, cellsize = .02)
+        sites_grid_AOO<-sites_grid[sites_as_sf]
+      }
+      AOO_area_c_centr_mun<-round(sum(st_area(sites_grid_AOO)*10000))
+
+      if(is.na(sites_AOO)==T){
+        AOO_area_s_centr_mun<-0
+      } else{
+        sites_AOO_as_sf<-st_as_sf(sites_AOO)
+        if(as.numeric(nrow(unique(sites_AOO@coords)))==1){
+          sites_AOO_grid<-gBuffer(as_Spatial(sites_AOO_as_sf), byid = TRUE, capStyle = "SQUARE", width = 0.01)
+          sites_AOO_grid_AOO<-st_as_sf(sites_AOO_grid)
+        } else{
+          sites_AOO_grid<-st_make_grid(sites_AOO_as_sf, cellsize = .02)
+          sites_AOO_grid_AOO<-sites_AOO_grid[sites_AOO_as_sf]
+        }
+        AOO_area_s_centr_mun<-round(sum(st_area(sites_AOO_grid_AOO)*10000))
+      }
+
+      if(length(st_dimension(sites_AOO_grid_AOO)) == 1){
+
+        if(is.null(nrow(sites_AOO_grid_AOO)) == T){
+
+
+
+        } else{
+
+          data_sites_AOO_grid_AOO <- data.frame(ID = paste0("ID", 1:nrow(sites_AOO_grid_AOO)))
+          row.names(data_sites_AOO_grid_AOO) <- paste0("ID", 1:nrow(sites_AOO_grid_AOO))
+          row.names(sites_AOO_grid_AOO) <- paste0("ID", 1:nrow(sites_AOO_grid_AOO))
+
+          sites_AOO_grid_AOO <- SpatialPolygonsDataFrame(as_Spatial(sites_AOO_grid_AOO),
+                                                         data = data_sites_AOO_grid_AOO)
+
+        }
+
+      } else {
+
+        if(length(st_dimension(sites_AOO_grid_AOO)) > 1){
+
+          data_sites_AOO_grid_AOO <- data.frame(ID = paste0("ID", 1:length(sites_AOO_grid_AOO)))
+          row.names(data_sites_AOO_grid_AOO) <- paste0("ID", 1:length(sites_AOO_grid_AOO))
+
+          sites_AOO_grid_AOO <- SpatialPolygonsDataFrame(as_Spatial(sites_AOO_grid_AOO),
+                                                         data = data_sites_AOO_grid_AOO)
+
+        }
+
+      }
+
+    }
+
+    if(EOOexists == F){} else{
+      checkUTMagain <- unlist(st_intersects(EOOcontorno_buffer, sites_as_sf))
+      sites_AOO <- sites_as_sf[checkUTMagain,]
+      sites_AOO <- sites_AOO %>% filter(!str_detect(precision, "[C|c]entr[o|ó]ide"))
+    }
+
+    if(EOOexists == F){} else{
+      # Estabelecimento do Grid (AOO) ####
+      if(is.na(sites_AOO)==T){
+        final_output_mapbiomas_urbano <- data.frame(Species = ESPECIE,
+                                                    Classe = "Infraestrutura Urbana",
+                                                    Area_AOO_sites_km2 = NA,
+                                                    Area_AOO_km2 = NA,
+                                                    Porcentagem_AOO = NA,
+                                                    AOO_util_km2 = NA,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_urbano)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_urbano)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_mineracao <- data.frame(Species = ESPECIE,
+                                                       Classe = "Mineração",
+                                                       Area_AOO_sites_km2 = NA,
+                                                       Area_AOO_km2 = NA,
+                                                       Porcentagem_AOO = NA,
+                                                       AOO_util_km2 = NA,
+                                                       Fonte="MapBiomas"
+        )
+        colnames(final_output_mapbiomas_mineracao)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mineracao)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_silvicultura <- data.frame(Species = ESPECIE,
+                                                          Classe = "Silvicultura",
+                                                          Area_AOO_sites_km2 = NA,
+                                                          Area_AOO_km2 = NA,
+                                                          Porcentagem_AOO = NA,
+                                                          AOO_util_km2 = NA,
+                                                          Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_silvicultura)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_silvicultura)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_lavouras_temporarias <- data.frame(Species = ESPECIE,
+                                                                         Classe = "Outras lavouras temporárias",
+                                                                         Area_AOO_sites_km2 = NA,
+                                                                         Area_AOO_km2 = NA,
+                                                                         Porcentagem_AOO = NA,
+                                                                         AOO_util_km2 = NA,
+                                                                         Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_lavouras_temporarias)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_lavouras_temporarias)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_soja <- data.frame(Species = ESPECIE,
+                                                  Classe = "Soja",
+                                                  Area_AOO_sites_km2 = NA,
+                                                  Area_AOO_km2 = NA,
+                                                  Porcentagem_AOO = NA,
+                                                  AOO_util_km2 = NA,
+                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_soja)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_soja)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_cana <- data.frame(Species = ESPECIE,
+                                                  Classe = "Cana-de-açúcar",
+                                                  Area_AOO_sites_km2 = NA,
+                                                  Area_AOO_km2 = NA,
+                                                  Porcentagem_AOO = NA,
+                                                  AOO_util_km2 = NA,
+                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_cana)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_cana)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_lavouras_perenes <- data.frame(Species = ESPECIE,
+                                                              Classe = "Lavouras perenes",
+                                                              Area_AOO_sites_km2 = NA,
+                                                              Area_AOO_km2 = NA,
+                                                              Porcentagem_AOO = NA,
+                                                              AOO_util_km2 = NA,
+                                                              Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_lavouras_perenes)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_lavouras_perenes)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_pastagem <- data.frame(Species = ESPECIE,
+                                                      Classe = "Pastagem",
+                                                      Area_AOO_sites_km2 = NA,
+                                                      Area_AOO_km2 = NA,
+                                                      Porcentagem_AOO = NA,
+                                                      AOO_util_km2 = NA,
+                                                      Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_pastagem)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_pastagem)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_mosaic_past_agric <- data.frame(Species = ESPECIE,
+                                                               Classe = "Mosaico Agricultura e Pastagem",
+                                                               Area_AOO_sites_km2 = NA,
+                                                               Area_AOO_km2 = NA,
+                                                               Porcentagem_AOO = NA,
+                                                               AOO_util_km2 = NA,
+                                                               Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_mosaic_past_agric)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mosaic_past_agric)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_floresta <- data.frame(Species = ESPECIE,
+                                                      Classe = "Floresta",
+                                                      Area_AOO_sites_km2 = NA,
+                                                      Area_AOO_km2 = NA,
+                                                      Porcentagem_AOO = NA,
+                                                      AOO_util_km2 = NA,
+                                                      Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_floresta)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_floresta)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_savana <- data.frame(Species = ESPECIE,
+                                                    Classe =" Savana",
+                                                    Area_AOO_sites_km2 = NA,
+                                                    Area_AOO_km2 = NA,
+                                                    Porcentagem_AOO = NA,
+                                                    AOO_util_km2 = NA,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_savana)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_savana)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_mangue <- data.frame(Species = ESPECIE,
+                                                    Classe = "Mangue",
+                                                    Area_AOO_sites_km2 = NA,
+                                                    Area_AOO_km2 = NA,
+                                                    Porcentagem_AOO = NA,
+                                                    AOO_util_km2 = NA,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_mangue)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mangue)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_alagado_pantanosa <- data.frame(Species = ESPECIE,
+                                                               Classe = "Campo Alagado e Área Pantanosa",
+                                                               Area_AOO_sites_km2 = NA,
+                                                               Area_AOO_km2 = NA,
+                                                               Porcentagem_AOO = NA,
+                                                               AOO_util_km2 = NA,
+                                                               Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_alagado_pantanosa)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_alagado_pantanosa)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_campos <- data.frame(Species = ESPECIE,
+                                                    Classe = "Formação Campestre",
+                                                    Area_AOO_sites_km2 = NA,
+                                                    Area_AOO_km2 = NA,
+                                                    Porcentagem_AOO = NA,
+                                                    AOO_util_km2 = NA,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_campos)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_campos)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_nao_florestais <- data.frame(Species = ESPECIE,
+                                                                   Classe = "Outras Formações não Florestais",
+                                                                   Area_AOO_sites_km2 = NA,
+                                                                   Area_AOO_km2 = NA,
+                                                                   Porcentagem_AOO = NA,
+                                                                   AOO_util_km2 = NA,
+                                                                   Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_nao_florestais)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_nao_florestais)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_lavouras_temporarias <- data.frame(Species = ESPECIE,
+                                                                  Classe = "Lavoura Temporária",
+                                                                  Area_AOO_sites_km2 = NA,
+                                                                  Area_AOO_km2 = NA,
+                                                                  Porcentagem_AOO = NA,
+                                                                  AOO_util_km2 = NA,
+                                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_lavouras_temporarias)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_lavouras_temporarias)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_praia_duna_areal <- data.frame(Species = ESPECIE,
+                                                              Classe = "Praia, Duna e Areal",
+                                                              Area_AOO_sites_km2 = NA,
+                                                              Area_AOO_km2 = NA,
+                                                              Porcentagem_AOO = NA,
+                                                              AOO_util_km2 = NA,
+                                                              Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_praia_duna_areal)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_praia_duna_areal)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_nao_vegetadas <- data.frame(Species = ESPECIE,
+                                                                  Classe = "Outras Áreas não Vegetadas",
+                                                                  Area_AOO_sites_km2 = NA,
+                                                                  Area_AOO_km2 = NA,
+                                                                  Porcentagem_AOO = NA,
+                                                                  AOO_util_km2 = NA,
+                                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_nao_vegetadas)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_nao_vegetadas)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_nao_observado <- data.frame(Species = ESPECIE,
+                                                           Classe = "Não Observado",
+                                                           Area_AOO_sites_km2 = NA,
+                                                           Area_AOO_km2 = NA,
+                                                           Porcentagem_AOO = NA,
+                                                           AOO_util_km2 = NA,
+                                                           Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_nao_observado)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_nao_observado)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_afloramento_rochoso <- data.frame(Species = ESPECIE,
+                                                                 Classe = "Afloramento Rochoso",
+                                                                 Area_AOO_sites_km2 = NA,
+                                                                 Area_AOO_km2 = NA,
+                                                                 Porcentagem_AOO = NA,
+                                                                 AOO_util_km2 = NA,
+                                                                 Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_afloramento_rochoso)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_afloramento_rochoso)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_aquicultura <- data.frame(Species = ESPECIE,
+                                                         Classe = "Aquicultura",
+                                                         Area_AOO_sites_km2 = NA,
+                                                         Area_AOO_km2 = NA,
+                                                         Porcentagem_AOO = NA,
+                                                         AOO_util_km2 = NA,
+                                                         Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_aquicultura)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_aquicultura)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_apicum <- data.frame(Species = ESPECIE,
+                                                    Classe = "Apicum",
+                                                    Area_AOO_sites_km2 = NA,
+                                                    Area_AOO_km2 = NA,
+                                                    Porcentagem_AOO = NA,
+                                                    AOO_util_km2 = NA,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_apicum)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_apicum)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_rio_lago_oceano <- data.frame(Species = ESPECIE,
+                                                             Classe = "Rio, Lago e Oceano",
+                                                             Area_AOO_sites_km2 = NA,
+                                                             Area_AOO_km2 = NA,
+                                                             Porcentagem_AOO = NA,
+                                                             AOO_util_km2 = NA,
+                                                             Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_rio_lago_oceano)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_rio_lago_oceano)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_arroz <- data.frame(Species = ESPECIE,
+                                                   Classe="Arroz",
+                                                   Area_AOO_sites_km2 = NA,
+                                                   Area_AOO_km2 = NA,
+                                                   Porcentagem_AOO = NA,
+                                                   AOO_util_km2 = NA,
+                                                   Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_arroz)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_arroz)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_cafe <- data.frame(Species = ESPECIE,
+                                                  Classe = "Café",
+                                                  Area_AOO_sites_km2 = NA,
+                                                  Area_AOO_km2 = NA,
+                                                  Porcentagem_AOO = NA,
+                                                  AOO_util_km2 = NA,
+                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_cafe)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_cafe)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_citrus <- data.frame(Species = ESPECIE,
+                                                    Classe = "Citrus",
+                                                    Area_AOO_sites_km2 = NA,
+                                                    Area_AOO_km2 = NA,
+                                                    Porcentagem_AOO = NA,
+                                                    AOO_util_km2 = NA,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_citrus)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_citrus)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_lavouras_perenes <- data.frame(Species = ESPECIE,
+                                                                     Classe = "Outras Lavouras Perenes",
+                                                                     Area_AOO_sites_km2 = NA,
+                                                                     Area_AOO_km2 = NA,
+                                                                     Porcentagem_AOO = NA,
+                                                                     AOO_util_km2 = NA,
+                                                                     Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_lavouras_perenes)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_lavouras_perenes)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_restinga_arborizada <- data.frame(Species = ESPECIE,
+                                                                 Classe = "Restinga Arborizada",
+                                                                 Area_AOO_sites_km2 = NA,
+                                                                 Area_AOO_km2 = NA,
+                                                                 Porcentagem_AOO = NA,
+                                                                 AOO_util_km2 = NA,
+                                                                 Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_restinga_arborizada)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_restinga_arborizada)[c(3:6)], "_", MapBiomas_ANO)
+      } else{
+
+        # Seleção das zonas UTM
+        UTM_zone <- unique(sites_AOO$UTMzone)
+        CRS <- unique(coords_df_valid_AOO$CRS)
+
+        if(length(UTM_zone) == 1){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 2){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 3){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 4){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+
+          # CRS 4
+          sites4 <- sites_AOO %>% filter(UTMzone == UTM_zone[4])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_4) <- CRS[4]
+          sites4_sf <- st_as_sf(sites4)
+          st_crs(sites4_sf) <- CRS[4]
+          sites_AOO_grid_AOO_4quads <- as.data.frame(st_intersects(sites4_sf, st_as_sf(sites_AOO_grid_AOO_4)))
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO_4[sites_AOO_grid_AOO_4quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil4 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil4) <- CRS[4]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer4 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer4) <- paste(CRS[4], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_4), EOOcontorno_buffer4)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_4[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites4_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites4_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil4, sites4_grid_AOO)
+          sites4_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites4_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 5){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+
+          # CRS 4
+          sites4 <- sites_AOO %>% filter(UTMzone == UTM_zone[4])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_4) <- CRS[4]
+          sites4_sf <- st_as_sf(sites4)
+          st_crs(sites4_sf) <- CRS[4]
+          sites_AOO_grid_AOO_4quads <- as.data.frame(st_intersects(sites4_sf, st_as_sf(sites_AOO_grid_AOO_4)))
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO_4[sites_AOO_grid_AOO_4quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil4 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil4) <- CRS[4]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer4 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer4) <- paste(CRS[4], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_4), EOOcontorno_buffer4)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_4[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites4_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites4_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil4, sites4_grid_AOO)
+          sites4_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites4_intersected_mapbiomas)))
+
+          # CRS 5
+          sites5 <- sites_AOO %>% filter(UTMzone == UTM_zone[5])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_5) <- CRS[5]
+          sites5_sf <- st_as_sf(sites5)
+          st_crs(sites5_sf) <- CRS[5]
+          sites_AOO_grid_AOO_5quads <- as.data.frame(st_intersects(sites5_sf, st_as_sf(sites_AOO_grid_AOO_5)))
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO_5[sites_AOO_grid_AOO_5quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS85
+          MapBiomas_Brazil5 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil5) <- CRS[5]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer5 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer5) <- paste(CRS[5], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_5), EOOcontorno_buffer5)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_5[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites5_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites5_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil5, sites5_grid_AOO)
+          sites5_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites5_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 6){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+
+          # CRS 4
+          sites4 <- sites_AOO %>% filter(UTMzone == UTM_zone[4])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_4) <- CRS[4]
+          sites4_sf <- st_as_sf(sites4)
+          st_crs(sites4_sf) <- CRS[4]
+          sites_AOO_grid_AOO_4quads <- as.data.frame(st_intersects(sites4_sf, st_as_sf(sites_AOO_grid_AOO_4)))
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO_4[sites_AOO_grid_AOO_4quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil4 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil4) <- CRS[4]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer4 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer4) <- paste(CRS[4], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_4), EOOcontorno_buffer4)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_4[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites4_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites4_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil4, sites4_grid_AOO)
+          sites4_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites4_intersected_mapbiomas)))
+
+          # CRS 5
+          sites5 <- sites_AOO %>% filter(UTMzone == UTM_zone[5])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_5) <- CRS[5]
+          sites5_sf <- st_as_sf(sites5)
+          st_crs(sites5_sf) <- CRS[5]
+          sites_AOO_grid_AOO_5quads <- as.data.frame(st_intersects(sites5_sf, st_as_sf(sites_AOO_grid_AOO_5)))
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO_5[sites_AOO_grid_AOO_5quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS85
+          MapBiomas_Brazil5 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil5) <- CRS[5]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer5 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer5) <- paste(CRS[5], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_5), EOOcontorno_buffer5)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_5[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites5_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites5_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil5, sites5_grid_AOO)
+          sites5_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites5_intersected_mapbiomas)))
+
+          # CRS 6
+          sites6 <- sites_AOO %>% filter(UTMzone == UTM_zone[6])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_6) <- CRS[6]
+          sites6_sf <- st_as_sf(sites6)
+          st_crs(sites6_sf) <- CRS[6]
+          sites_AOO_grid_AOO_6quads <- as.data.frame(st_intersects(sites6_sf, st_as_sf(sites_AOO_grid_AOO_6)))
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO_6[sites_AOO_grid_AOO_6quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS86
+          MapBiomas_Brazil6 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil6) <- CRS[6]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer6 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer6) <- paste(CRS[6], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_6), EOOcontorno_buffer6)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_6[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites6_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites6_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil6, sites6_grid_AOO)
+          sites6_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites6_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 7){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+
+          # CRS 4
+          sites4 <- sites_AOO %>% filter(UTMzone == UTM_zone[4])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_4) <- CRS[4]
+          sites4_sf <- st_as_sf(sites4)
+          st_crs(sites4_sf) <- CRS[4]
+          sites_AOO_grid_AOO_4quads <- as.data.frame(st_intersects(sites4_sf, st_as_sf(sites_AOO_grid_AOO_4)))
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO_4[sites_AOO_grid_AOO_4quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil4 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil4) <- CRS[4]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer4 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer4) <- paste(CRS[4], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_4), EOOcontorno_buffer4)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_4[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites4_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites4_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil4, sites4_grid_AOO)
+          sites4_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites4_intersected_mapbiomas)))
+
+          # CRS 5
+          sites5 <- sites_AOO %>% filter(UTMzone == UTM_zone[5])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_5) <- CRS[5]
+          sites5_sf <- st_as_sf(sites5)
+          st_crs(sites5_sf) <- CRS[5]
+          sites_AOO_grid_AOO_5quads <- as.data.frame(st_intersects(sites5_sf, st_as_sf(sites_AOO_grid_AOO_5)))
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO_5[sites_AOO_grid_AOO_5quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS85
+          MapBiomas_Brazil5 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil5) <- CRS[5]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer5 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer5) <- paste(CRS[5], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_5), EOOcontorno_buffer5)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_5[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites5_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites5_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil5, sites5_grid_AOO)
+          sites5_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites5_intersected_mapbiomas)))
+
+          # CRS 6
+          sites6 <- sites_AOO %>% filter(UTMzone == UTM_zone[6])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_6) <- CRS[6]
+          sites6_sf <- st_as_sf(sites6)
+          st_crs(sites6_sf) <- CRS[6]
+          sites_AOO_grid_AOO_6quads <- as.data.frame(st_intersects(sites6_sf, st_as_sf(sites_AOO_grid_AOO_6)))
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO_6[sites_AOO_grid_AOO_6quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS86
+          MapBiomas_Brazil6 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil6) <- CRS[6]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer6 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer6) <- paste(CRS[6], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_6), EOOcontorno_buffer6)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_6[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites6_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites6_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil6, sites6_grid_AOO)
+          sites6_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites6_intersected_mapbiomas)))
+
+          # CRS 7
+          sites7 <- sites_AOO %>% filter(UTMzone == UTM_zone[7])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_7 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_7) <- CRS[7]
+          sites7_sf <- st_as_sf(sites7)
+          st_crs(sites7_sf) <- CRS[7]
+          sites_AOO_grid_AOO_7quads <- as.data.frame(st_intersects(sites7_sf, st_as_sf(sites_AOO_grid_AOO_7)))
+          sites_AOO_grid_AOO_7 <- sites_AOO_grid_AOO_7[sites_AOO_grid_AOO_7quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS87
+          MapBiomas_Brazil7 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil7) <- CRS[7]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer7 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer7) <- paste(CRS[7], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_7), EOOcontorno_buffer7)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_7[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites7_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites7_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil7, sites7_grid_AOO)
+          sites7_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites7_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 8){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+
+          # CRS 4
+          sites4 <- sites_AOO %>% filter(UTMzone == UTM_zone[4])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_4) <- CRS[4]
+          sites4_sf <- st_as_sf(sites4)
+          st_crs(sites4_sf) <- CRS[4]
+          sites_AOO_grid_AOO_4quads <- as.data.frame(st_intersects(sites4_sf, st_as_sf(sites_AOO_grid_AOO_4)))
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO_4[sites_AOO_grid_AOO_4quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil4 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil4) <- CRS[4]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer4 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer4) <- paste(CRS[4], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_4), EOOcontorno_buffer4)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_4[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites4_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites4_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil4, sites4_grid_AOO)
+          sites4_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites4_intersected_mapbiomas)))
+
+          # CRS 5
+          sites5 <- sites_AOO %>% filter(UTMzone == UTM_zone[5])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_5) <- CRS[5]
+          sites5_sf <- st_as_sf(sites5)
+          st_crs(sites5_sf) <- CRS[5]
+          sites_AOO_grid_AOO_5quads <- as.data.frame(st_intersects(sites5_sf, st_as_sf(sites_AOO_grid_AOO_5)))
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO_5[sites_AOO_grid_AOO_5quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS85
+          MapBiomas_Brazil5 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil5) <- CRS[5]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer5 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer5) <- paste(CRS[5], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_5), EOOcontorno_buffer5)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_5[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites5_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites5_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil5, sites5_grid_AOO)
+          sites5_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites5_intersected_mapbiomas)))
+
+          # CRS 6
+          sites6 <- sites_AOO %>% filter(UTMzone == UTM_zone[6])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_6) <- CRS[6]
+          sites6_sf <- st_as_sf(sites6)
+          st_crs(sites6_sf) <- CRS[6]
+          sites_AOO_grid_AOO_6quads <- as.data.frame(st_intersects(sites6_sf, st_as_sf(sites_AOO_grid_AOO_6)))
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO_6[sites_AOO_grid_AOO_6quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS86
+          MapBiomas_Brazil6 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil6) <- CRS[6]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer6 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer6) <- paste(CRS[6], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_6), EOOcontorno_buffer6)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_6[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites6_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites6_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil6, sites6_grid_AOO)
+          sites6_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites6_intersected_mapbiomas)))
+
+          # CRS 7
+          sites7 <- sites_AOO %>% filter(UTMzone == UTM_zone[7])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_7 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_7) <- CRS[7]
+          sites7_sf <- st_as_sf(sites7)
+          st_crs(sites7_sf) <- CRS[7]
+          sites_AOO_grid_AOO_7quads <- as.data.frame(st_intersects(sites7_sf, st_as_sf(sites_AOO_grid_AOO_7)))
+          sites_AOO_grid_AOO_7 <- sites_AOO_grid_AOO_7[sites_AOO_grid_AOO_7quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS87
+          MapBiomas_Brazil7 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil7) <- CRS[7]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer7 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer7) <- paste(CRS[7], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_7), EOOcontorno_buffer7)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_7[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites7_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites7_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil7, sites7_grid_AOO)
+          sites7_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites7_intersected_mapbiomas)))
+
+          # CRS 8
+          sites8 <- sites_AOO %>% filter(UTMzone == UTM_zone[8])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_8 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_8) <- CRS[8]
+          sites8_sf <- st_as_sf(sites8)
+          st_crs(sites8_sf) <- CRS[8]
+          sites_AOO_grid_AOO_8quads <- as.data.frame(st_intersects(sites8_sf, st_as_sf(sites_AOO_grid_AOO_8)))
+          sites_AOO_grid_AOO_8 <- sites_AOO_grid_AOO_8[sites_AOO_grid_AOO_8quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS88
+          MapBiomas_Brazil8 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil8) <- CRS[8]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer8 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer8) <- paste(CRS[8], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_8), EOOcontorno_buffer8)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_8[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites8_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites8_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil8, sites8_grid_AOO)
+          sites8_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites8_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 9){
+          # CRS 1
+          sites1 <- sites_AOO %>% filter(UTMzone == UTM_zone[1])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_1) <- CRS[1]
+          sites1_sf <- st_as_sf(sites1)
+          st_crs(sites1_sf) <- CRS[1]
+          sites_AOO_grid_AOO_1quads <- as.data.frame(st_intersects(sites1_sf, st_as_sf(sites_AOO_grid_AOO_1)))
+          sites_AOO_grid_AOO_1 <- sites_AOO_grid_AOO_1[sites_AOO_grid_AOO_1quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil1 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil1) <- CRS[1]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer1 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer1) <- paste(CRS[1], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_1), EOOcontorno_buffer1)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_1[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites1_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites1_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil1, sites1_grid_AOO)
+          sites1_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites1_intersected_mapbiomas)))
+
+          # CRS 2
+          sites2 <- sites_AOO %>% filter(UTMzone == UTM_zone[2])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_2) <- CRS[2]
+          sites2_sf <- st_as_sf(sites2)
+          st_crs(sites2_sf) <- CRS[2]
+          sites_AOO_grid_AOO_2quads <- as.data.frame(st_intersects(sites2_sf, st_as_sf(sites_AOO_grid_AOO_2)))
+          sites_AOO_grid_AOO_2 <- sites_AOO_grid_AOO_2[sites_AOO_grid_AOO_2quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil2 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil2) <- CRS[2]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer2 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer2) <- paste(CRS[2], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_2), EOOcontorno_buffer2)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_2[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites2_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites2_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil2, sites2_grid_AOO)
+          sites2_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites2_intersected_mapbiomas)))
+
+          # CRS 3
+          sites3 <- sites_AOO %>% filter(UTMzone == UTM_zone[3])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_3) <- CRS[3]
+          sites3_sf <- st_as_sf(sites3)
+          st_crs(sites3_sf) <- CRS[3]
+          sites_AOO_grid_AOO_3quads <- as.data.frame(st_intersects(sites3_sf, st_as_sf(sites_AOO_grid_AOO_3)))
+          sites_AOO_grid_AOO_3 <- sites_AOO_grid_AOO_3[sites_AOO_grid_AOO_3quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil3 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil3) <- CRS[3]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer3 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer3) <- paste(CRS[3], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_3), EOOcontorno_buffer3)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_3[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites3_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites3_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil3, sites3_grid_AOO)
+          sites3_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites3_intersected_mapbiomas)))
+
+          # CRS 4
+          sites4 <- sites_AOO %>% filter(UTMzone == UTM_zone[4])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_4) <- CRS[4]
+          sites4_sf <- st_as_sf(sites4)
+          st_crs(sites4_sf) <- CRS[4]
+          sites_AOO_grid_AOO_4quads <- as.data.frame(st_intersects(sites4_sf, st_as_sf(sites_AOO_grid_AOO_4)))
+          sites_AOO_grid_AOO_4 <- sites_AOO_grid_AOO_4[sites_AOO_grid_AOO_4quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS84
+          MapBiomas_Brazil4 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil4) <- CRS[4]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer4 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer4) <- paste(CRS[4], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_4), EOOcontorno_buffer4)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_4[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites4_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites4_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil4, sites4_grid_AOO)
+          sites4_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites4_intersected_mapbiomas)))
+
+          # CRS 5
+          sites5 <- sites_AOO %>% filter(UTMzone == UTM_zone[5])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_5) <- CRS[5]
+          sites5_sf <- st_as_sf(sites5)
+          st_crs(sites5_sf) <- CRS[5]
+          sites_AOO_grid_AOO_5quads <- as.data.frame(st_intersects(sites5_sf, st_as_sf(sites_AOO_grid_AOO_5)))
+          sites_AOO_grid_AOO_5 <- sites_AOO_grid_AOO_5[sites_AOO_grid_AOO_5quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS85
+          MapBiomas_Brazil5 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil5) <- CRS[5]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer5 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer5) <- paste(CRS[5], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_5), EOOcontorno_buffer5)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_5[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites5_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites5_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil5, sites5_grid_AOO)
+          sites5_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites5_intersected_mapbiomas)))
+
+          # CRS 6
+          sites6 <- sites_AOO %>% filter(UTMzone == UTM_zone[6])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_6) <- CRS[6]
+          sites6_sf <- st_as_sf(sites6)
+          st_crs(sites6_sf) <- CRS[6]
+          sites_AOO_grid_AOO_6quads <- as.data.frame(st_intersects(sites6_sf, st_as_sf(sites_AOO_grid_AOO_6)))
+          sites_AOO_grid_AOO_6 <- sites_AOO_grid_AOO_6[sites_AOO_grid_AOO_6quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS86
+          MapBiomas_Brazil6 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil6) <- CRS[6]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer6 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer6) <- paste(CRS[6], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_6), EOOcontorno_buffer6)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_6[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites6_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites6_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil6, sites6_grid_AOO)
+          sites6_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites6_intersected_mapbiomas)))
+
+          # CRS 7
+          sites7 <- sites_AOO %>% filter(UTMzone == UTM_zone[7])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_7 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_7) <- CRS[7]
+          sites7_sf <- st_as_sf(sites7)
+          st_crs(sites7_sf) <- CRS[7]
+          sites_AOO_grid_AOO_7quads <- as.data.frame(st_intersects(sites7_sf, st_as_sf(sites_AOO_grid_AOO_7)))
+          sites_AOO_grid_AOO_7 <- sites_AOO_grid_AOO_7[sites_AOO_grid_AOO_7quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS87
+          MapBiomas_Brazil7 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil7) <- CRS[7]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer7 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer7) <- paste(CRS[7], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_7), EOOcontorno_buffer7)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_7[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites7_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites7_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil7, sites7_grid_AOO)
+          sites7_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites7_intersected_mapbiomas)))
+
+          # CRS 8
+          sites8 <- sites_AOO %>% filter(UTMzone == UTM_zone[8])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_8 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_8) <- CRS[8]
+          sites8_sf <- st_as_sf(sites8)
+          st_crs(sites8_sf) <- CRS[8]
+          sites_AOO_grid_AOO_8quads <- as.data.frame(st_intersects(sites8_sf, st_as_sf(sites_AOO_grid_AOO_8)))
+          sites_AOO_grid_AOO_8 <- sites_AOO_grid_AOO_8[sites_AOO_grid_AOO_8quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS88
+          MapBiomas_Brazil8 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil8) <- CRS[8]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer8 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer8) <- paste(CRS[8], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_8), EOOcontorno_buffer8)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_8[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites8_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites8_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil8, sites8_grid_AOO)
+          sites8_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites8_intersected_mapbiomas)))
+
+          # CRS 9
+          sites9 <- sites_AOO %>% filter(UTMzone == UTM_zone[9])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_9 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_9) <- CRS[9]
+          sites9_sf <- st_as_sf(sites9)
+          st_crs(sites9_sf) <- CRS[9]
+          sites_AOO_grid_AOO_9quads <- as.data.frame(st_intersects(sites9_sf, st_as_sf(sites_AOO_grid_AOO_9)))
+          sites_AOO_grid_AOO_9 <- sites_AOO_grid_AOO_9[sites_AOO_grid_AOO_9quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS99
+          MapBiomas_Brazil9 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil9) <- CRS[9]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer9 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer9) <- paste(CRS[9], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_9), EOOcontorno_buffer9)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_9[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites9_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites9_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil9, sites9_grid_AOO)
+          sites9_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites9_intersected_mapbiomas)))
+        }
+
+        if(length(UTM_zone) == 10){
+          # CRS 10
+          sites10 <- sites_AOO %>% filter(UTMzone == UTM_zone[10])
+
+          # Intersectar coordenadas e Grid
+          sites_AOO_grid_AOO_10 <- sites_AOO_grid_AOO
+          crs(sites_AOO_grid_AOO_10) <- CRS[10]
+          sites10_sf <- st_as_sf(sites10)
+          st_crs(sites10_sf) <- CRS[10]
+          sites_AOO_grid_AOO_10quads <- as.data.frame(st_intersects(sites10_sf, st_as_sf(sites_AOO_grid_AOO_10)))
+          sites_AOO_grid_AOO_10 <- sites_AOO_grid_AOO_10[sites_AOO_grid_AOO_10quads$col.id,]
+
+          # Converter raster para Zona UTM/WGS1010
+          MapBiomas_Brazil10 <- MapBiomas_Brazil
+          crs(MapBiomas_Brazil10) <- CRS[10]
+
+          # Obter AOO in EOO buffer
+          EOOcontorno_buffer10 <- EOOcontorno_buffer
+          st_crs(EOOcontorno_buffer10) <- paste(CRS[10], "+units=m +no_defs")
+          MapBiomas_AOO_EOOcontorno_buffer <- st_intersects(st_as_sf(sites_AOO_grid_AOO_10), EOOcontorno_buffer10)
+          MapBiomas_AOO_EOOcontorno_buffer_n <- 1:length(MapBiomas_AOO_EOOcontorno_buffer)
+          MapBiomas_AOO_EOOcontorno_buffer_check_empty<-NULL
+          for(i in MapBiomas_AOO_EOOcontorno_buffer_n){
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty_ <- data.frame(Quad = i, Quad_empty = is.empty(MapBiomas_AOO_EOOcontorno_buffer[[i]]))
+            MapBiomas_AOO_EOOcontorno_buffer_check_empty <- rbind(MapBiomas_AOO_EOOcontorno_buffer_check_empty, MapBiomas_AOO_EOOcontorno_buffer_check_empty_)
+          }
+          MapBiomas_AOO_EOOcontorno_buffer_Quad <- MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad[which(MapBiomas_AOO_EOOcontorno_buffer_check_empty$Quad_empty == F)]
+          MapBiomas_AOO_EOOcontorno_buffer_Quad_sf <- sites_AOO_grid_AOO_10[MapBiomas_AOO_EOOcontorno_buffer_Quad,]
+          sites10_grid_AOO<-MapBiomas_AOO_EOOcontorno_buffer_Quad_sf
+
+          # Intersectar Raster e coordenadas
+          sites10_intersected_mapbiomas <- raster::extract(MapBiomas_Brazil10, sites10_grid_AOO)
+          sites10_intersected_mapbiomas_df <- data.frame(AOO_total = matrix(unlist(sites10_intersected_mapbiomas)))
+        }
+
+        # Agregação de objetos de diferentes CRSs ####
+        if(length(UTM_zone)==1){
+          sites_intersected_mapbiomas_df <- sites1_intersected_mapbiomas_df
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- length(sites_AOO_grid_AOO_1)*4
+          AOO_ha <- length(sites_AOO_grid_AOO_1)*4*100
+        }
+
+        if(length(UTM_zone)==2){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==3){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==4){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==5){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO) %>% raster::union(sites5_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df,
+                                                  sites5_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO) +
+                        length(sites5_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO) +
+                       length(sites5_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==6){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO) %>% raster::union(sites5_grid_AOO) %>% raster::union(sites6_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df,
+                                                  sites5_intersected_mapbiomas_df,
+                                                  sites6_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO) +
+                        length(sites5_grid_AOO) +
+                        length(sites6_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO) +
+                       length(sites5_grid_AOO) +
+                       length(sites6_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==7){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO) %>% raster::union(sites5_grid_AOO) %>% raster::union(sites6_grid_AOO) %>% raster::union(sites7_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df,
+                                                  sites5_intersected_mapbiomas_df,
+                                                  sites6_intersected_mapbiomas_df,
+                                                  sites7_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO) +
+                        length(sites5_grid_AOO) +
+                        length(sites6_grid_AOO) +
+                        length(sites7_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO) +
+                       length(sites5_grid_AOO) +
+                       length(sites6_grid_AOO) +
+                       length(sites7_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==8){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO) %>% raster::union(sites5_grid_AOO) %>% raster::union(sites6_grid_AOO) %>% raster::union(sites7_grid_AOO) %>% raster::union(sites8_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df,
+                                                  sites5_intersected_mapbiomas_df,
+                                                  sites6_intersected_mapbiomas_df,
+                                                  sites7_intersected_mapbiomas_df,
+                                                  sites8_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO) +
+                        length(sites5_grid_AOO) +
+                        length(sites6_grid_AOO) +
+                        length(sites7_grid_AOO) +
+                        length(sites8_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO) +
+                       length(sites5_grid_AOO) +
+                       length(sites6_grid_AOO) +
+                       length(sites7_grid_AOO) +
+                       length(sites8_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==9){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO) %>% raster::union(sites5_grid_AOO) %>% raster::union(sites6_grid_AOO) %>% raster::union(sites7_grid_AOO) %>% raster::union(sites8_grid_AOO) %>% raster::union(sites9_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df,
+                                                  sites5_intersected_mapbiomas_df,
+                                                  sites6_intersected_mapbiomas_df,
+                                                  sites7_intersected_mapbiomas_df,
+                                                  sites8_intersected_mapbiomas_df,
+                                                  sites9_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO) +
+                        length(sites5_grid_AOO) +
+                        length(sites6_grid_AOO) +
+                        length(sites7_grid_AOO) +
+                        length(sites8_grid_AOO) +
+                        length(sites9_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO) +
+                       length(sites5_grid_AOO) +
+                       length(sites6_grid_AOO) +
+                       length(sites7_grid_AOO) +
+                       length(sites8_grid_AOO) +
+                       length(sites9_grid_AOO))*4*100
+        }
+
+        if(length(UTM_zone)==10){
+          sites_grid_AOO <- raster::union(sites1_grid_AOO, sites2_grid_AOO) %>% raster::union(sites3_grid_AOO) %>% raster::union(sites4_grid_AOO) %>% raster::union(sites5_grid_AOO) %>% raster::union(sites6_grid_AOO) %>% raster::union(sites7_grid_AOO) %>% raster::union(sites8_grid_AOO) %>% raster::union(sites9_grid_AOO) %>% raster::union(sites10_grid_AOO)
+          sites_intersected_mapbiomas_df <- rbind(sites1_intersected_mapbiomas_df,
+                                                  sites2_intersected_mapbiomas_df,
+                                                  sites3_intersected_mapbiomas_df,
+                                                  sites4_intersected_mapbiomas_df,
+                                                  sites5_intersected_mapbiomas_df,
+                                                  sites6_intersected_mapbiomas_df,
+                                                  sites7_intersected_mapbiomas_df,
+                                                  sites8_intersected_mapbiomas_df,
+                                                  sites9_intersected_mapbiomas_df,
+                                                  sites10_intersected_mapbiomas_df)
+          sites_aggregated_area_km2 <- length(sites_grid_AOO)*4
+          sites_aggregated_area_ha <- length(sites_grid_AOO)*4*100
+          AOO_km2 <- (length(sites1_grid_AOO) +
+                        length(sites2_grid_AOO) +
+                        length(sites3_grid_AOO) +
+                        length(sites4_grid_AOO) +
+                        length(sites5_grid_AOO) +
+                        length(sites6_grid_AOO) +
+                        length(sites7_grid_AOO) +
+                        length(sites8_grid_AOO) +
+                        length(sites9_grid_AOO) +
+                        length(sites10_grid_AOO))*4
+          AOO_ha <- (length(sites1_grid_AOO) +
+                       length(sites2_grid_AOO) +
+                       length(sites3_grid_AOO) +
+                       length(sites4_grid_AOO) +
+                       length(sites5_grid_AOO) +
+                       length(sites6_grid_AOO) +
+                       length(sites7_grid_AOO) +
+                       length(sites8_grid_AOO) +
+                       length(sites9_grid_AOO) +
+                       length(sites10_grid_AOO))*4*100
+        }
+
+        # Convertendo feições, de números para texto ####
+        sites_intersected_mapbiomas_df$AOO_total <- sub(15, "Pastagem", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(41, "Outras lavouras temporárias", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(39, "Soja", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(20, "Cana-de-açúcar", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(36, "Lavouras perenes", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(21, "Mosaico de Agricultura e Pastagem", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(24, "Infraestrutura urbana", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(30, "Mineração", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(11, "Campo Alagado e Área Pantanosa", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(12, "Formação Campestre", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(13, "Outras Formações não Florestais", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(19, "Lavoura Temporária", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(23, "Praia, Duna e Areal", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(25, "Outras Áreas não Vegetadas", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(27, "Não Observado", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(29, "Afloramento Rochoso", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(31, "Aquicultura", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(32, "Apicum", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(33, "Rio, Lago e Oceano", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(40, "Arroz", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(46, "Café", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(47, "Citrus", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(48, "Outras Lavouras Perenes", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(49, "Restinga Arborizada", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(9, "Floresta Plantada", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(3, "Floresta", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(4, "Savana", sites_intersected_mapbiomas_df$AOO_total)
+        sites_intersected_mapbiomas_df$AOO_total <- sub(5, "Mangue", sites_intersected_mapbiomas_df$AOO_total)
+
+        # Filtragens das ameaças ####
+        sites_intersected_mapbiomas_df_urbana <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Infraestrutura urbana")
+        sites_intersected_mapbiomas_df_mineracao <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Mineração")
+        sites_intersected_mapbiomas_df_silvicultura <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Floresta Plantada")
+        sites_intersected_mapbiomas_df_outras_lavouras_temporarias <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Outras lavouras temporárias")
+        sites_intersected_mapbiomas_df_soja <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Soja")
+        sites_intersected_mapbiomas_df_cana <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Cana-de-açúcar")
+        sites_intersected_mapbiomas_df_lavouras_perenes <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Lavouras perenes")
+        sites_intersected_mapbiomas_df_pastagem <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Pastagem")
+        sites_intersected_mapbiomas_df_mosaic_past_agric <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Mosaico de Agricultura e Pastagem")
+
+        sites_intersected_mapbiomas_df_floresta <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Floresta")
+        sites_intersected_mapbiomas_df_savana <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Savana")
+        sites_intersected_mapbiomas_df_mangue <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Mangue")
+        sites_intersected_mapbiomas_df_alagado_pantanosa <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Campo Alagado e Área Pantanosa")
+        sites_intersected_mapbiomas_df_campos <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Formação Campestre")
+        sites_intersected_mapbiomas_df_outras_nao_florestais <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Outras Formações não Florestais")
+        sites_intersected_mapbiomas_df_lavouras_temporarias <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Lavoura Temporária")
+        sites_intersected_mapbiomas_df_praia_duna_areal <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Praia, Duna e Areal")
+        sites_intersected_mapbiomas_df_outras_nao_vegetadas <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Outras Áreas não Vegetadas")
+        sites_intersected_mapbiomas_df_nao_observado <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Não Observado")
+        sites_intersected_mapbiomas_df_afloramento_rochoso <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Afloramento Rochoso")
+        sites_intersected_mapbiomas_df_aquicultura <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Aquicultura")
+        sites_intersected_mapbiomas_df_apicum <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Apicum")
+        sites_intersected_mapbiomas_df_rio_lago_oceano <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Rio, Lago e Oceano")
+        sites_intersected_mapbiomas_df_arroz <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Arroz")
+        sites_intersected_mapbiomas_df_cafe <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Café")
+        sites_intersected_mapbiomas_df_citrus <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Citrus")
+        sites_intersected_mapbiomas_df_outras_lavouras_perenes <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Outras Lavouras Perenes")
+        sites_intersected_mapbiomas_df_restinga_arborizada <- sites_intersected_mapbiomas_df %>% filter(AOO_total == "Restinga Arborizada")
+
+        # Cálculo da área das feições de ameaças ####
+        sites_aggregated_area_km2_num <- sites_aggregated_area_km2
+        count_sites_intersected_mapbiomas <- dplyr::count(sites_intersected_mapbiomas_df)
+
+        ## Infraestrutura urbana
+        count_area_sites_intersected_mapbiomas_df_urbana <- dplyr::count(sites_intersected_mapbiomas_df_urbana)
+        area_km2_urbana <- count_area_sites_intersected_mapbiomas_df_urbana * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_urbana <- area_km2_urbana*100/sites_aggregated_area_km2_num
+
+        ## Mineração
+        count_area_sites_intersected_mapbiomas_df_mineracao <- dplyr::count(sites_intersected_mapbiomas_df_mineracao)
+        area_km2_mineracao <- count_area_sites_intersected_mapbiomas_df_mineracao * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_mineracao <- area_km2_mineracao*100/sites_aggregated_area_km2_num
+
+        ## Silvicultura
+        count_area_sites_intersected_mapbiomas_df_silvicultura <- dplyr::count(sites_intersected_mapbiomas_df_silvicultura)
+        area_km2_silvicultura <- count_area_sites_intersected_mapbiomas_df_silvicultura * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_silvicultura <- area_km2_silvicultura*100/sites_aggregated_area_km2_num
+
+        ## Outras lavouras temporárias
+        count_area_sites_intersected_mapbiomas_df_outras_lavouras_temporarias <- dplyr::count(sites_intersected_mapbiomas_df_outras_lavouras_temporarias)
+        area_km2_outras_lavouras_temporarias <- count_area_sites_intersected_mapbiomas_df_outras_lavouras_temporarias * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_outras_lavouras_temporarias <- area_km2_outras_lavouras_temporarias*100/sites_aggregated_area_km2_num
+
+        ## Soja
+        count_area_sites_intersected_mapbiomas_df_soja <- dplyr::count(sites_intersected_mapbiomas_df_soja)
+        area_km2_soja <- count_area_sites_intersected_mapbiomas_df_soja * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_soja <- area_km2_soja*100/sites_aggregated_area_km2_num
+
+        ## Cana-de-açúcar
+        count_area_sites_intersected_mapbiomas_df_cana <- dplyr::count(sites_intersected_mapbiomas_df_cana)
+        area_km2_cana <- count_area_sites_intersected_mapbiomas_df_cana * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_cana <- area_km2_cana*100/sites_aggregated_area_km2_num
+
+        ## Lavouras perenes
+        count_area_sites_intersected_mapbiomas_df_lavouras_perenes <- dplyr::count(sites_intersected_mapbiomas_df_lavouras_perenes)
+        area_km2_lavouras_perenes <- count_area_sites_intersected_mapbiomas_df_lavouras_perenes * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_lavouras_perenes <- area_km2_lavouras_perenes*100/sites_aggregated_area_km2_num
+
+        ## Pastagem
+        count_area_sites_intersected_mapbiomas_df_pastagem <- dplyr::count(sites_intersected_mapbiomas_df_pastagem)
+        area_km2_pastagem <- count_area_sites_intersected_mapbiomas_df_pastagem * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_pastagem <- area_km2_pastagem*100/sites_aggregated_area_km2_num
+
+        ## Mosaico Pastagem e Agricultura
+        count_area_sites_intersected_mapbiomas_df_mosaic_past_agric <- dplyr::count(sites_intersected_mapbiomas_df_mosaic_past_agric)
+        area_km2_mosaic_past_agric <- count_area_sites_intersected_mapbiomas_df_mosaic_past_agric * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_mosaic_past_agric <- area_km2_mosaic_past_agric*100/sites_aggregated_area_km2_num
+
+        ## Floresta
+        count_area_sites_intersected_mapbiomas_df_floresta <- dplyr::count(sites_intersected_mapbiomas_df_floresta)
+        area_km2_floresta <- count_area_sites_intersected_mapbiomas_df_floresta * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_floresta <- area_km2_floresta*100/sites_aggregated_area_km2_num
+
+        ## Savana
+        count_area_sites_intersected_mapbiomas_df_savana <- dplyr::count(sites_intersected_mapbiomas_df_savana)
+        area_km2_savana <- count_area_sites_intersected_mapbiomas_df_savana * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_savana <- area_km2_savana*100/sites_aggregated_area_km2_num
+
+        ## Mangue
+        count_area_sites_intersected_mapbiomas_df_mangue <- dplyr::count(sites_intersected_mapbiomas_df_mangue)
+        area_km2_mangue <- count_area_sites_intersected_mapbiomas_df_mangue * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_mangue <- area_km2_mangue*100/sites_aggregated_area_km2_num
+
+        ## Campo Alagado e Área Pantanosa
+        count_area_sites_intersected_mapbiomas_df_alagado_pantanosa <- dplyr::count(sites_intersected_mapbiomas_df_alagado_pantanosa)
+        area_km2_alagado_pantanosa <- count_area_sites_intersected_mapbiomas_df_alagado_pantanosa * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_alagado_pantanosa <- area_km2_alagado_pantanosa*100/sites_aggregated_area_km2_num
+
+        ## Formação Campestre
+        count_area_sites_intersected_mapbiomas_df_campos <- dplyr::count(sites_intersected_mapbiomas_df_campos)
+        area_km2_campos <- count_area_sites_intersected_mapbiomas_df_campos * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_campos <- area_km2_campos*100/sites_aggregated_area_km2_num
+
+        ## Outras Formações não Florestais
+        count_area_sites_intersected_mapbiomas_df_outras_nao_florestais <- dplyr::count(sites_intersected_mapbiomas_df_outras_nao_florestais)
+        area_km2_outras_nao_florestais <- count_area_sites_intersected_mapbiomas_df_outras_nao_florestais * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_outras_nao_florestais <- area_km2_outras_nao_florestais*100/sites_aggregated_area_km2_num
+
+        ## Lavoura Temporária
+        count_area_sites_intersected_mapbiomas_df_lavouras_temporarias <- dplyr::count(sites_intersected_mapbiomas_df_lavouras_temporarias)
+        area_km2_lavouras_temporarias <- count_area_sites_intersected_mapbiomas_df_lavouras_temporarias * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_lavouras_temporarias <- area_km2_lavouras_temporarias*100/sites_aggregated_area_km2_num
+
+        ## Praia, Duna e Areal
+        count_area_sites_intersected_mapbiomas_df_praia_duna_areal <- dplyr::count(sites_intersected_mapbiomas_df_praia_duna_areal)
+        area_km2_praia_duna_areal <- count_area_sites_intersected_mapbiomas_df_praia_duna_areal * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_praia_duna_areal <- area_km2_praia_duna_areal*100/sites_aggregated_area_km2_num
+
+        ## Outras Áreas não Vegetadas
+        count_area_sites_intersected_mapbiomas_df_outras_nao_vegetadas <- dplyr::count(sites_intersected_mapbiomas_df_outras_nao_vegetadas)
+        area_km2_outras_nao_vegetadas <- count_area_sites_intersected_mapbiomas_df_outras_nao_vegetadas * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_outras_nao_vegetadas <- area_km2_outras_nao_vegetadas*100/sites_aggregated_area_km2_num
+
+        ## Não Observado
+        count_area_sites_intersected_mapbiomas_df_nao_observado <- dplyr::count(sites_intersected_mapbiomas_df_nao_observado)
+        area_km2_nao_observado <- count_area_sites_intersected_mapbiomas_df_nao_observado * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_nao_observado <- area_km2_nao_observado*100/sites_aggregated_area_km2_num
+
+        ## Afloramento Rochoso
+        count_area_sites_intersected_mapbiomas_df_afloramento_rochoso <- dplyr::count(sites_intersected_mapbiomas_df_afloramento_rochoso)
+        area_km2_afloramento_rochoso <- count_area_sites_intersected_mapbiomas_df_afloramento_rochoso * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_afloramento_rochoso <- area_km2_afloramento_rochoso*100/sites_aggregated_area_km2_num
+
+        ## Aquicultura
+        count_area_sites_intersected_mapbiomas_df_aquicultura <- dplyr::count(sites_intersected_mapbiomas_df_aquicultura)
+        area_km2_aquicultura <- count_area_sites_intersected_mapbiomas_df_aquicultura * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_aquicultura <- area_km2_aquicultura*100/sites_aggregated_area_km2_num
+
+        ## Apicum
+        count_area_sites_intersected_mapbiomas_df_apicum <- dplyr::count(sites_intersected_mapbiomas_df_apicum)
+        area_km2_apicum <- count_area_sites_intersected_mapbiomas_df_apicum * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_apicum <- area_km2_apicum*100/sites_aggregated_area_km2_num
+
+        ## Rio, Lago e Oceano
+        count_area_sites_intersected_mapbiomas_df_rio_lago_oceano <- dplyr::count(sites_intersected_mapbiomas_df_rio_lago_oceano)
+        area_km2_rio_lago_oceano <- count_area_sites_intersected_mapbiomas_df_rio_lago_oceano * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_rio_lago_oceano <- area_km2_rio_lago_oceano*100/sites_aggregated_area_km2_num
+
+        ## Arroz
+        count_area_sites_intersected_mapbiomas_df_arroz <- dplyr::count(sites_intersected_mapbiomas_df_arroz)
+        area_km2_arroz <- count_area_sites_intersected_mapbiomas_df_arroz * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_arroz <- area_km2_arroz*100/sites_aggregated_area_km2_num
+
+        ## Café
+        count_area_sites_intersected_mapbiomas_df_cafe <- dplyr::count(sites_intersected_mapbiomas_df_cafe)
+        area_km2_cafe <- count_area_sites_intersected_mapbiomas_df_cafe * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_cafe <- area_km2_cafe*100/sites_aggregated_area_km2_num
+
+        ## Citrus
+        count_area_sites_intersected_mapbiomas_df_citrus <- dplyr::count(sites_intersected_mapbiomas_df_citrus)
+        area_km2_citrus <- count_area_sites_intersected_mapbiomas_df_citrus * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_citrus <- area_km2_citrus*100/sites_aggregated_area_km2_num
+
+        ## Outras Lavouras Perenes
+        count_area_sites_intersected_mapbiomas_df_outras_lavouras_perenes <- dplyr::count(sites_intersected_mapbiomas_df_outras_lavouras_perenes)
+        area_km2_outras_lavouras_perenes <- count_area_sites_intersected_mapbiomas_df_outras_lavouras_perenes * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_outras_lavouras_perenes <- area_km2_outras_lavouras_perenes*100/sites_aggregated_area_km2_num
+
+        ## Restinga Arborizada
+        count_area_sites_intersected_mapbiomas_df_restinga_arborizada <- dplyr::count(sites_intersected_mapbiomas_df_restinga_arborizada)
+        area_km2_restinga_arborizada <- count_area_sites_intersected_mapbiomas_df_restinga_arborizada * sites_aggregated_area_km2_num/count_sites_intersected_mapbiomas
+        porc_area_km2_restinga_arborizada <- area_km2_restinga_arborizada*100/sites_aggregated_area_km2_num
+
+
+        # Output Mapbiomas final ####
+        final_output_mapbiomas_urbano <- data.frame(Species = ESPECIE,
+                                                    Classe = "Infraestrutura Urbana",
+                                                    Area_AOO_sites_km2 = as.numeric(area_km2_urbana),
+                                                    Area_AOO_km2 = AOO_km2,
+                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_urbana), 2),
+                                                    AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_urbano)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_urbano)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_mineracao <- data.frame(Species = ESPECIE,
+                                                       Classe = "Mineração",
+                                                       Area_AOO_sites_km2 = as.numeric(area_km2_mineracao),
+                                                       Area_AOO_km2 = AOO_km2,
+                                                       Porcentagem_AOO = round(as.numeric(porc_area_km2_mineracao), 2),
+                                                       AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                       Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_mineracao)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mineracao)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_silvicultura <- data.frame(Species = ESPECIE,
+                                                          Classe = "Silvicultura",
+                                                          Area_AOO_sites_km2 = as.numeric(area_km2_silvicultura),
+                                                          Area_AOO_km2 = AOO_km2,
+                                                          Porcentagem_AOO = round(as.numeric(porc_area_km2_silvicultura), 2),
+                                                          AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                          Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_silvicultura)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_silvicultura)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_lavouras_temporarias <- data.frame(Species = ESPECIE,
+                                                                         Classe = "Outras lavouras temporárias",
+                                                                         Area_AOO_sites_km2 = as.numeric(area_km2_outras_lavouras_temporarias),
+                                                                         Area_AOO_km2 = AOO_km2,
+                                                                         Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_lavouras_temporarias), 2),
+                                                                         AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                         Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_lavouras_temporarias)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_lavouras_temporarias)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_soja <- data.frame(Species = ESPECIE,
+                                                  Classe = "Soja",
+                                                  Area_AOO_sites_km2 = as.numeric(area_km2_soja),
+                                                  Area_AOO_km2 = AOO_km2,
+                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_soja), 2),
+                                                  AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_soja)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_soja)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_cana <- data.frame(Species = ESPECIE,
+                                                  Classe = "Cana-de-açúcar",
+                                                  Area_AOO_sites_km2 = as.numeric(area_km2_cana),
+                                                  Area_AOO_km2 = AOO_km2,
+                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_cana), 2),
+                                                  AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_cana)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_cana)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_lavouras_perenes <- data.frame(Species = ESPECIE,
+                                                              Classe = "Lavouras perenes",
+                                                              Area_AOO_sites_km2 = as.numeric(area_km2_lavouras_perenes),
+                                                              Area_AOO_km2 = AOO_km2,
+                                                              Porcentagem_AOO = round(as.numeric(porc_area_km2_lavouras_perenes), 2),
+                                                              AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                              Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_lavouras_perenes)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_lavouras_perenes)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_pastagem <- data.frame(Species = ESPECIE,
+                                                      Classe = "Pastagem",
+                                                      Area_AOO_sites_km2 = as.numeric(area_km2_pastagem),
+                                                      Area_AOO_km2 = AOO_km2,
+                                                      Porcentagem_AOO = round(as.numeric(porc_area_km2_pastagem), 2),
+                                                      AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                      Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_pastagem)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_pastagem)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_mosaic_past_agric <- data.frame(Species = ESPECIE,
+                                                               Classe = "Mosaico Agricultura e Pastagem",
+                                                               Area_AOO_sites_km2 = as.numeric(area_km2_mosaic_past_agric),
+                                                               Area_AOO_km2 = AOO_km2,
+                                                               Porcentagem_AOO = round(as.numeric(porc_area_km2_mosaic_past_agric), 2),
+                                                               AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                               Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_mosaic_past_agric)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mosaic_past_agric)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_floresta <- data.frame(Species = ESPECIE,
+                                                      Classe = "Floresta",
+                                                      Area_AOO_sites_km2 = as.numeric(area_km2_floresta),
+                                                      Area_AOO_km2 = AOO_km2,
+                                                      Porcentagem_AOO = round(as.numeric(porc_area_km2_floresta), 2),
+                                                      AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                      Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_floresta)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_floresta)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_savana <- data.frame(Species = ESPECIE,
+                                                    Classe = "Savana",
+                                                    Area_AOO_sites_km2 = as.numeric(area_km2_savana),
+                                                    Area_AOO_km2 = AOO_km2,
+                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_savana), 2),
+                                                    AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_savana)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_savana)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_mangue <- data.frame(Species = ESPECIE,
+                                                    Classe = "Mangue",
+                                                    Area_AOO_sites_km2 = as.numeric(area_km2_mangue),
+                                                    Area_AOO_km2 = AOO_km2,
+                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_mangue), 2),
+                                                    AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_mangue)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_mangue)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_alagado_pantanosa <- data.frame(Species = ESPECIE,
+                                                               Classe = "Campo Alagado e Área Pantanosa",
+                                                               Area_AOO_sites_km2 = as.numeric(area_km2_alagado_pantanosa),
+                                                               Area_AOO_km2 = AOO_km2,
+                                                               Porcentagem_AOO = round(as.numeric(porc_area_km2_alagado_pantanosa), 2),
+                                                               AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                               Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_alagado_pantanosa)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_alagado_pantanosa)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_campos <- data.frame(Species = ESPECIE,
+                                                    Classe = "Formação Campestre",
+                                                    Area_AOO_sites_km2 = as.numeric(area_km2_campos),
+                                                    Area_AOO_km2 = AOO_km2,
+                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_campos), 2),
+                                                    AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_campos)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_campos)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_nao_florestais <- data.frame(Species = ESPECIE,
+                                                                   Classe = "Outras Formações não Florestais",
+                                                                   Area_AOO_sites_km2 = as.numeric(area_km2_outras_nao_florestais),
+                                                                   Area_AOO_km2 = AOO_km2,
+                                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_nao_florestais), 2),
+                                                                   AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                   Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_nao_florestais)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_nao_florestais)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_lavouras_temporarias <- data.frame(Species = ESPECIE,
+                                                                  Classe = "Lavoura Temporária",
+                                                                  Area_AOO_sites_km2 = as.numeric(area_km2_lavouras_temporarias),
+                                                                  Area_AOO_km2 = AOO_km2,
+                                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_lavouras_temporarias), 2),
+                                                                  AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_lavouras_temporarias)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_lavouras_temporarias)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_praia_duna_areal <- data.frame(Species = ESPECIE,
+                                                              Classe = "Praia, Duna e Areal",
+                                                              Area_AOO_sites_km2 = as.numeric(area_km2_praia_duna_areal),
+                                                              Area_AOO_km2 = AOO_km2,
+                                                              Porcentagem_AOO = round(as.numeric(porc_area_km2_praia_duna_areal), 2),
+                                                              AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                              Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_praia_duna_areal)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_praia_duna_areal)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_nao_vegetadas <- data.frame(Species = ESPECIE,
+                                                                  Classe = "Outras Áreas não Vegetadas",
+                                                                  Area_AOO_sites_km2 = as.numeric(area_km2_outras_nao_vegetadas),
+                                                                  Area_AOO_km2 = AOO_km2,
+                                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_nao_vegetadas), 2),
+                                                                  AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_nao_vegetadas)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_nao_vegetadas)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_nao_observado <- data.frame(Species = ESPECIE,
+                                                           Classe = "Não Observado",
+                                                           Area_AOO_sites_km2 = as.numeric(area_km2_nao_observado),
+                                                           Area_AOO_km2 = AOO_km2,
+                                                           Porcentagem_AOO = round(as.numeric(porc_area_km2_nao_observado), 2),
+                                                           AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                           Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_nao_observado)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_nao_observado)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_afloramento_rochoso <- data.frame(Species = ESPECIE,
+                                                                 Classe = "Afloramento Rochoso",
+                                                                 Area_AOO_sites_km2 = as.numeric(area_km2_afloramento_rochoso),
+                                                                 Area_AOO_km2 = AOO_km2,
+                                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_afloramento_rochoso), 2),
+                                                                 AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                 Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_afloramento_rochoso)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_afloramento_rochoso)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_aquicultura <- data.frame(Species = ESPECIE,
+                                                         Classe = "Aquicultura",
+                                                         Area_AOO_sites_km2 = as.numeric(area_km2_aquicultura),
+                                                         Area_AOO_km2 = AOO_km2,
+                                                         Porcentagem_AOO = round(as.numeric(porc_area_km2_aquicultura), 2),
+                                                         AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                         Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_aquicultura)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_aquicultura)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_apicum <- data.frame(Species = ESPECIE,
+                                                    Classe = "Apicum",
+                                                    Area_AOO_sites_km2 = as.numeric(area_km2_apicum),
+                                                    Area_AOO_km2 = AOO_km2,
+                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_apicum), 2),
+                                                    AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_apicum)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_apicum)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_rio_lago_oceano <- data.frame(Species = ESPECIE,
+                                                             Classe = "Rio, Lago e Oceano",
+                                                             Area_AOO_sites_km2 = as.numeric(area_km2_rio_lago_oceano),
+                                                             Area_AOO_km2 = AOO_km2,
+                                                             Porcentagem_AOO = round(as.numeric(porc_area_km2_rio_lago_oceano), 2),
+                                                             AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                             Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_rio_lago_oceano)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_rio_lago_oceano)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_arroz <- data.frame(Species = ESPECIE,
+                                                   Classe = "Arroz",
+                                                   Area_AOO_sites_km2 = as.numeric(area_km2_arroz),
+                                                   Area_AOO_km2 = AOO_km2,
+                                                   Porcentagem_AOO = round(as.numeric(porc_area_km2_arroz), 2),
+                                                   AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                   Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_arroz)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_arroz)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_cafe <- data.frame(Species = ESPECIE,
+                                                  Classe = "Café",
+                                                  Area_AOO_sites_km2 = as.numeric(area_km2_cafe),
+                                                  Area_AOO_km2 = AOO_km2,
+                                                  Porcentagem_AOO = round(as.numeric(porc_area_km2_cafe), 2),
+                                                  AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                  Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_cafe)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_cafe)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_citrus <- data.frame(Species = ESPECIE,
+                                                    Classe = "Citrus",
+                                                    Area_AOO_sites_km2 = as.numeric(area_km2_citrus),
+                                                    Area_AOO_km2 = AOO_km2,
+                                                    Porcentagem_AOO = round(as.numeric(porc_area_km2_citrus), 2),
+                                                    AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                    Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_citrus)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_citrus)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_outras_lavouras_perenes <- data.frame(Species = ESPECIE,
+                                                                     Classe = "Outras Lavouras Perenes",
+                                                                     Area_AOO_sites_km2 = as.numeric(area_km2_outras_lavouras_perenes),
+                                                                     Area_AOO_km2 = AOO_km2,
+                                                                     Porcentagem_AOO = round(as.numeric(porc_area_km2_outras_lavouras_perenes), 2),
+                                                                     AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                     Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_outras_lavouras_perenes)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_outras_lavouras_perenes)[c(3:6)], "_", MapBiomas_ANO)
+
+        final_output_mapbiomas_restinga_arborizada <- data.frame(Species = ESPECIE,
+                                                                 Classe = "Restinga Arborizada",
+                                                                 Area_AOO_sites_km2 = as.numeric(area_km2_restinga_arborizada),
+                                                                 Area_AOO_km2 = AOO_km2,
+                                                                 Porcentagem_AOO = round(as.numeric(porc_area_km2_restinga_arborizada), 2),
+                                                                 AOO_util_km2 = sites_aggregated_area_km2_num,
+                                                                 Fonte = "MapBiomas"
+        )
+        colnames(final_output_mapbiomas_restinga_arborizada)[c(3:6)] <- paste0(colnames(final_output_mapbiomas_restinga_arborizada)[c(3:6)], "_", MapBiomas_ANO)
+      }
+    }
+
+    if(EOOexists == F){} else{
+      # Output final ####
+      output <- bind_rows(final_output_mapbiomas_soja, final_output_mapbiomas_cana, final_output_mapbiomas_lavouras_perenes, final_output_mapbiomas_outras_lavouras_temporarias, final_output_mapbiomas_pastagem, final_output_mapbiomas_mosaic_past_agric, final_output_mapbiomas_urbano, final_output_mapbiomas_mineracao, final_output_mapbiomas_silvicultura, final_output_mapbiomas_floresta, final_output_mapbiomas_savana, final_output_mapbiomas_mangue, final_output_mapbiomas_alagado_pantanosa, final_output_mapbiomas_campos, final_output_mapbiomas_outras_nao_florestais, final_output_mapbiomas_lavouras_temporarias, final_output_mapbiomas_praia_duna_areal, final_output_mapbiomas_outras_nao_vegetadas, final_output_mapbiomas_nao_observado, final_output_mapbiomas_afloramento_rochoso, final_output_mapbiomas_aquicultura, final_output_mapbiomas_apicum, final_output_mapbiomas_rio_lago_oceano, final_output_mapbiomas_arroz, final_output_mapbiomas_cafe, final_output_mapbiomas_citrus, final_output_mapbiomas_outras_lavouras_perenes, final_output_mapbiomas_restinga_arborizada)
+      Ameacas <- output %>% select(Classe)
+      output_sites_AOO_km2_total <- output %>% dplyr::summarise(sum(get(paste0("Area_AOO_sites_km2_", MapBiomas_ANO))))
+      if(exists("output[10,7]")==T){
+        if(is.na(output[1,7])==T){
+          output[10,7]<-NA
+        }
+      }
+      colnames(output_sites_AOO_km2_total)<-paste0("Area_AOO_sites_km2_", MapBiomas_ANO)
+      assign(paste0("output_Porcentagem_AOO_", MapBiomas_ANO, "_total"), output %>% dplyr::summarise(sum(get(paste0("Porcentagem_AOO_", MapBiomas_ANO)))))
+      assign(paste0("output_Porcentagem_AOO_", MapBiomas_ANO, "_total"), setNames(get(paste0("output_Porcentagem_AOO_", MapBiomas_ANO, "_total")), paste0("Porcentagem_AOO_", MapBiomas_ANO)))
+
+      if(is.na(output$AOO_util_km2[1])==T){AOO_area_s_centr_mun<-NA}
+
+      output <- output %>% select(paste0("Area_AOO_sites_km2_", MapBiomas_ANO),
+                                  paste0("Porcentagem_AOO_", MapBiomas_ANO)
+      )
+      output <- rbind(output, data.frame(Area_AOO_sites_km2 = output_sites_AOO_km2_total,
+                                         Porcentagem_AOO = get(paste0("output_Porcentagem_AOO_", MapBiomas_ANO, "_", "total")
+                                         )
+      )
+      )
+
+      # Combinação do objeto final
+      final_output <- bind_cols(final_output, output)
+      cat(crayon::green(paste0(ESPECIE, ": Ano ", MapBiomas_ANO, " concluído\n")))
+    }
+  }
+
+  if(EOOvalue == 0){cat(crayon::green(paste0(ESPECIE, ": sem EOO\n")))} else{
+    final_output <- data.frame(Species = ESPECIE,
+                               Classe = rbind(Ameacas, "Total"),
+                               Area_AOO_km2 = AOO_km2,
+                               AOO_util_km2 = sites_aggregated_area_km2,
+                               final_output,
+                               Fonte="MapBiomas"
+    )
+
+    cat(crayon::green(paste0(ESPECIE, ": concluído\n")))
+
+  }
+
+  if(EOOexists == F){
+
+    final_output_colnames <- NULL
+    for(ano in 1985:2020){
+      final_output_colnames_ <- c(paste0("Porcentagem_AOO_", ano), paste0("Area_AOO_sites_km2_", ano))
+      final_output_colnames <- c(final_output_colnames, final_output_colnames_)
+    }
+    final_output <- data.frame(matrix(0, ncol = 72, nrow = 1))
+    colnames(final_output) <- final_output_colnames
+
+    final_output <- data.frame(Species = ESPECIE,
+                               Classe = "",
+                               Area_AOO_km2 = 0,
+                               AOO_util_km2 = 0,
+                               final_output,
+                               Fonte=""
+    )
+
+    cat(crayon::green(paste0(ESPECIE, ": EOO = 0\n")))
+
+  }
+
+
+write.csv(
+
+  final_output,
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/overlayAnalysis results/AOOinEOObuffer/",
+    ESPECIE,
+    ".csv"
+
+  ),
+  row.names = F
+
+)

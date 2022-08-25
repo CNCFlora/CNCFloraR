@@ -1,0 +1,91 @@
+library(rvest)
+library(stringr)
+library(tidyr)
+library(dplyr)
+library(sf)
+library(raster)
+library(rgeos)
+
+MapBiomas_Brazil <- raster(
+
+  "D:/MapBiomas_Brazil_6.0_30m/MapBiomas_Brazil_6.0_2020_30m.tif"
+
+)
+
+ESPECIE <- "ESPECIEselect"
+
+ESPECIE_AOO <- st_read(
+
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/shapefiles results/AOO/",
+    ESPECIE,
+    ".shp"
+
+  )
+
+)
+
+if(nrow(ESPECIE_AOO) == 1){
+
+  MapBiomas_AOO <- raster::mask(
+
+    crop(
+
+      MapBiomas_Brazil,
+      extent(ESPECIE_AOO)
+
+      ),
+    ESPECIE_AOO
+
+    )
+  MapBiomas_AOO_shp <- rasterToPolygons(MapBiomas_AOO, dissolve = T)
+
+} else{
+
+  Mosaicos <- lapply(
+
+    1:nrow(ESPECIE_AOO), function(x)
+      raster::mask(
+
+        crop(
+
+          MapBiomas_Brazil,
+          extent(ESPECIE_AOO[x,])
+
+          ),
+        ESPECIE_AOO[x,]
+
+        )
+
+  )
+
+  Mosaicos_AOO_shp <- lapply(
+
+    1:length(Mosaicos), function(x)
+      rasterToPolygons(Mosaicos[[x]], dissolve = T)
+
+  )
+
+  MapBiomas_AOO_shp <- do.call(rbind, Mosaicos_AOO_shp)
+
+}
+
+crs(MapBiomas_AOO_shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84"
+
+shapefile(
+
+  MapBiomas_AOO_shp,
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/shapefiles results/AOO_MapBiomas/",
+    ESPECIE,
+    ".shp"
+
+  ),
+  overwrite = T
+
+)
+

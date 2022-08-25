@@ -1,0 +1,73 @@
+library(rvest)
+library(stringr)
+library(tidyr)
+library(dplyr)
+library(sf)
+library(raster)
+library(rgeos)
+
+sf_use_s2(FALSE)
+
+MapBiomas_Brazil <- raster("D:/MapBiomas_Brazil_6.0_30m/MapBiomas_Brazil_6.0_2020_30m.tif")
+
+ESPECIE <- "ESPECIEselect"
+
+ESPECIE_EOO <- st_read(
+
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/shapefiles results/EOO/",
+    ESPECIE,
+    ".shp"
+
+  )
+
+)
+
+if(class(ESPECIE_EOO$geometry)[1] == "sfc_POINT"){
+  
+  MapBiomas_EOO <- raster::mask(
+    
+    crop(MapBiomas_Brazil, extent(st_buffer(ESPECIE_EOO, dist=0.05))),
+    ESPECIE_EOO
+    
+  )
+  
+} else{
+  
+  MapBiomas_EOO <- raster::mask(
+    
+    crop(MapBiomas_Brazil, extent(ESPECIE_EOO)),
+    ESPECIE_EOO
+    
+  )
+  
+}
+
+MapBiomas_EOO_shp <- st_as_sf(
+
+  stars::st_as_stars(MapBiomas_EOO),
+  point = FALSE,
+  merge = TRUE,
+  connect8 = TRUE
+
+)
+
+st_crs(MapBiomas_EOO_shp) <-
+  "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+
+st_write(
+
+  MapBiomas_EOO_shp,
+  paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/outputs/shapefiles results/EOO_MapBiomas/",
+    ESPECIE,
+    ".shp"
+
+  ),
+  append = F
+
+)
