@@ -2002,7 +2002,7 @@ input_stackedAreaChart_restinga_arborizada <- input_stackedAreaChart %>% dplyr::
 input_stackedAreaChart_restinga_arborizada <- t(input_stackedAreaChart_restinga_arborizada)
 input_stackedAreaChart_restinga_arborizada <- data.frame(Ano = sub("Porcentagem_AOO_", "", row.names(input_stackedAreaChart_restinga_arborizada)[2:37]), Porc = as.numeric(input_stackedAreaChart_restinga_arborizada[2:37]), Classe = "Restinga Arborizada")
 
-## Data.frame das Feições
+## Data.frame das Classes
 stackedAreaChart_df <- rbind (
 
   input_stackedAreaChart_floresta,
@@ -2280,7 +2280,7 @@ input_MapBiomas <- MapBiomas_LandUse_results %>%
 input_Classe <- unique(input_MapBiomas$Classe[-29])
 
 
-## Feições isoladas ####
+## Classes isoladas ####
 
 for(
 
@@ -2533,7 +2533,7 @@ for(
 }
 
 
-## Feições aglutinadas: Natural ####
+## Classes aglutinadas: Natural ####
 png(
 
   file = paste0(
@@ -2812,7 +2812,7 @@ output_trendline_Natural <- cbind(
 )
 
 
-## Feições Aglutinadas: Uso Alternativo ####
+## Classes Aglutinadas: Uso Alternativo ####
 
 trendline_summary_Threat <- trendline_summary(
 
@@ -3326,7 +3326,7 @@ if(
     input_stackedAreaChart_EOO_restinga_arborizada <- t(input_stackedAreaChart_EOO_restinga_arborizada)
     input_stackedAreaChart_EOO_restinga_arborizada <- data.frame(Ano = sub("Porcentagem_EOO_", "", row.names(input_stackedAreaChart_EOO_restinga_arborizada)[2:37]), Porc = as.numeric(input_stackedAreaChart_EOO_restinga_arborizada[2:37]), Classe = "Restinga Arborizada")
 
-    ## Data.frame das Feições
+    ## Data.frame das Classes
     stackedAreaChart_EOO_df <-
       rbind (
 
@@ -3630,7 +3630,7 @@ if(input_MapBiomas$Area_EOO_sites_km2_2020[1] == "Análise dispensada"){
 
 } else {
 
-  ## Feições isoladas ####
+  ## Classes isoladas ####
 
   for(
 
@@ -3892,7 +3892,7 @@ if(input_MapBiomas$Area_EOO_sites_km2_2020[1] == "Análise dispensada"){
   }
 
 
-  ## Feições aglutinadas: Natural ####
+  ## Classes aglutinadas: Natural ####
 
   png(
 
@@ -4168,7 +4168,7 @@ if(input_MapBiomas$Area_EOO_sites_km2_2020[1] == "Análise dispensada"){
 
     )
 
-  ## Feições Aglutinadas: Uso Alternativo ####
+  ## Classes Aglutinadas: Uso Alternativo ####
 
   trendline_EOO_summary_Threat <-
     trendline_summary(stackedAreaChartThreat_EOO_df$Ano, stackedAreaChartThreat_EOO_df$Porc, model = "line2P", eDigit = 4)
@@ -4645,7 +4645,7 @@ input_stackedAreaChart_AOOinEOObuffer_restinga_arborizada <- input_stackedAreaCh
 input_stackedAreaChart_AOOinEOObuffer_restinga_arborizada <- t(input_stackedAreaChart_AOOinEOObuffer_restinga_arborizada)
 input_stackedAreaChart_AOOinEOObuffer_restinga_arborizada <- data.frame(Ano = sub("Porcentagem_AOO_", "", row.names(input_stackedAreaChart_AOOinEOObuffer_restinga_arborizada)[2:37]), Porc = as.numeric(input_stackedAreaChart_AOOinEOObuffer_restinga_arborizada[2:37]), Classe = "Restinga Arborizada")
 
-## Data.frame das Feições
+## Data.frame das Classes
 stackedAreaChart_df_AOOinEOObuffer <- rbind (input_stackedAreaChart_AOOinEOObuffer_floresta,
                                              input_stackedAreaChart_AOOinEOObuffer_pastagem,
                                              input_stackedAreaChart_AOOinEOObuffer_mineracao,
@@ -4773,7 +4773,7 @@ input_MapBiomas_AOOinEOObuffer <- MapBiomas_LandUse_AOOinEOObuffer_results %>%
 input_Classe_AOOinEOObuffer <- unique(input_MapBiomas_AOOinEOObuffer$Classe[-29])
 
 
-## Feições isoladas ####
+## Classes isoladas ####
 
 if(
 
@@ -4963,7 +4963,7 @@ if(
 
 
 
-## Feições aglutinadas: Natural ####
+## Classes aglutinadas: Natural ####
 
 trendline_summary_Natural_AOOinEOObuffer <-
   trendline_summary(
@@ -4991,7 +4991,7 @@ output_trendline_Natural_AOOinEOObuffer_Taxa_anual <-
     )
 
   )
-########### output_trendline_Natural_AOOinEOObufferLastTrend_Taxa_anual <- data.frame(Taxa_anual = round(trendline_summary_Natural_AOOinEOObuffer$parameter$a*100/length(stackedAreaChartNatural_AOOinEOObuffer_stackedArea_df$Ano), 2))
+########### output_trendline_Natural_AOOinEOObufferlastTrend_Taxa_anual <- data.frame(Taxa_anual = round(trendline_summary_Natural_AOOinEOObuffer$parameter$a*100/length(stackedAreaChartNatural_AOOinEOObuffer_stackedArea_df$Ano), 2))
 
 if(
 
@@ -5277,7 +5277,7 @@ output_trendline_Natural_AOOinEOObuffer <-
 
   )
 
-## Feições Aglutinadas: Uso Alternativo ####
+## Classes Aglutinadas: Uso Alternativo ####
 trendline_summary_Threat_AOOinEOObuffer <-
   trendline_summary(
 
@@ -7091,7 +7091,7 @@ trendThreat_lastTrend <-
   output_trendline_Threat$Taxa_ultima_tendencia
 
 
-### Tendência Total Feições Naturais incremento/decrescimento ####
+### Tendência Total Classes Naturais incremento/decrescimento ####
 
 if(
 
@@ -7145,7 +7145,7 @@ if(
 }
 
 
-### Tendência Total Feições Ameaças incremento/decrescimento ####
+### Tendência Total Classes Ameaças incremento/decrescimento ####
 
 if(
 
@@ -7199,7 +7199,7 @@ if(
 }
 
 
-### Tendência Última Tendência Feições Naturais incremento/decrescimento ####
+### Tendência Última Tendência Classes Naturais incremento/decrescimento ####
 
 if(
 
@@ -7245,7 +7245,7 @@ if(
 }
 
 
-### Tendência Última Tendência Feições Ameaças incremento/decrescimento ####
+### Tendência Última Tendência Classes Ameaças incremento/decrescimento ####
 
 if(
 
@@ -7546,7 +7546,7 @@ trend_AOOinEOObufferThreat_lastTrend <-
   output_trendline_NaturalANDThreat_AOOinEOObuffer$Taxa_ultima_tendencia[2]
 
 
-### Tendência AOOinEOObuffer Total Feições Naturais incremento/decrescimento ####
+### Tendência AOOinEOObuffer Total Classes Naturais incremento/decrescimento ####
 
 if(
 
@@ -7600,7 +7600,7 @@ if(
 }
 
 
-### Tendência AOOinEOObuffer Total Feições Ameaças incremento/decrescimento ####
+### Tendência AOOinEOObuffer Total Classes Ameaças incremento/decrescimento ####
 
 if(
 
@@ -7654,7 +7654,7 @@ if(
 }
 
 
-### Tendência AOOinEOObuffer Última Tendência Feições Naturais incremento/decrescimento ####
+### Tendência AOOinEOObuffer Última Tendência Classes Naturais incremento/decrescimento ####
 
 if(
 
@@ -7702,7 +7702,7 @@ if(
 }
 
 
-### Tendência AOOinEOObuffer Última Tendência Feições Ameaças incremento/decrescimento ####
+### Tendência AOOinEOObuffer Última Tendência Classes Ameaças incremento/decrescimento ####
 
 if(
 
@@ -7968,7 +7968,7 @@ if(
     output_EOO_trendline_NaturalANDThreat$Taxa_ultima_tendencia[2]
 
 
-  ### Tendência EOO Total Feições Naturais incremento/decrescimento ####
+  ### Tendência EOO Total Classes Naturais incremento/decrescimento ####
 
   if(
 
@@ -8022,7 +8022,7 @@ if(
   }
 
 
-  ### Tendência EOO Total Feições Ameaças incremento/decrescimento ####
+  ### Tendência EOO Total Classes Ameaças incremento/decrescimento ####
 
   if(
 
@@ -8076,7 +8076,7 @@ if(
   }
 
 
-  ### Tendência EOO Última Tendência Feições Naturais incremento/decrescimento ####
+  ### Tendência EOO Última Tendência Classes Naturais incremento/decrescimento ####
 
   if(
 
@@ -8124,7 +8124,7 @@ if(
   }
 
 
-  ### Tendência EOO Última Tendência Feições Ameaças incremento/decrescimento ####
+  ### Tendência EOO Última Tendência Classes Ameaças incremento/decrescimento ####
 
   if(
 
@@ -8784,12 +8784,12 @@ labelNoTrend_AOO =
   )
 
 
-### DECLÍNIO: AOOLastTrend ####
+### DECLÍNIO: AOOlastTrend ####
 
 
 #### Values ####
 
-valueTrendDeclinioNaturalAOOLastTrend =
+valueTrendDeclinioNaturalAOOlastTrend =
   paste0(
 
     "a última tendência de perda de áreas naturais na AOO (a uma taxa de ",
@@ -8814,7 +8814,7 @@ valueTrendDeclinioNaturalAOOLastTrend =
 
   )
 
-valueTrendIncrementoNaturalAOOLastTrend =
+valueTrendIncrementoNaturalAOOlastTrend =
   paste0(
 
     "a última tendência de ganho de áreas naturais na AOO (a uma taxa de ",
@@ -8839,7 +8839,7 @@ valueTrendIncrementoNaturalAOOLastTrend =
 
   )
 
-valueNoTrend_AOOLastTrend =
+valueNoTrend_AOOlastTrend =
   paste0(
 
     "a ausência de reversão de tendência na AOO desde ",
@@ -8849,116 +8849,116 @@ valueNoTrend_AOOLastTrend =
   )
 
 #### Labels ####
-labelTrendDeclinioNaturalAOOLastTrend = valueTrendDeclinioNaturalAOOLastTrend
+labelTrendDeclinioNaturalAOOlastTrend = valueTrendDeclinioNaturalAOOlastTrend
 
-labelTrendDeclinioNaturalAOOLastTrend =
+labelTrendDeclinioNaturalAOOlastTrend =
   paste0(
 
     "<markG>",
-    labelTrendDeclinioNaturalAOOLastTrend,
+    labelTrendDeclinioNaturalAOOlastTrend,
     "</markG>"
 
   )
 
-labelTrendDeclinioNaturalAOOLastTrend =
+labelTrendDeclinioNaturalAOOlastTrend =
   sub(
 
     "AOO",
     "<b>AOO</b>",
-    labelTrendDeclinioNaturalAOOLastTrend
+    labelTrendDeclinioNaturalAOOlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOLastTrend =
+labelTrendDeclinioNaturalAOOlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelTrendDeclinioNaturalAOOLastTrend
+    labelTrendDeclinioNaturalAOOlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOLastTrend =
+labelTrendDeclinioNaturalAOOlastTrend =
   sub(
 
     'perda',
     '<b style="color: red">perda</b>',
-    labelTrendDeclinioNaturalAOOLastTrend
+    labelTrendDeclinioNaturalAOOlastTrend
 
   )
 
-labelTrendIncrementoNaturalAOOLastTrend = valueTrendIncrementoNaturalAOOLastTrend
+labelTrendIncrementoNaturalAOOlastTrend = valueTrendIncrementoNaturalAOOlastTrend
 
-labelTrendIncrementoNaturalAOOLastTrend =
+labelTrendIncrementoNaturalAOOlastTrend =
   paste0(
 
     "<markG>",
-    labelTrendIncrementoNaturalAOOLastTrend,
+    labelTrendIncrementoNaturalAOOlastTrend,
     "</markG>"
 
   )
 
-labelTrendIncrementoNaturalAOOLastTrend =
+labelTrendIncrementoNaturalAOOlastTrend =
   sub(
 
     "AOO",
     "<b>AOO</b>",
-    labelTrendIncrementoNaturalAOOLastTrend
+    labelTrendIncrementoNaturalAOOlastTrend
 
   )
 
-labelTrendIncrementoNaturalAOOLastTrend =
+labelTrendIncrementoNaturalAOOlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelTrendIncrementoNaturalAOOLastTrend
+    labelTrendIncrementoNaturalAOOlastTrend
 
   )
 
-labelTrendIncrementoNaturalAOOLastTrend =
+labelTrendIncrementoNaturalAOOlastTrend =
   sub(
 
     'perda',
     '<b style="color: red">perda</b>',
-    labelTrendIncrementoNaturalAOOLastTrend
+    labelTrendIncrementoNaturalAOOlastTrend
 
   )
 
-labelNoTrend_AOOLastTrend = valueNoTrend_AOOLastTrend
+labelNoTrend_AOOlastTrend = valueNoTrend_AOOlastTrend
 
-labelNoTrend_AOOLastTrend =
+labelNoTrend_AOOlastTrend =
   paste0(
 
     "<markG>",
-    labelNoTrend_AOOLastTrend,
+    labelNoTrend_AOOlastTrend,
     "</markG>"
 
   )
 
-labelNoTrend_AOOLastTrend =
+labelNoTrend_AOOlastTrend =
   sub(
 
     "AOO",
     "<b>AOO</b>",
-    labelNoTrend_AOOLastTrend
+    labelNoTrend_AOOlastTrend
 
   )
 
-labelNoTrend_AOOLastTrend =
+labelNoTrend_AOOlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelNoTrend_AOOLastTrend
+    labelNoTrend_AOOlastTrend
 
   )
 
-labelNoTrend_AOOLastTrend =
+labelNoTrend_AOOlastTrend =
   sub(
     'perda',
     '<b style="color: red">perda</b>',
-    labelNoTrend_AOOLastTrend
+    labelNoTrend_AOOlastTrend
 
   )
 
@@ -9135,12 +9135,12 @@ labelNoTrend_AOOinEOObuffer =
   )
 
 
-### DECLÍNIO: AOOinEOObuffer LastTrend ####
+### DECLÍNIO: AOOinEOObuffer lastTrend ####
 
 
 #### Values ####
 
-valueTrendDeclinioNaturalAOOinEOObufferLastTrend =
+valueTrendDeclinioNaturalAOOinEOObufferlastTrend =
   paste0(
 
     "a última tendência de perda de áreas naturais na AOO em região do perímetro da EOO (a uma taxa de ",
@@ -9165,7 +9165,7 @@ valueTrendDeclinioNaturalAOOinEOObufferLastTrend =
 
   )
 
-valueTrendIncrementoNaturalAOOinEOObufferLastTrend =
+valueTrendIncrementoNaturalAOOinEOObufferlastTrend =
   paste0(
 
     "a última tendência de ganho de áreas naturais na AOO em região do perímetro da EOO (a uma taxa de ",
@@ -9190,161 +9190,161 @@ valueTrendIncrementoNaturalAOOinEOObufferLastTrend =
 
   )
 
-valueNoTrend_AOOinEOObufferLastTrend =
+valueNoTrend_AOOinEOObufferlastTrend =
   "a ausência de reversão de tendência de conversão de áreas naturais na AOO em região do perímetro da EOO para uso alternativo do solo desde 1985 até 2020"
 
 
 #### Labels ####
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend = valueTrendDeclinioNaturalAOOinEOObufferLastTrend
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend = valueTrendDeclinioNaturalAOOinEOObufferlastTrend
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   paste0(
 
     "<markG>",
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend,
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend,
     "</markG>"
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   sub(
 
     "AOO em região do perímetro da EOO",
     "<b>AOO em região do perímetro da EOO</b>",
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   sub(
 
     'perda',
     '<b style="color: red">perda</b>',
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend = valueTrendDeclinioNaturalAOOinEOObufferLastTrend
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend = valueTrendDeclinioNaturalAOOinEOObufferlastTrend
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   paste0(
 
     "<markG>",
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend,
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend,
     "</markG>"
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   sub(
 
     "AOO em região do perímetro da EOO",
     "<b>AOO em região do perímetro da EOO</b>",
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendDeclinioNaturalAOOinEOObufferLastTrend =
+labelTrendDeclinioNaturalAOOinEOObufferlastTrend =
   sub(
 
     'perda',
     '<b style="color: red">perda</b>',
-    labelTrendDeclinioNaturalAOOinEOObufferLastTrend
+    labelTrendDeclinioNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendIncrementoNaturalAOOinEOObufferLastTrend = valueTrendIncrementoNaturalAOOinEOObufferLastTrend
+labelTrendIncrementoNaturalAOOinEOObufferlastTrend = valueTrendIncrementoNaturalAOOinEOObufferlastTrend
 
-labelTrendIncrementoNaturalAOOinEOObufferLastTrend =
+labelTrendIncrementoNaturalAOOinEOObufferlastTrend =
   paste0(
 
     "<markG>",
-    labelTrendIncrementoNaturalAOOinEOObufferLastTrend,
+    labelTrendIncrementoNaturalAOOinEOObufferlastTrend,
     "</markG>"
 
   )
 
-labelTrendIncrementoNaturalAOOinEOObufferLastTrend =
+labelTrendIncrementoNaturalAOOinEOObufferlastTrend =
   sub(
 
     "AOO em região do perímetro da EOO",
     "<b>AOO em região do perímetro da EOO</b>",
-    labelTrendIncrementoNaturalAOOinEOObufferLastTrend
+    labelTrendIncrementoNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendIncrementoNaturalAOOinEOObufferLastTrend =
+labelTrendIncrementoNaturalAOOinEOObufferlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelTrendIncrementoNaturalAOOinEOObufferLastTrend
+    labelTrendIncrementoNaturalAOOinEOObufferlastTrend
 
   )
 
-labelTrendIncrementoNaturalAOOinEOObufferLastTrend =
+labelTrendIncrementoNaturalAOOinEOObufferlastTrend =
   sub(
 
     'perda',
     '<b style="color: red">perda</b>',
-    labelTrendIncrementoNaturalAOOinEOObufferLastTrend
+    labelTrendIncrementoNaturalAOOinEOObufferlastTrend
 
   )
 
-labelNoTrend_AOOinEOObufferLastTrend = valueNoTrend_AOOinEOObufferLastTrend
+labelNoTrend_AOOinEOObufferlastTrend = valueNoTrend_AOOinEOObufferlastTrend
 
-labelNoTrend_AOOinEOObufferLastTrend =
+labelNoTrend_AOOinEOObufferlastTrend =
   paste0(
 
     "<markG>",
-    labelNoTrend_AOOinEOObufferLastTrend,
+    labelNoTrend_AOOinEOObufferlastTrend,
     "</markG>"
 
   )
 
-labelNoTrend_AOOinEOObufferLastTrend =
+labelNoTrend_AOOinEOObufferlastTrend =
   sub(
 
     "AOO em região do perímetro da EOO",
     "<b>AOO em região do perímetro da EOO</b>",
-    labelNoTrend_AOOinEOObufferLastTrend
+    labelNoTrend_AOOinEOObufferlastTrend
 
   )
 
-labelNoTrend_AOOinEOObufferLastTrend =
+labelNoTrend_AOOinEOObufferlastTrend =
   sub(
 
     'ganho',
     '<b style="color: blue">ganho</b>',
-    labelNoTrend_AOOinEOObufferLastTrend
+    labelNoTrend_AOOinEOObufferlastTrend
 
   )
 
-labelNoTrend_AOOinEOObufferLastTrend =
+labelNoTrend_AOOinEOObufferlastTrend =
   sub(
 
     'perda',
     '<b style="color: red">perda</b>',
-    labelNoTrend_AOOinEOObufferLastTrend
+    labelNoTrend_AOOinEOObufferlastTrend
 
   )
 
@@ -9531,12 +9531,12 @@ if(
   }
 
 
-  ### DECLÍNIO: EOOLastTrend ####
+  ### DECLÍNIO: EOOlastTrend ####
 
 
   #### Values ####
 
-  valueTrendDeclinioNaturalEOOLastTrend =
+  valueTrendDeclinioNaturalEOOlastTrend =
     paste0(
 
       "a última tendência de perda de áreas naturais na EOO (a uma taxa de ",
@@ -9555,7 +9555,7 @@ if(
 
     )
 
-  valueTrendIncrementoNaturalEOOLastTrend =
+  valueTrendIncrementoNaturalEOOlastTrend =
     paste0(
 
       "a última tendência de ganho de áreas naturais na EOO (a uma taxa de ",
@@ -9580,7 +9580,7 @@ if(
 
     )
 
-  valueNoTrend_EOOLastTrend =
+  valueNoTrend_EOOlastTrend =
     paste0(
 
       "a ausência de reversão de tendência na EOO desde ",
@@ -9592,117 +9592,117 @@ if(
 
   #### Labels ####
 
-  labelTrendDeclinioNaturalEOOLastTrend =
-    valueTrendDeclinioNaturalEOOLastTrend
+  labelTrendDeclinioNaturalEOOlastTrend =
+    valueTrendDeclinioNaturalEOOlastTrend
 
-  labelTrendDeclinioNaturalEOOLastTrend =
+  labelTrendDeclinioNaturalEOOlastTrend =
     paste0(
 
       "<markG>",
-      labelTrendDeclinioNaturalEOOLastTrend,
+      labelTrendDeclinioNaturalEOOlastTrend,
       "</markG>"
 
     )
 
-  labelTrendDeclinioNaturalEOOLastTrend =
+  labelTrendDeclinioNaturalEOOlastTrend =
     sub(
 
       "EOO",
       "<b>EOO</b>",
-      labelTrendDeclinioNaturalEOOLastTrend
+      labelTrendDeclinioNaturalEOOlastTrend
 
     )
 
-  labelTrendDeclinioNaturalEOOLastTrend =
+  labelTrendDeclinioNaturalEOOlastTrend =
     sub(
 
       'ganho',
       '<b style="color: blue">ganho</b>',
-      labelTrendDeclinioNaturalEOOLastTrend
+      labelTrendDeclinioNaturalEOOlastTrend
 
     )
 
-  labelTrendDeclinioNaturalEOOLastTrend =
+  labelTrendDeclinioNaturalEOOlastTrend =
     sub(
 
       'perda',
       '<b style="color: red">perda</b>',
-      labelTrendDeclinioNaturalEOOLastTrend
+      labelTrendDeclinioNaturalEOOlastTrend
 
     )
 
-  labelTrendIncrementoNaturalEOOLastTrend = valueTrendIncrementoNaturalEOOLastTrend
+  labelTrendIncrementoNaturalEOOlastTrend = valueTrendIncrementoNaturalEOOlastTrend
 
-  labelTrendIncrementoNaturalEOOLastTrend =
+  labelTrendIncrementoNaturalEOOlastTrend =
     paste0(
 
       "<markG>",
-      labelTrendIncrementoNaturalEOOLastTrend,
+      labelTrendIncrementoNaturalEOOlastTrend,
       "</markG>"
     )
 
-  labelTrendIncrementoNaturalEOOLastTrend =
+  labelTrendIncrementoNaturalEOOlastTrend =
     sub(
 
       "EOO",
       "<b>EOO</b>",
-      labelTrendIncrementoNaturalEOOLastTrend
+      labelTrendIncrementoNaturalEOOlastTrend
 
     )
 
-  labelTrendIncrementoNaturalEOOLastTrend =
+  labelTrendIncrementoNaturalEOOlastTrend =
     sub(
 
       'ganho',
       '<b style="color: blue">ganho</b>',
-      labelTrendIncrementoNaturalEOOLastTrend
+      labelTrendIncrementoNaturalEOOlastTrend
 
     )
 
-  labelTrendIncrementoNaturalEOOLastTrend =
+  labelTrendIncrementoNaturalEOOlastTrend =
     sub(
 
       'perda',
       '<b style="color: red">perda</b>',
-      labelTrendIncrementoNaturalEOOLastTrend
+      labelTrendIncrementoNaturalEOOlastTrend
 
     )
 
-  labelNoTrend_EOOLastTrend = valueNoTrend_EOOLastTrend
+  labelNoTrend_EOOlastTrend = valueNoTrend_EOOlastTrend
 
-  labelNoTrend_EOOLastTrend =
+  labelNoTrend_EOOlastTrend =
     paste0(
 
       "<markG>",
-      labelNoTrend_EOOLastTrend,
+      labelNoTrend_EOOlastTrend,
       "</markG>"
 
     )
 
-  labelNoTrend_EOOLastTrend =
+  labelNoTrend_EOOlastTrend =
     sub(
 
       "EOO",
       "<b>EOO</b>",
-      labelNoTrend_EOOLastTrend
+      labelNoTrend_EOOlastTrend
 
     )
 
-  labelNoTrend_EOOLastTrend =
+  labelNoTrend_EOOlastTrend =
     sub(
 
       'ganho',
       '<b style="color: blue">ganho</b>',
-      labelNoTrend_EOOLastTrend
+      labelNoTrend_EOOlastTrend
 
     )
 
-  labelNoTrend_EOOLastTrend =
+  labelNoTrend_EOOlastTrend =
     sub(
 
       'perda',
       '<b style="color: red">perda</b>',
-      labelNoTrend_EOOLastTrend
+      labelNoTrend_EOOlastTrend
 
     )
 
@@ -12671,6 +12671,7 @@ leaflet_header$text <-
 
 # Orações subordinadas concessivas e adversativas ####
 
+message("Creating labels for conditional clauses...")
 
 ## Condicionais ####
 
@@ -12717,8 +12718,10 @@ if(
     )
 
 }
+message("Starting the HTML file creation...")
 
 # Compilação do HTML ####
+
 sink("output.txt")
 cat(leaflet_header$text)
 cat('<br><br>\n')
@@ -12766,9 +12769,13 @@ if(
 
 ){
 
+  message("It has an EOO map!")
+
   cat(map_EOO_widget_html)
 
 } else {
+
+  message("It has not an EOO map!")
 
   cat("Sem EOO")
 
@@ -12796,6 +12803,8 @@ if(
 
 ){
 
+  message("It has a wide distribution!")
+
   cat('<input id="AmplamenteDistribuida" type="checkbox" style="float: left;" value="')
   cat("sua ampla distribuição")
   cat('" onclick="incluirNaFrase(\n')
@@ -12813,6 +12822,8 @@ if(
   DistribuicaoRestrita == T
 
 ){
+
+  message("It has a restrict distribution!")
 
   cat('<input id="DistribuicaoRestrita" type="checkbox" style="float: left;" value="')
   cat("sua distribuição restrita")
@@ -12852,6 +12863,10 @@ cat(labelAreaConhecida2)
 cat('</label>\n<br><br>\n')
 
 ### AOO e EOO ####
+
+message("label AOO/EOO:")
+message(AOO_EOO)
+
 cat("<b>AOO e EOO:</b><br>\n\n")
 
 cat('<input id="myCheck1" type="checkbox" style="float: left;" value="')
@@ -12867,6 +12882,9 @@ cat('</label>\n<br><br>\n')
 ### Anos decorridos do intervalo de coletas ####
 cat("<b>Anos decorridos do intervalo de coletas:</b><br>\n\n")
 
+message("Years passed since last collection:")
+message(paste0("  - ", Anos_decorridos_últimas_coletas))
+
 cat('<input id="myCheck2" type="checkbox" style="float: left;" value="')
 cat(Anos_decorridos_últimas_coletas)
 cat('" onclick="incluirNaFrase(\n')
@@ -12878,6 +12896,9 @@ cat(Anos_decorridos_últimas_coletas)
 cat('</label>\n<br><br>\n')
 
 ### Proporção de conversão para uso alternativo do solo ####
+
+message("Creating tabs for proportion of alternative land use...")
+
 if(
 
   NenhumaConversaoUsoDoSoloAOO_EOONaoAnalisado == F &
@@ -13487,7 +13508,12 @@ if(
 
 }
 
+message("Tabs for proportion of alternative land use DONE.")
+
 ### Definir script em javascript ####
+
+message("Writing the JS script...")
+
 cat('<script>\n')
 cat("let frase = ['")
 cat(output$Texto)
@@ -14025,9 +14051,15 @@ if(
 }
 
 ### Declínio de AOO e EOO ####
+
+message("Creating the tabs for decline of AOO and EOO...")
+
 cat("<b>Declínio de AOO e EOO (MapBiomas 1985-2020):</b><br>\n\n")
 
 #### AOO ####
+
+message("  AOO...")
+
 if(
 
   trendNatural_total_DOWN == T &
@@ -14083,7 +14115,10 @@ if(
 
 }
 
-#### AOO LastTrend ####
+#### AOO lastTrend ####
+
+message("  AOO last trend...")
+
 if(
 
   trendNatural_lastTrend_DOWN == T &
@@ -14091,14 +14126,14 @@ if(
 
 ){
 
-  cat('<input id="TrendDeclinioNaturalAOOLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-  cat(valueTrendDeclinioNaturalAOOLastTrend)
+  cat('<input id="TrendDeclinioNaturalAOOlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+  cat(valueTrendDeclinioNaturalAOOlastTrend)
   cat('" onclick="Classeda();incluirNaFrase(\n')
   cat("'")
-  cat(valueTrendDeclinioNaturalAOOLastTrend)
+  cat(valueTrendDeclinioNaturalAOOlastTrend)
   cat("')")
-  cat('"><label for="TrendDeclinioNaturalAOOLastTrend" style="display: flex; margin-bottom: -12px;">')
-  cat(labelTrendDeclinioNaturalAOOLastTrend)
+  cat('"><label for="TrendDeclinioNaturalAOOlastTrend" style="display: flex; margin-bottom: -12px;">')
+  cat(labelTrendDeclinioNaturalAOOlastTrend)
   cat('</label><br>\n\n')
 
 }
@@ -14110,14 +14145,14 @@ if(
 
 ){
 
-  cat('<input id="TrendIncrementoNaturalAOOLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-  cat(valueTrendIncrementoNaturalAOOLastTrend)
+  cat('<input id="TrendIncrementoNaturalAOOlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+  cat(valueTrendIncrementoNaturalAOOlastTrend)
   cat('" onclick="NaoClasseda();incluirNaFrase(\n')
   cat("'")
-  cat(valueTrendIncrementoNaturalAOOLastTrend)
+  cat(valueTrendIncrementoNaturalAOOlastTrend)
   cat("')")
-  cat('"><label for="TrendIncrementoNaturalAOOLastTrend" style="display: flex; margin-bottom: -12px;">')
-  cat(labelTrendIncrementoNaturalAOOLastTrend)
+  cat('"><label for="TrendIncrementoNaturalAOOlastTrend" style="display: flex; margin-bottom: -12px;">')
+  cat(labelTrendIncrementoNaturalAOOlastTrend)
   cat('</label>\n<br>\n\n')
 
 }
@@ -14128,21 +14163,25 @@ if(
 
 ){
 
-  cat('<input id="NoTrend_AOOLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-  cat(valueNoTrend_AOOLastTrend)
+  cat('<input id="NoTrend_AOOlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+  cat(valueNoTrend_AOOlastTrend)
   cat('" onclick="incluirNaFrase(\n')
   cat("'")
-  cat(valueNoTrend_AOOLastTrend)
+  cat(valueNoTrend_AOOlastTrend)
   cat("')")
-  cat('"><label for="NoTrend_AOOLastTrend" style="display: flex; margin-bottom: -12px;">')
-  cat(labelNoTrend_AOOLastTrend)
+  cat('"><label for="NoTrend_AOOlastTrend" style="display: flex; margin-bottom: -12px;">')
+  cat(labelNoTrend_AOOlastTrend)
   cat('</label>\n<br>\n\n')
 
 }
 
 cat("<br>\n\n")
 
+
 #### AOOinEOObuffer ####
+
+message("  AOOinEOObuffer...")
+
 if(
 
   trend_AOOinEOObufferNatural_total_DOWN == T &
@@ -14198,7 +14237,10 @@ if(
 
 }
 
-#### AOOinEOObuffer LastTrend ####
+#### AOOinEOObuffer lastTrend ####
+
+message("  AOOinEOObuffer lastTrend...")
+
 if(
 
   trend_AOOinEOObufferNatural_lastTrend_DOWN == T &
@@ -14206,14 +14248,14 @@ if(
 
 ){
 
-  cat('<input id="TrendDeclinioNaturalAOOinEOObufferLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-  cat(valueTrendDeclinioNaturalAOOinEOObufferLastTrend)
+  cat('<input id="TrendDeclinioNaturalAOOinEOObufferlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+  cat(valueTrendDeclinioNaturalAOOinEOObufferlastTrend)
   cat('" onclick="Classeda();incluirNaFrase(\n')
   cat("'")
-  cat(valueTrendDeclinioNaturalAOOinEOObufferLastTrend)
+  cat(valueTrendDeclinioNaturalAOOinEOObufferlastTrend)
   cat("')")
-  cat('"><label for="TrendDeclinioNaturalAOOinEOObufferLastTrend" style="display: flex; margin-bottom: -12px;">')
-  cat(labelTrendDeclinioNaturalAOOinEOObufferLastTrend)
+  cat('"><label for="TrendDeclinioNaturalAOOinEOObufferlastTrend" style="display: flex; margin-bottom: -12px;">')
+  cat(labelTrendDeclinioNaturalAOOinEOObufferlastTrend)
   cat('</label><br>\n\n')
 
 }
@@ -14224,14 +14266,14 @@ if(
 
 ){
 
-  cat('<input id="TrendIncrementoNaturalAOOinEOObufferLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-  cat(valueTrendIncrementoNaturalAOOinEOObufferLastTrend)
+  cat('<input id="TrendIncrementoNaturalAOOinEOObufferlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+  cat(valueTrendIncrementoNaturalAOOinEOObufferlastTrend)
   cat('" onclick="NaoClasseda();incluirNaFrase(\n')
   cat("'")
-  cat(valueTrendIncrementoNaturalAOOinEOObufferLastTrend)
+  cat(valueTrendIncrementoNaturalAOOinEOObufferlastTrend)
   cat("')")
-  cat('"><label for="TrendIncrementoNaturalAOOinEOObufferLastTrend" style="display: flex; margin-bottom: -12px;">')
-  cat(labelTrendIncrementoNaturalAOOinEOObufferLastTrend)
+  cat('"><label for="TrendIncrementoNaturalAOOinEOObufferlastTrend" style="display: flex; margin-bottom: -12px;">')
+  cat(labelTrendIncrementoNaturalAOOinEOObufferlastTrend)
   cat('</label>\n<br>\n\n')
 
 }
@@ -14242,14 +14284,14 @@ if(
 
 ){
 
-  cat('<input id="NoTrend_AOOinEOObufferLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-  cat(valueNoTrend_AOOinEOObufferLastTrend)
+  cat('<input id="NoTrend_AOOinEOObufferlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+  cat(valueNoTrend_AOOinEOObufferlastTrend)
   cat('" onclick="incluirNaFrase(\n')
   cat("'")
-  cat(valueNoTrend_AOOinEOObufferLastTrend)
+  cat(valueNoTrend_AOOinEOObufferlastTrend)
   cat("')")
-  cat('"><label for="NoTrend_AOOinEOObufferLastTrend" style="display: flex; margin-bottom: -12px;">')
-  cat(labelNoTrend_AOOinEOObufferLastTrend)
+  cat('"><label for="NoTrend_AOOinEOObufferlastTrend" style="display: flex; margin-bottom: -12px;">')
+  cat(labelNoTrend_AOOinEOObufferlastTrend)
   cat('</label>\n<br>\n\n')
 
 }
@@ -14257,6 +14299,8 @@ if(
 cat("<br>\n\n")
 
 #### EOO ####
+
+message("  EOO...")
 
 if(
 
@@ -14321,7 +14365,10 @@ if(
 
   }
 
-  #### EOO LastTrend ####
+  #### EOO lastTrend ####
+
+  message("  EOO lastTrend...")
+
   if(
 
     trend_EOONatural_lastTrend_DOWN == T &
@@ -14329,14 +14376,14 @@ if(
 
   ){
 
-    cat('<input id="TrendDeclinioNaturalEOOLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-    cat(valueTrendDeclinioNaturalEOOLastTrend)
+    cat('<input id="TrendDeclinioNaturalEOOlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+    cat(valueTrendDeclinioNaturalEOOlastTrend)
     cat('" onclick="Classeda();incluirNaFrase(\n')
     cat("'")
-    cat(valueTrendDeclinioNaturalEOOLastTrend)
+    cat(valueTrendDeclinioNaturalEOOlastTrend)
     cat("')")
-    cat('"><label for="TrendDeclinioNaturalEOOLastTrend" style="display: flex; margin-bottom: -12px;">')
-    cat(labelTrendDeclinioNaturalEOOLastTrend)
+    cat('"><label for="TrendDeclinioNaturalEOOlastTrend" style="display: flex; margin-bottom: -12px;">')
+    cat(labelTrendDeclinioNaturalEOOlastTrend)
     cat('</label><br>\n\n')
 
   }
@@ -14347,14 +14394,14 @@ if(
 
   ){
 
-    cat('<input id="TrendIncrementoNaturalEOOLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-    cat(valueTrendIncrementoNaturalEOOLastTrend)
+    cat('<input id="TrendIncrementoNaturalEOOlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+    cat(valueTrendIncrementoNaturalEOOlastTrend)
     cat('" onclick="NaoClasseda();incluirNaFrase(\n')
     cat("'")
-    cat(valueTrendIncrementoNaturalEOOLastTrend)
+    cat(valueTrendIncrementoNaturalEOOlastTrend)
     cat("')")
-    cat('"><label for="TrendIncrementoNaturalEOOLastTrend" style="display: flex; margin-bottom: -12px;">')
-    cat(labelTrendIncrementoNaturalEOOLastTrend)
+    cat('"><label for="TrendIncrementoNaturalEOOlastTrend" style="display: flex; margin-bottom: -12px;">')
+    cat(labelTrendIncrementoNaturalEOOlastTrend)
     cat('</label>\n<br>\n\n')
 
   }
@@ -14365,14 +14412,14 @@ if(
 
   ){
 
-    cat('<input id="NoTrend_EOOLastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
-    cat(valueNoTrend_EOOLastTrend)
+    cat('<input id="NoTrend_EOOlastTrend" type="checkbox" style="margin-left: 10px; float: left;" value="')
+    cat(valueNoTrend_EOOlastTrend)
     cat('" onclick="incluirNaFrase(\n')
     cat("'")
-    cat(valueNoTrend_EOOLastTrend)
+    cat(valueNoTrend_EOOlastTrend)
     cat("')")
-    cat('"><label for="NoTrend_EOOLastTrend" style="display: flex; margin-bottom: -12px;">')
-    cat(labelNoTrend_EOOLastTrend)
+    cat('"><label for="NoTrend_EOOlastTrend" style="display: flex; margin-bottom: -12px;">')
+    cat(labelNoTrend_EOOlastTrend)
     cat('</label>\n<br>\n\n')
 
   }
@@ -14380,6 +14427,8 @@ if(
 }
 
 #### Menu dos gráficos: Sobreposição & Tendência ####
+
+message("Creating tabs for stacked area and trend charts...")
 
 cat('<br>\n\n')
 
@@ -14396,12 +14445,15 @@ cat('    <div class="tab-content">\n')
 cat('      <div id="menu1_stackedAreaMapBiomasAOO" class="tab-pane fade in active">\n')
 cat('<div class="container">\n')
 cat('  <ul class="nav nav-tabs">\n')
-cat('  <li class="active"><a data-toggle="tab" href="#feicoesIsoladas">Feições Isoladas</a></li>\n')
-cat('  <li><a data-toggle="tab" href="#feicoesAglutinadas">Feições Aglutinadas (Natural vs. Uso Alternativo)</a></li>\n')
+cat('  <li class="active"><a data-toggle="tab" href="#feicoesIsoladas">Classes Isoladas</a></li>\n')
+cat('  <li><a data-toggle="tab" href="#feicoesAglutinadas">Classes Aglutinadas (Natural vs. Uso Alternativo)</a></li>\n')
 cat('  </ul>\n\n')
 cat('    <div class="tab-content">\n')
 cat('  <div id="feicoesIsoladas" class="tab-pane fade in active">\n')
 cat('        <img src="')
+
+message("  Creating tabs for stackedArea_AOO...")
+
 cat(
 
   image_uri(
@@ -14420,6 +14472,9 @@ cat(
 )
 cat('" width="1000" height="600"><br>\n')
 cat('  </div>\n')
+
+message("  Creating tabs for stackedArea_AOO_NaturalvsThreat...")
+
 cat('  <div id="feicoesAglutinadas" class="tab-pane fade">\n')
 cat('        <img src="')
 cat(
@@ -14443,6 +14498,9 @@ cat('    </div>\n')
 cat('  </div>\n')
 cat('  </div>\n')
 cat('      </div>\n')
+
+message("  Creating tabs for AOOtrends...")
+
 cat('      <div id="menu2_AOOtrends" class="tab-pane fade">\n')
 cat('        <div class="container">\n')
 cat('          <ul class="nav nav-tabs">\n')
@@ -14458,8 +14516,8 @@ for(
   cat(output_trendline$Classe[trend])
   cat('</a></li>\n')
 }
-cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasNatural">Feições Aglutinadas: Natural</a></li>\n')
-cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasUsoAlternativo">Feições Aglutinadas: Uso Alternativo</a></li>\n')
+cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasNatural">Classes Aglutinadas: Natural</a></li>\n')
+cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasUsoAlternativo">Classes Aglutinadas: Uso Alternativo</a></li>\n')
 cat('        </ul>\n')
 cat('<div class="tab-content">\n')
 cat('  <div id="trendTable" class="tab-pane fade in active">\n')
@@ -14709,11 +14767,13 @@ cat('      </div>\n')
 cat('      </div>\n')
 cat('      </div>\n')
 
+message("  Creating tabs for stackedAreaMapBiomasAOOinEOO...")
+
 cat('      <div id="menu3_stackedAreaMapBiomasAOOinEOO" class="tab-pane fade">\n')
 cat('<div class="container">\n')
 cat('  <ul class="nav nav-tabs">\n')
-cat('  <li class="active"><a data-toggle="tab" href="#feicoesIsoladas_AOOinEOObuffer">Feições Isoladas</a></li>\n')
-cat('  <li><a data-toggle="tab" href="#feicoesAglutinadas_AOOinEOObuffer">Feições Aglutinadas (Natural vs. Uso Alternativo)</a></li>\n')
+cat('  <li class="active"><a data-toggle="tab" href="#feicoesIsoladas_AOOinEOObuffer">Classes Isoladas</a></li>\n')
+cat('  <li><a data-toggle="tab" href="#feicoesAglutinadas_AOOinEOObuffer">Classes Aglutinadas (Natural vs. Uso Alternativo)</a></li>\n')
 cat('  </ul>\n\n')
 cat('    <div class="tab-content">\n')
 cat('  <div id="feicoesIsoladas_AOOinEOObuffer" class="tab-pane fade in active">\n')
@@ -14737,6 +14797,9 @@ cat(
 cat('" width="1000" height="600"><br>\n')
 cat('  </div>\n')
 cat('  <div id="feicoesAglutinadas_AOOinEOObuffer" class="tab-pane fade">\n')
+
+message("  Creating tabs for stackedArea_AOOinEOObuffer_NaturalvsThreat...")
+
 cat('        <img src="')
 cat(
 
@@ -14759,6 +14822,9 @@ cat('    </div>\n')
 cat('  </div>\n')
 cat('  </div>\n')
 cat('      </div>\n')
+
+message("  Creating tabs for AOOinEOObuffertrends...")
+
 cat('      <div id="menu4_AOOinEOOtrends" class="tab-pane fade">\n')
 cat('        <div class="container">\n')
 cat('          <ul class="nav nav-tabs">\n')
@@ -14806,8 +14872,8 @@ if(output_AOOinEOObuffer_trendline_n > 0){
 
 }
 
-cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasNatural_AOOinEOObuffer">Feições Aglutinadas: Natural</a></li>\n')
-cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasUsoAlternativo_AOOinEOObuffer">Feições Aglutinadas: Uso Alternativo</a></li>\n')
+cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasNatural_AOOinEOObuffer">Classes Aglutinadas: Natural</a></li>\n')
+cat('          <li><a data-toggle="tab" href="#trendfeicoesaglutinadasUsoAlternativo_AOOinEOObuffer">Classes Aglutinadas: Uso Alternativo</a></li>\n')
 cat('        </ul>\n')
 cat('<div class="tab-content">\n')
 cat('  <div id="trendTable_AOOinEOObuffer" class="tab-pane fade in active">\n')
@@ -14922,6 +14988,7 @@ if(output_AOOinEOObuffer_trendline_n > 0){
 
 }
 
+message("  Creating tabs for AOOinEOObuffertrends feicoesaglutinadas Natural...")
 
 cat('<div id="trendfeicoesaglutinadasNatural_AOOinEOObuffer" class="tab-pane fade">\n')
 cat('<div>\n')
@@ -15006,83 +15073,103 @@ if(output_AOOinEOObuffer_trendline_n > 0){
 }
 
 cat("</div>\n")
+
+message("  Creating tabs for AOOinEOObuffertrends feicoesaglutinadas UsoAlternativo...")
+
 cat('<div id="trendfeicoesaglutinadasUsoAlternativo_AOOinEOObuffer" class="tab-pane fade">\n')
 cat('<div>\n')
-cat("  <b>Taxa anual:</b> ")
-cat(output_trendline_Threat_AOOinEOObuffer$Taxa_anual)
-cat(" %\n")
-cat("  <br>\n")
-cat("  <b>Início da última tendência:</b> ")
-cat(output_trendline_Threat_AOOinEOObuffer$Inicio_ultima_tendencia)
-cat("\n")
-cat("  <br>\n")
-cat("  <b>Taxa da última tendência:</b> ")
-cat(output_trendline_Threat_AOOinEOObuffer$Taxa_ultima_tendencia)
-cat(" %\n")
-cat("  <br>\n")
-cat('</div>\n')
-cat('        <img src="')
-cat(
 
-  image_uri(
+if(output_AOOinEOObuffer_trendline_n > 0){
 
-    paste0(
+  cat("  <b>Taxa anual:</b> ")
+  cat(output_trendline_Threat_AOOinEOObuffer$Taxa_anual)
+  cat(" %\n")
+  cat("  <br>\n")
+  cat("  <b>Início da última tendência:</b> ")
+  cat(output_trendline_Threat_AOOinEOObuffer$Inicio_ultima_tendencia)
+  cat("\n")
+  cat("  <br>\n")
+  cat("  <b>Taxa da última tendência:</b> ")
+  cat(output_trendline_Threat_AOOinEOObuffer$Taxa_ultima_tendencia)
+  cat(" %\n")
+  cat("  <br>\n")
+  cat('</div>\n')
+  cat('        <img src="')
+  cat(
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer/",
-      ESPECIE,
-      "_Threat",
-      ".png"
+    image_uri(
 
-    )
+      paste0(
 
-  )
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer/",
+        ESPECIE,
+        "_Threat",
+        ".png"
 
-)
-cat('" width="1000" height="500"><br>\n')
-cat('        <img src="')
-cat(
-
-  image_uri(
-
-    paste0(
-
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer_detectTrends/",
-      ESPECIE,
-      "_Threat",
-      ".png"
+      )
 
     )
 
   )
+  cat('" width="1000" height="500"><br>\n')
 
-)
-cat('" width="1000" height="500"><br>\n')
-cat('        <img src="')
-cat(
+  message("  Creating tabs for AOOinEOObuffertrends feicoesaglutinadas UsoAlternativo detectTrends...")
 
-  image_uri(
+  cat('        <img src="')
+  cat(
 
-    paste0(
+    image_uri(
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer_lastTrend/",
-      ESPECIE,
-      "_Threat",
-      ".png"
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer_detectTrends/",
+        ESPECIE,
+        "_Threat",
+        ".png"
+
+      )
 
     )
 
   )
+  cat('" width="1000" height="500"><br>\n')
 
-)
-cat('" width="1000" height="500"><br>\n')
-cat("</div>\n")
+  message("  Creating tabs for AOOinEOObuffertrends feicoesaglutinadas UsoAlternativo lastTrend...")
+
+  cat('        <img src="')
+  cat(
+
+    image_uri(
+
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer_lastTrend/",
+        ESPECIE,
+        "_Threat",
+        ".png"
+
+      )
+
+    )
+
+  )
+  cat('" width="1000" height="500"><br>\n')
+  cat("</div>\n")
+
+} else {
+
+  cat("        <a>Sem EOO</a>\n")
+
+}
 
 cat('      </div>\n')
 cat('      </div>\n')
 cat('      </div>\n')
+
+message("  Creating tabs for stackedAreaMapBiomasEOO...")
 
 cat('      <div id="menu5_stackedAreaMapBiomasEOO" class="tab-pane fade">\n')
 if(
@@ -15103,8 +15190,8 @@ if(
 
     cat('<div class="container">\n')
     cat('  <ul class="nav nav-tabs">\n')
-    cat('  <li class="active"><a data-toggle="tab" href="#feicoesIsoladas_EOO">Feições Isoladas</a></li>\n')
-    cat('  <li><a data-toggle="tab" href="#feicoesAglutinadas_EOO">Feições Aglutinadas (Natural vs. Uso Alternativo)</a></li>\n')
+    cat('  <li class="active"><a data-toggle="tab" href="#feicoesIsoladas_EOO">Classes Isoladas</a></li>\n')
+    cat('  <li><a data-toggle="tab" href="#feicoesAglutinadas_EOO">Classes Aglutinadas (Natural vs. Uso Alternativo)</a></li>\n')
     cat('  </ul>\n\n')
     cat('    <div class="tab-content">\n')
     cat('  <div id="feicoesIsoladas_EOO" class="tab-pane fade in active">\n')
@@ -15187,8 +15274,8 @@ if(
       cat('</a></li>\n')
 
     }
-    cat('          <li><a data-toggle="tab" href="#trend_EOO_feicoesaglutinadasNatural">Feições Aglutinadas: Natural</a></li>\n')
-    cat('          <li><a data-toggle="tab" href="#trend_EOO_feicoesaglutinadasUsoAlternativo">Feições Aglutinadas: Uso Alternativo</a></li>\n')
+    cat('          <li><a data-toggle="tab" href="#trend_EOO_feicoesaglutinadasNatural">Classes Aglutinadas: Natural</a></li>\n')
+    cat('          <li><a data-toggle="tab" href="#trend_EOO_feicoesaglutinadasUsoAlternativo">Classes Aglutinadas: Uso Alternativo</a></li>\n')
     cat('        </ul>\n')
     cat('<div class="tab-content">\n')
     cat('  <div id="trendTable_EOO" class="tab-pane fade in active">\n')
@@ -15457,7 +15544,13 @@ cat('</script>\n\n')
 
 cat("<br><br>\n\n")
 
+message("Tabs for stacked area charts DONE.")
+
 ### Presença em Unidades de Conservação ####
+
+message("Label occurrence in UCs:")
+message(UCs_texto)
+
 cat("<b style='margin-left: 15px'>Presença em Unidades de Conservação:</b><br>\n\n")
 
 cat('<input id="myCheck3" type="checkbox" style="margin-left: 15px; float: left;" value="')
@@ -15472,7 +15565,11 @@ cat('</label>\n<br><br>\n\n')
 
 cat("\n<hr>\n")
 
+
 ## Categoria final ####
+
+message("Creating radio buttons for the final categories of IUCN...")
+
 cat('<h4 style="margin-left: 15px;"><b>Categoria Final:</b></h4>\n')
 ### Radio buttons
 cat('<input id="CriticamenteEmPerigo" type="radio" style="margin-left: 15px;" name="CategoriaFinal" class="CategoriaFinal" value="Criticamente em Perigo (CR)" onclick="SemConsideracaoConcessiva()"> <label id="CriticamenteEmPerigoLabel" for="CriticamenteEmPerigo"> Criticamente em Perigo (CR)</label>\n')
@@ -15502,6 +15599,8 @@ cat('\n<hr>\n')
 
 
 ## Orações subordinadas concessivas ####
+
+message("Creating radio buttons for the concessive considerations...")
 
 cat('<h4 style="margin-left: 15px;"><b>Considerações concessivas (Orações subord. concessivas):</b></h4>\n')
 
@@ -15722,7 +15821,11 @@ cat('  <div id="CONSIDCONCEADVERSIncertDistEfetiv" style="display: none;"></div>
 
 cat('\n<hr>\n')
 
+
 ## Recomendações ####
+
+message("Creating radio buttons for recomendations...")
+
 cat('<h4 style="margin-left: 15px;"><b>Recomendações:</b></h4>\n')
 
 cat('<input id="labelRecomEstudosPopul" type="radio" style="margin-left: 15px; float: left;" name="Recomendacoes" class="Recomendacoes" value="')
@@ -15766,6 +15869,9 @@ cat('</script>\n\n')
 cat('<div id="RECOMENDACOES" style="display: none;"></div>\n')
 
 ## Funções Finais #######
+
+message("Writing another (the final) chunk of JS script...")
+
 cat('<div id="frase" style="display: none;"></div>\n')
 cat('<div id="frase2" style="display: none;"></div>\n')
 cat('<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>\n')
@@ -15920,7 +16026,7 @@ if(
 
 ){
 
-  cat('  if(document.getElementById("TrendDeclinioNaturalAOOLastTrend").checked == true){\n')
+  cat('  if(document.getElementById("TrendDeclinioNaturalAOOlastTrend").checked == true){\n')
   cat("    criterioDeclinio = 'b';\n")
   cat("    condicaoDeclinioAOO = 'ii';\n")
   cat("  }\n\n")
@@ -15946,7 +16052,7 @@ if(
 
 ){
 
-  cat('  if(document.getElementById("TrendDeclinioNaturalAOOinEOObufferLastTrend").checked == true){\n')
+  cat('  if(document.getElementById("TrendDeclinioNaturalAOOinEOObufferlastTrend").checked == true){\n')
   cat("    criterioDeclinio = 'b';\n")
   cat("    condicaoDeclinioEOO = 'i';\n")
   cat("  }\n\n")
@@ -15972,7 +16078,7 @@ if(
 
 ){
 
-  cat('  if(document.getElementById("TrendDeclinioNaturalEOOLastTrend").checked == true){\n')
+  cat('  if(document.getElementById("TrendDeclinioNaturalEOOlastTrend").checked == true){\n')
   cat("    criterioDeclinio = 'b';\n")
   cat("    condicaoDeclinioEOO = 'i';\n")
   cat("  }\n\n")
@@ -16166,7 +16272,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendDeclinioNaturalAOOLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendDeclinioNaturalAOOlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "CR" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "CR"\n')
   cat('      )\n')
@@ -16220,7 +16326,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendDeclinioNaturalAOOinEOObufferLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendDeclinioNaturalAOOinEOObufferlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "CR" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "CR"\n')
   cat('      )\n')
@@ -16282,7 +16388,7 @@ if(
     cat('  if(document.getElementById("')
     cat(ConversaoUsoDoSolo)
     cat('").checked == true &&\n')
-    cat('     document.getElementById("TrendDeclinioNaturalEOOLastTrend").checked == true &&\n')
+    cat('     document.getElementById("TrendDeclinioNaturalEOOlastTrend").checked == true &&\n')
     cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "CR" ||\n')
     cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "CR"\n')
     cat('      )\n')
@@ -16338,7 +16444,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendDeclinioNaturalAOOLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendDeclinioNaturalAOOlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "EN" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "EN"\n')
   cat('      )\n')
@@ -16392,7 +16498,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendDeclinioNaturalAOOinEOObufferLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendDeclinioNaturalAOOinEOObufferlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "EN" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "EN"\n')
   cat('      )\n')
@@ -16454,7 +16560,7 @@ if(
     cat('  if(document.getElementById("')
     cat(ConversaoUsoDoSolo)
     cat('").checked == true &&\n')
-    cat('     document.getElementById("TrendDeclinioNaturalEOOLastTrend").checked == true &&\n')
+    cat('     document.getElementById("TrendDeclinioNaturalEOOlastTrend").checked == true &&\n')
     cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "EN" ||\n')
     cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "EN"\n')
     cat('      )\n')
@@ -16510,7 +16616,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendDeclinioNaturalAOOLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendDeclinioNaturalAOOlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "VU" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "VU"\n')
   cat('      )\n')
@@ -16564,7 +16670,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendDeclinioNaturalAOOinEOObufferLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendDeclinioNaturalAOOinEOObufferlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "VU" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "VU"\n')
   cat('      )\n')
@@ -16626,7 +16732,7 @@ if(
     cat('  if(document.getElementById("')
     cat(ConversaoUsoDoSolo)
     cat('").checked == true &&\n')
-    cat('     document.getElementById("TrendDeclinioNaturalEOOLastTrend").checked == true &&\n')
+    cat('     document.getElementById("TrendDeclinioNaturalEOOlastTrend").checked == true &&\n')
     cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "VU" ||\n')
     cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "VU"\n')
     cat('      )\n')
@@ -16646,21 +16752,21 @@ if(
 }
 
 TrendDeclinioNatural <- data.frame(TrendDeclinioNaturalAOO = trendNatural_total_DOWN == T & trendThreat_total_NOTREND == F,
-                                   TrendDeclinioNaturalAOOLastTrend = trendNatural_lastTrend_DOWN == T & trendNatural_lastTrend_NOTREND == F,
+                                   TrendDeclinioNaturalAOOlastTrend = trendNatural_lastTrend_DOWN == T & trendNatural_lastTrend_NOTREND == F,
                                    TrendDeclinioNaturalAOOinEOObuffer = trend_AOOinEOObufferNatural_total_DOWN == T & trend_AOOinEOObufferThreat_total_NOTREND == F,
-                                   TrendDeclinioNaturalAOOinEOObufferLastTrend = trend_AOOinEOObufferNatural_lastTrend_DOWN == T & trend_AOOinEOObufferThreat_lastTrend_NOTREND == F,
+                                   TrendDeclinioNaturalAOOinEOObufferlastTrend = trend_AOOinEOObufferNatural_lastTrend_DOWN == T & trend_AOOinEOObufferThreat_lastTrend_NOTREND == F,
                                    TrendDeclinioNaturalEOO = trend_EOONatural_total_DOWN == T & trend_EOOThreat_total_NOTREND == F,
-                                   TrendDeclinioNaturalEOOLastTrend = trend_EOONatural_lastTrend_DOWN == T & trend_EOONatural_lastTrend_NOTREND == F
+                                   TrendDeclinioNaturalEOOlastTrend = trend_EOONatural_lastTrend_DOWN == T & trend_EOONatural_lastTrend_NOTREND == F
 )
 
 lengthTrendDeclinioNatural <- length(which(TrendDeclinioNatural[1,]==T))
 
 TrendIncrementoNatural <- data.frame(TrendIncrementoNaturalAOO = trendNatural_total_UP == T,
-                                     TrendIncrementoNaturalAOOLastTrend = trendNatural_lastTrend_UP == T,
+                                     TrendIncrementoNaturalAOOlastTrend = trendNatural_lastTrend_UP == T,
                                      TrendIncrementoNaturalAOOinEOObuffer = trend_AOOinEOObufferNatural_total_UP == T,
-                                     TrendIncrementoNaturalAOOinEOObufferLastTrend = trend_AOOinEOObufferNatural_lastTrend_UP == T,
+                                     TrendIncrementoNaturalAOOinEOObufferlastTrend = trend_AOOinEOObufferNatural_lastTrend_UP == T,
                                      TrendIncrementoNaturalEOO = trend_EOONatural_total_UP == T,
-                                     TrendIncrementoNaturalEOOLastTrend = trend_EOONatural_lastTrend_UP == T
+                                     TrendIncrementoNaturalEOOlastTrend = trend_EOONatural_lastTrend_UP == T
 )
 
 lengthTrendIncrementoNatural <- length(which(TrendIncrementoNatural[1,]==T))
@@ -17099,7 +17205,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendIncrementoNaturalAOOLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendIncrementoNaturalAOOlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "CR" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "CR" ||\n')
   cat('      document.getElementById("CategoriaFinalAOO").innerHTML == "EN" ||\n')
@@ -17164,7 +17270,7 @@ if(
   cat('  if(document.getElementById("')
   cat(ConversaoUsoDoSolo)
   cat('").checked == true &&\n')
-  cat('     document.getElementById("TrendIncrementoNaturalAOOinEOObufferLastTrend").checked == true &&\n')
+  cat('     document.getElementById("TrendIncrementoNaturalAOOinEOObufferlastTrend").checked == true &&\n')
   cat('     (document.getElementById("CategoriaFinalAOO").innerHTML == "CR" ||\n')
   cat('      document.getElementById("CategoriaFinalEOO").innerHTML == "CR" ||\n')
   cat('      document.getElementById("CategoriaFinalAOO").innerHTML == "EN" ||\n')
@@ -17188,11 +17294,11 @@ if(
 }
 
 TrendIncrementoNatural <- data.frame(TrendIncrementoNaturalAOO = trendNatural_total_UP == T & trendThreat_total_NOTREND == F,
-                                     TrendIncrementoNaturalAOOLastTrend = trendNatural_lastTrend_UP == T & trendNatural_lastTrend_NOTREND == F,
+                                     TrendIncrementoNaturalAOOlastTrend = trendNatural_lastTrend_UP == T & trendNatural_lastTrend_NOTREND == F,
                                      TrendIncrementoNaturalAOOinEOObuffer = trend_AOOinEOObufferNatural_total_UP == T & trend_AOOinEOObufferThreat_total_NOTREND == F,
-                                     TrendIncrementoNaturalAOOinEOObufferLastTrend = trend_AOOinEOObufferNatural_lastTrend_UP == T & trend_AOOinEOObufferThreat_lastTrend_NOTREND == F,
+                                     TrendIncrementoNaturalAOOinEOObufferlastTrend = trend_AOOinEOObufferNatural_lastTrend_UP == T & trend_AOOinEOObufferThreat_lastTrend_NOTREND == F,
                                      TrendIncrementoNaturalEOO = trend_EOONatural_total_UP == T & trend_EOOThreat_total_NOTREND == F,
-                                     TrendIncrementoNaturalEOOLastTrend = trend_EOONatural_lastTrend_UP == T & trend_EOONatural_lastTrend_NOTREND == F)
+                                     TrendIncrementoNaturalEOOlastTrend = trend_EOONatural_lastTrend_UP == T & trend_EOONatural_lastTrend_NOTREND == F)
 
 lengthTrendIncrementoNatural <- length(which(TrendIncrementoNatural[1,]==T))
 
