@@ -19,6 +19,7 @@ menu_CNCFlora <- function(){
         "Flow to create the profile of Possibly Threatened species HTMLs",
         "Menu to create the profile of species HTMLs",
         "Flow to create the assessment panel",
+        "Check all files for creation of profile and assessment panels",
         "Update shapefiles of UCs, PANs, and TERs from cloud",
         "Create AHK scripts"
 
@@ -33,6 +34,7 @@ menu_CNCFlora <- function(){
     flow_to_create_profileOfSpeciesHTMLs_PTs(),
     menu_create_profileOfSpeciesHTMLs(),
     flow_to_create_assessmentHTMLs(),
+    check_all_files_of_species(),
     update_shapefiles_from_cloud(),
     create_AHKscripts()
 

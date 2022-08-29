@@ -10893,12 +10893,12 @@ colnames(sp_in_MapBiomas_LandUse) <-
   c(
 
     "Classe",
-    "AOO útil (km²)",
-    "Área Ocupada da AOO (km²)",
-    "Área Ocupada da AOO (%)",
-    "EOO (km²)",
-    "Área Ocupada da EOO (km²)",
-    "Área Ocupada da EOO (%)"
+    "AOO útil (km2)",
+    "Area Ocupada da AOO (km2)",
+    "Area Ocupada da AOO (%)",
+    "EOO (km2)",
+    "Area Ocupada da EOO (km2)",
+    "Area Ocupada da EOO (%)"
 
   )
 
@@ -12918,21 +12918,21 @@ if(
 
       (
 
-        sum(sp_in_MapBiomas_LandUse$`Área Ocupada da AOO (km²)`) > 0 &
-        sp_in_MapBiomas_LandUse$`Área Ocupada da EOO (km²)`[1] == "Análise dispensada"
+        sum(sp_in_MapBiomas_LandUse$`Area Ocupada da AOO (km2)`) > 0 &
+        sp_in_MapBiomas_LandUse$`Area Ocupada da EOO (km2)`[1] == "Análise dispensada"
 
       ) |
       (
 
-        sum(sp_in_MapBiomas_LandUse$`Área Ocupada da AOO (km²)`) > 0 &
-        is.numeric(suppressWarnings(as.numeric(sp_in_MapBiomas_LandUse$`Área Ocupada da EOO (km²)`))) == T
+        sum(sp_in_MapBiomas_LandUse$`Area Ocupada da AOO (km2)`) > 0 &
+        is.numeric(suppressWarnings(as.numeric(sp_in_MapBiomas_LandUse$`Area Ocupada da EOO (km2)`))) == T
 
       )
 
     ){
       cat(kable(sp_in_MapBiomas_LandUse %>%
-                  dplyr::filter(`Área Ocupada da AOO (km²)` != 0 &
-                                  `Área Ocupada da AOO (km²)` != 0)) %>%
+                  dplyr::filter(`Area Ocupada da AOO (km2)` != 0 &
+                                  `Area Ocupada da AOO (km2)` != 0)) %>%
             kable_styling(font_size = 16) %>%
             kable_paper("hover", full_width = F))
     }
@@ -13096,28 +13096,28 @@ if(
     summarise(
 
       Classe = "Agricultura",
-      `AOO útil (km²)` = "",
-      `Área Ocupada da AOO (km²)` = sum(`Área Ocupada da AOO (km²)`),
-      `Área Ocupada da AOO (%)`= sum(`Área Ocupada da AOO (%)`),
+      `AOO útil (km2)` = "",
+      `Area Ocupada da AOO (km2)` = sum(`Area Ocupada da AOO (km2)`),
+      `Area Ocupada da AOO (%)`= sum(`Area Ocupada da AOO (%)`),
       `EOO` = "",
-      `Área Ocupada da EOO (km²)` =
-        if(is.numeric(sp_in_MapBiomas_LandUse2_Agricultura$`Área Ocupada da EOO (km²)`) == T){
+      `Area Ocupada da EOO (km2)` =
+        if(is.numeric(sp_in_MapBiomas_LandUse2_Agricultura$`Area Ocupada da EOO (km2)`) == T){
 
-          sum(`Área Ocupada da EOO (km²)`)
+          sum(`Area Ocupada da EOO (km2)`)
 
         } else {
 
-          sp_in_MapBiomas_LandUse2_Agricultura$`Área Ocupada da EOO (km²)`[1]
+          sp_in_MapBiomas_LandUse2_Agricultura$`Area Ocupada da EOO (km2)`[1]
 
         },
-      `Área Ocupada da EOO (%)` =
-        if(is.numeric(sp_in_MapBiomas_LandUse2_Agricultura$`Área Ocupada da EOO (%)`) == T){
+      `Area Ocupada da EOO (%)` =
+        if(is.numeric(sp_in_MapBiomas_LandUse2_Agricultura$`Area Ocupada da EOO (%)`) == T){
 
-          sum(`Área Ocupada da EOO (%)`)
+          sum(`Area Ocupada da EOO (%)`)
 
         } else {
 
-          sp_in_MapBiomas_LandUse2_Agricultura$`Área Ocupada da EOO (%)`[1]
+          sp_in_MapBiomas_LandUse2_Agricultura$`Area Ocupada da EOO (%)`[1]
 
         }
 
@@ -13154,15 +13154,15 @@ if(
 
   sp_in_MapBiomas_LandUse2 <-
     sp_in_MapBiomas_LandUse2 %>%
-    dplyr::arrange(desc(`Área Ocupada da AOO (%)`))
+    dplyr::arrange(desc(`Area Ocupada da AOO (%)`))
 
   sp_in_MapBiomas_LandUse2 <-
     sp_in_MapBiomas_LandUse2 %>%
     dplyr::filter(
 
-      `Área Ocupada da AOO (km²)` != 0 &
-        (`Área Ocupada da EOO (km²)` != 0 |
-           `Área Ocupada da EOO (km²)` == "Análise dispensada"
+      `Area Ocupada da AOO (km2)` != 0 &
+        (`Area Ocupada da EOO (km2)` != 0 |
+           `Area Ocupada da EOO (km2)` == "Análise dispensada"
 
         )
 
@@ -13578,7 +13578,7 @@ cat(paste0('    frag = `a ',
              ' proporção de áreas convertidas para uso alternativo do solo na AOO ('
 
            },
-           sp_in_MapBiomas_LandUse$`Área Ocupada da AOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"],
+           sp_in_MapBiomas_LandUse$`Area Ocupada da AOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"],
            '%)',
            if(
 
@@ -13594,12 +13594,12 @@ cat(paste0('    frag = `a ',
 
                         sp_in_MapBiomas_LandUse %>%
                         dplyr::filter (Classe == "Total") %>%
-                        dplyr::select(`Área Ocupada da EOO (%)`)
+                        dplyr::select(`Area Ocupada da EOO (%)`)
 
                       ) == F
 
                     ){
-                      sp_in_MapBiomas_LandUse$`Área Ocupada da EOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"]
+                      sp_in_MapBiomas_LandUse$`Area Ocupada da EOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"]
                     } else {
                       "não calculado"
                     },
@@ -13614,7 +13614,7 @@ cat(paste0('    frag = `a ',
            ){
 
              paste0(' e na EOO (',
-                    sp_in_MapBiomas_LandUse$`Área Ocupada da EOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"],
+                    sp_in_MapBiomas_LandUse$`Area Ocupada da EOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"],
                     '%)')
 
            },
@@ -13626,7 +13626,7 @@ cat(paste0('    frag = `a ',
            ){
 
              paste0(' e na EOO (',
-                    sp_in_MapBiomas_LandUse$`Área Ocupada da EOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"],
+                    sp_in_MapBiomas_LandUse$`Area Ocupada da EOO (%)`[sp_in_MapBiomas_LandUse$Classe == "Total"],
                     '%)')
 
            },
@@ -14409,7 +14409,7 @@ cat(
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/graphics/stackedArea/",
+      "/CNCFlora_data/outputs/graphics/stackedArea_AOO/",
       ESPECIE,
       ".png"
 
