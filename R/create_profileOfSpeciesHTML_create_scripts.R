@@ -1,4 +1,6 @@
-create_profileOfSpeciesHTML_create_scripts <- function(){
+create_profileOfSpeciesHTML_create_scripts <- function(flow = ""){
+
+  Flow = flow
 
   # Load package ####
 
@@ -68,6 +70,18 @@ create_profileOfSpeciesHTML_create_scripts <- function(){
     encoding = "UTF-8"
 
   )
+
+  if(Flow == "PNT"){
+
+    listOfSpecies <- listOfSpecies[listOfSpecies$V2 == "PNA",]
+
+  }
+
+  if(Flow == "PT"){
+
+    listOfSpecies <- listOfSpecies[listOfSpecies$V2 == "PA",]
+
+  }
 
   message("List of species file imported.")
 

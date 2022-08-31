@@ -25,6 +25,7 @@ validationOccurrences <- function() {
         library(magicfor)
         library(rvest)
         library(googledrive)
+        library(colorDF)
 
       })
     })
@@ -39,7 +40,7 @@ validationOccurrences <- function() {
     sub("Packages/CNCFloraR", "", getwd()),
     "/CNCFlora_data/inputs/listOfSpecies_for_processing/validationOccurrences.csv"
 
-    )
+  )
 
   ## Ask to open the list of species file ####
 
@@ -91,7 +92,7 @@ validationOccurrences <- function() {
     sep = ",",
     encoding = "UTF-8"
 
-    )
+  )
 
   # Create an empty output variable for loop ####
 
@@ -112,7 +113,7 @@ validationOccurrences <- function() {
       Species,
       ".html"
 
-      )
+    )
 
     ## Import the occurrences file from local path ####
 
@@ -165,7 +166,18 @@ validationOccurrences <- function() {
 
   # Verifications ####
 
-  ## Verify if there are invalid registries ####
+  ## Verify the number of records ####
+
+  records_n <- registros %>%
+    group_by(Species) %>%
+    dplyr::summarise(
+
+      n_records = n()
+
+    )
+
+
+  ## Verify if there are invalid records ####
 
   invalid <- registros %>% dplyr::filter(registros_validos == "Inválido")
   speciesWithInvalidOccurrences <- unique(invalid$Species)
@@ -181,16 +193,45 @@ validationOccurrences <- function() {
         Species = i,
         invalidated = invalid_n$n
 
-        )
+      )
 
     result_invalid_n <- rbind(result_invalid_n, invalid_n)
 
   }
 
 
+  ## Verify if there are SIG not OK ####
+
+  records_SIG_NOT_OK <- registros %>% dplyr::filter(SIG_valid == "SIG NOT OK")
+
+  records_SIG_NOT_OK <- records_SIG_NOT_OK %>%
+    group_by(Species) %>%
+    summarise(Species, SIG_NOT_OK = n())
+
+  output <- left_join(records_n, result_invalid_n)
+  output <- left_join(output, records_SIG_NOT_OK)
+
+  output <- unique(output)
+
+  All_invalid <- output$n_records == output$invalidated
+
+  All_invalid[is.na(All_invalid) == T] <- FALSE
+
+  All_SIG_NOT_OK <- output$n_records == output$SIG_NOT_OK
+
+  All_SIG_NOT_OK[is.na(All_SIG_NOT_OK) == T] <- FALSE
+
+  output <- data.frame(output, All_invalid, All_SIG_NOT_OK)
+
+
   # Print results ####
 
   cat("\014")
-  print(result_invalid_n)
+  options(colorDF_n = Inf)
+
+  colorDF(
+    output,
+    theme="dark"
+  )
 
 }

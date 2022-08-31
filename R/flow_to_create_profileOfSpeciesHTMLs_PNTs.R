@@ -30,7 +30,7 @@ flow_to_create_profileOfSpeciesHTMLs_PNTs <- function(){
     validationOccurrences(),
     validationCoordinates(), # Corrigir conforme sugestão da Gláucia para incluir o controle de fluxo (PA/PNA/validation/SIG)
     menu_intersect_occurrenceRecords_with_PANs_TERs_UCs(),
-    menu_create_profileOfSpeciesHTMLs()
+    menu_create_profileOfSpeciesHTMLs_PNTs()
 
   )
 

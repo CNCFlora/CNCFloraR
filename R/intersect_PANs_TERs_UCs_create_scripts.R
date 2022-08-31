@@ -65,8 +65,7 @@ intersect_PANs_TERs_UCs_create_scripts <- function(){
 
     listOfSpecies_localPath,
     header = F,
-    sep = ";",
-    encoding = "UTF-8"
+    sep = ";"
 
   )
 

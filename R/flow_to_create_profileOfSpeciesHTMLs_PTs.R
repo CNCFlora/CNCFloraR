@@ -34,7 +34,7 @@ flow_to_create_profileOfSpeciesHTMLs_PTs <- function(){
     menu_overlayAnalysis(),
     menu_overlayAnalysis_Fire(),
     menu_intersect_occurrenceRecords_with_PANs_TERs_UCs(),
-    menu_create_profileOfSpeciesHTMLs()
+    menu_create_profileOfSpeciesHTMLs_PTs()
 
   )
 
