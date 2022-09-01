@@ -1,4 +1,4 @@
-overlayAnalysis_QuadOfGrid_create_scripts <- function(){
+overlayAnalysis_Fire_create_scripts <- function(){
 
   library(data.table)
   library(readtext)
@@ -9,7 +9,7 @@ overlayAnalysis_QuadOfGrid_create_scripts <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas.csv"
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomasFire.csv"
 
     )
 
@@ -77,7 +77,7 @@ overlayAnalysis_QuadOfGrid_create_scripts <- function(){
         paste0(
 
           getwd(),
-          "/Packages/CNCFloraR/R/overlayAnalysis_QuadOfGrid.txt"
+          "/Packages/CNCFloraR/R/overlayAnalysis_Fire.txt"
 
         )
 
@@ -94,7 +94,7 @@ overlayAnalysis_QuadOfGrid_create_scripts <- function(){
       paste0(
 
         sub("Packages/CNCFloraR", "", getwd()),
-        "/CNCFlora_data/outputs/overlayAnalysis MapBiomasQuadOfGrid scripts/",
+        "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire scripts/",
         element,
         " - script.R"
 

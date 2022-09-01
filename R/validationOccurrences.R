@@ -172,7 +172,7 @@ validationOccurrences <- function() {
     group_by(Species) %>%
     dplyr::summarise(
 
-      n_records = n()
+      n_records = dplyr::n()
 
     )
 

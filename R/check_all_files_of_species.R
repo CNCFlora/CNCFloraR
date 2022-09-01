@@ -1,24 +1,5 @@
 check_all_files_of_species <- function(){
 
-  # Define conditional functions ####
-
-  conditionally <- function(fun){
-
-    function(
-
-      first_arg, ..., execute
-
-    ){
-
-      if(execute) return(fun(first_arg, ...))
-      else return(first_arg)
-
-    }
-
-  }
-
-  cond_column_spec <- conditionally(column_spec)
-
 
   # Load package ####
 
@@ -27,6 +8,7 @@ check_all_files_of_species <- function(){
   library(kableExtra)
   library(stringr)
   library(lubridate)
+  library(googlesheets4)
 
   # Get local path of the downloaded list of species file ####
 
@@ -95,9 +77,30 @@ check_all_files_of_species <- function(){
   message("List of species file imported.")
 
 
+  ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
+
+  followUpTable <- read_sheet(ss, sheet = 1)
+
+  followUpTable <- followUpTable %>% filter(NameFB_semAutor %in% listOfSpecies$V1)
+
+  followUpTable <- followUpTable %>%
+    summarise(
+
+      V1 = NameFB_semAutor,
+      flow = `PA/PNA`
+
+    )
+
+  listOfSpecies <- left_join(listOfSpecies, followUpTable)
+
+  listOfSpecies$flow[is.na(listOfSpecies$flow) == T] <- "NotDefined"
+
   df <- NULL
 
-  for(species in listOfSpecies$V1){
+  for(i in 1:nrow(listOfSpecies)){
+
+    species <- listOfSpecies$V1[i]
+    flow <- listOfSpecies$flow[i]
 
     df_ <- data.frame(
 
@@ -118,13 +121,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/inputs/occurrences/oldSystem/", species, ".html")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -134,7 +150,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -157,13 +186,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/intersect_PANs_TERs_UCs results/PANs/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -173,7 +215,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -196,13 +251,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/intersect_PANs_TERs_UCs results/TERs/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -212,7 +280,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -235,13 +316,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/intersect_PANs_TERs_UCs results/UCs/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -251,7 +345,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -274,13 +381,18 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/overlayAnalysis results/TodosOsAnos/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          }
 
         )
 
@@ -289,8 +401,37 @@ check_all_files_of_species <- function(){
         text_spec(
 
           "FALSE",
-          background = "red",
-          color = "white"
+          background = if(flow == "PA"){
+
+            "red"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "lightyellow"
+
+            }
+
+          },
+          color = if(flow == "PA"){
+
+            "white"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "lightyellow"
+
+            }
+
+          },
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          }
 
         )
 
@@ -313,13 +454,18 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire results/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          }
 
         )
 
@@ -328,8 +474,37 @@ check_all_files_of_species <- function(){
         text_spec(
 
           "FALSE",
-          background = "red",
-          color = "white"
+          background = if(flow == "PA"){
+
+            "red"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "lightyellow"
+
+            }
+
+          },
+          color = if(flow == "PA"){
+
+            "white"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "lightyellow"
+
+            }
+
+          },
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          }
 
         )
 
@@ -352,13 +527,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/profileOfSpeciesHTML results/", species, ".html")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -368,7 +556,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -376,7 +577,7 @@ check_all_files_of_species <- function(){
 
       filledProfile_from_oldSystem = if(file.exists(
 
-        paste0(getwd(), "/CNCFlora_data/outputs/profileOfSpeciesHTML results/", species, ".html")
+        paste0(getwd(), "/CNCFlora_data/inputs/speciesProfile_filled/oldSystem/", species, ".html")
 
       ) == T){
 
@@ -391,13 +592,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/profileOfSpeciesHTML results/", species, ".html")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -407,7 +621,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -430,13 +657,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/inputs/speciesProfile_filled/oldSystem/", species, ".html")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -446,7 +686,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -469,13 +722,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/overlayAnalysis results/AOOinEOObuffer/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -485,7 +751,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -508,13 +787,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/trendAnalysis results/QuadOfGrid/", species, ".csv")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -524,7 +816,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -547,13 +852,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/points/", species, ".shp")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -563,7 +881,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -586,13 +917,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/AOO/", species, ".shp")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -602,7 +946,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -625,12 +982,25 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/AOO_MapBiomas/", species, ".shp")
 
-                  )$ctime)
+                  )$mtime)
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -640,7 +1010,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -663,13 +1046,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/pie_AOO/", species, ".png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -679,7 +1075,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -702,13 +1111,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/stackedArea_AOO/", species, ".png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -718,7 +1140,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -741,13 +1176,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/trend_AOO/", species, "_Natural.png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -757,7 +1205,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -780,13 +1241,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/EOO/", species, ".shp")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -796,7 +1270,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -819,13 +1306,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/EOO_MapBiomas/", species, ".shp")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -835,7 +1335,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -858,13 +1371,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/pie_EOO/", species, ".png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -874,7 +1400,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -897,13 +1436,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/stackedArea_EOO/", species, ".png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -913,7 +1465,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -936,13 +1501,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/trend_EOO/", species, "_Natural.png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -952,7 +1530,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -975,13 +1566,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/AOOinEOObuffer/", species, ".shp")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -991,7 +1595,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1014,13 +1631,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/pie_AOOinEOObuffer/", species, ".png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1030,7 +1660,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1053,13 +1696,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/stackedArea_AOOinEOObuffer/", species, ".png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1069,7 +1725,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1092,13 +1761,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/graphics/AOOinEOObuffer/", species, "_Natural.png")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1108,7 +1790,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1131,13 +1826,26 @@ check_all_files_of_species <- function(){
 
                     paste0(getwd(), "/CNCFlora_data/outputs/assessmentHTML results/", species, ".html")
 
-                  )$ctime
+                  )$mtime
               )
             ),
             "%d/%m/%Y"
           ),
           background = "lightgreen",
-          color = "black"
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 
@@ -1147,7 +1855,20 @@ check_all_files_of_species <- function(){
 
           "FALSE",
           background = "red",
-          color = "white"
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
 
         )
 

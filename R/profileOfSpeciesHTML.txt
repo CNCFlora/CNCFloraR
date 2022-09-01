@@ -307,7 +307,7 @@ for(ESTADO in unique(OCORRENCIAS$ESTADOS)){
 
 if(exists("Estado1") ==T){Estado1<-as.data.frame(Estado1)}else{Estado1<- data.frame(NULL)}
 if(dplyr::count(Estado1) == 1){if(Estado1$MUNICIPIOS == ""){Estado1$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado1) == 0){rm(Estado1)}else{
+if(dplyr::count(Estado1) == 0){rm(Estado1)}else{
   Estado1<-Estado1[!(Estado1$MUNICIPIOS == ""), ]
   Estado1<-as.matrix(Estado1)
   Municip_count<-as.numeric(length(Estado1[,2]))
@@ -350,8 +350,8 @@ if(count(Estado1) == 0){rm(Estado1)}else{
 }
 
 if(exists("Estado2") ==T){Estado2<-as.data.frame(Estado2)}else{Estado2<- data.frame(NULL)}
-if(count(Estado2) == 1){if(Estado2$MUNICIPIOS == ""){Estado2$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado2) == 0){rm(Estado2)}else{
+if(dplyr::count(Estado2) == 1){if(Estado2$MUNICIPIOS == ""){Estado2$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado2) == 0){rm(Estado2)}else{
   Estado2<-Estado2[!(Estado2$MUNICIPIOS == ""), ]
   Estado2<-as.matrix(Estado2)
   Municip_count<-as.numeric(length(Estado2[,2]))
@@ -394,8 +394,8 @@ if(count(Estado2) == 0){rm(Estado2)}else{
 }
 
 if(exists("Estado3") ==T){Estado3<-as.data.frame(Estado3)}else{Estado3<- data.frame(NULL)}
-if(count(Estado3) == 1){if(Estado3$MUNICIPIOS == ""){Estado3$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado3) == 0){rm(Estado3)}else{
+if(dplyr::count(Estado3) == 1){if(Estado3$MUNICIPIOS == ""){Estado3$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado3) == 0){rm(Estado3)}else{
   Estado3<-Estado3[!(Estado3$MUNICIPIOS == ""), ]
   Estado3<-as.matrix(Estado3)
   Municip_count<-as.numeric(length(Estado3[,2]))
@@ -438,8 +438,8 @@ if(count(Estado3) == 0){rm(Estado3)}else{
 }
 
 if(exists("Estado4") ==T){Estado4<-as.data.frame(Estado4)}else{Estado4<- data.frame(NULL)}
-if(count(Estado4) == 1){if(Estado4$MUNICIPIOS == ""){Estado4$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado4) == 0){rm(Estado4)}else{
+if(dplyr::count(Estado4) == 1){if(Estado4$MUNICIPIOS == ""){Estado4$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado4) == 0){rm(Estado4)}else{
   Estado4<-Estado4[!(Estado4$MUNICIPIOS == ""), ]
   Estado4<-as.matrix(Estado4)
   Municip_count<-as.numeric(length(Estado4[,2]))
@@ -482,8 +482,8 @@ if(count(Estado4) == 0){rm(Estado4)}else{
 }
 
 if(exists("Estado5") ==T){Estado5<-as.data.frame(Estado5)}else{Estado5<- data.frame(NULL)}
-if(count(Estado5) == 1){if(Estado5$MUNICIPIOS == ""){Estado5$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado5) == 0){rm(Estado5)}else{
+if(dplyr::count(Estado5) == 1){if(Estado5$MUNICIPIOS == ""){Estado5$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado5) == 0){rm(Estado5)}else{
   Estado5<-Estado5[!(Estado5$MUNICIPIOS == ""), ]
   Estado5<-as.matrix(Estado5)
   Municip_count<-as.numeric(length(Estado5[,2]))
@@ -526,8 +526,8 @@ if(count(Estado5) == 0){rm(Estado5)}else{
 }
 
 if(exists("Estado6") ==T){Estado6<-as.data.frame(Estado6)}else{Estado6<- data.frame(NULL)}
-if(count(Estado6) == 1){if(Estado6$MUNICIPIOS == ""){Estado6$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado6) == 0){rm(Estado6)}else{
+if(dplyr::count(Estado6) == 1){if(Estado6$MUNICIPIOS == ""){Estado6$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado6) == 0){rm(Estado6)}else{
   Estado6<-Estado6[!(Estado6$MUNICIPIOS == ""), ]
   Estado6<-as.matrix(Estado6)
   Municip_count<-as.numeric(length(Estado6[,2]))
@@ -568,8 +568,8 @@ if(count(Estado6) == 0){rm(Estado6)}else{
 }
 
 if(exists("Estado7") ==T){Estado7<-as.data.frame(Estado7)}else{Estado7<- data.frame(NULL)}
-if(count(Estado7) == 1){if(Estado7$MUNICIPIOS == ""){Estado7$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado7) == 0){rm(Estado7)}else{
+if(dplyr::count(Estado7) == 1){if(Estado7$MUNICIPIOS == ""){Estado7$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado7) == 0){rm(Estado7)}else{
   Estado7<-Estado7[!(Estado7$MUNICIPIOS == ""), ]
   Estado7<-as.matrix(Estado7)
   Municip_count<-as.numeric(length(Estado7[,2]))
@@ -612,8 +612,8 @@ if(count(Estado7) == 0){rm(Estado7)}else{
 }
 
 if(exists("Estado8") ==T){Estado8<-as.data.frame(Estado8)}else{Estado8<- data.frame(NULL)}
-if(count(Estado8) == 1){if(Estado8$MUNICIPIOS == ""){Estado8$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado8) == 0){rm(Estado8)}else{
+if(dplyr::count(Estado8) == 1){if(Estado8$MUNICIPIOS == ""){Estado8$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado8) == 0){rm(Estado8)}else{
   Estado8<-Estado8[!(Estado8$MUNICIPIOS == ""), ]
   Estado8<-as.matrix(Estado8)
   Municip_count<-as.numeric(length(Estado8[,2]))
@@ -657,8 +657,8 @@ if(count(Estado8) == 0){rm(Estado8)}else{
 
 
 if(exists("Estado9") ==T){Estado9<-as.data.frame(Estado9)}else{Estado9<- data.frame(NULL)}
-if(count(Estado9) == 1){if(Estado9$MUNICIPIOS == ""){Estado9$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado9) == 0){rm(Estado9)}else{
+if(dplyr::count(Estado9) == 1){if(Estado9$MUNICIPIOS == ""){Estado9$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado9) == 0){rm(Estado9)}else{
   Estado9<-Estado9[!(Estado9$MUNICIPIOS == ""), ]
   Estado9<-as.matrix(Estado9)
   Municip_count<-as.numeric(length(Estado9[,2]))
@@ -702,8 +702,8 @@ if(count(Estado9) == 0){rm(Estado9)}else{
 
 
 if(exists("Estado10") ==T){Estado10<-as.data.frame(Estado10)}else{Estado10<- data.frame(NULL)}
-if(count(Estado10) == 1){if(Estado10$MUNICIPIOS == ""){Estado10$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado10) == 0){rm(Estado10)}else{
+if(dplyr::count(Estado10) == 1){if(Estado10$MUNICIPIOS == ""){Estado10$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado10) == 0){rm(Estado10)}else{
   Estado10<-Estado10[!(Estado10$MUNICIPIOS == ""), ]
   Estado10<-as.matrix(Estado10)
   Municip_count<-as.numeric(length(Estado10[,2]))
@@ -747,8 +747,8 @@ if(count(Estado10) == 0){rm(Estado10)}else{
 
 
 if(exists("Estado11") ==T){Estado11<-as.data.frame(Estado11)}else{Estado11<- data.frame(NULL)}
-if(count(Estado11) == 1){if(Estado11$MUNICIPIOS == ""){Estado11$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado11) == 0){rm(Estado11)}else{
+if(dplyr::count(Estado11) == 1){if(Estado11$MUNICIPIOS == ""){Estado11$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado11) == 0){rm(Estado11)}else{
   Estado11<-Estado11[!(Estado11$MUNICIPIOS == ""), ]
   Estado11<-as.matrix(Estado11)
   Municip_count<-as.numeric(length(Estado11[,2]))
@@ -792,8 +792,8 @@ if(count(Estado11) == 0){rm(Estado11)}else{
 
 
 if(exists("Estado12") ==T){Estado12<-as.data.frame(Estado12)}else{Estado12<- data.frame(NULL)}
-if(count(Estado12) == 1){if(Estado12$MUNICIPIOS == ""){Estado12$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado12) == 0){rm(Estado12)}else{
+if(dplyr::count(Estado12) == 1){if(Estado12$MUNICIPIOS == ""){Estado12$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado12) == 0){rm(Estado12)}else{
   Estado12<-Estado12[!(Estado12$MUNICIPIOS == ""), ]
   Estado12<-as.matrix(Estado12)
   Municip_count<-as.numeric(length(Estado12[,2]))
@@ -837,8 +837,8 @@ if(count(Estado12) == 0){rm(Estado12)}else{
 
 
 if(exists("Estado13") ==T){Estado13<-as.data.frame(Estado13)}else{Estado13<- data.frame(NULL)}
-if(count(Estado13) == 1){if(Estado13$MUNICIPIOS == ""){Estado13$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado13) == 0){rm(Estado13)}else{
+if(dplyr::count(Estado13) == 1){if(Estado13$MUNICIPIOS == ""){Estado13$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado13) == 0){rm(Estado13)}else{
   Estado13<-Estado13[!(Estado13$MUNICIPIOS == ""), ]
   Estado13<-as.matrix(Estado13)
   Municip_count<-as.numeric(length(Estado13[,2]))
@@ -882,8 +882,8 @@ if(count(Estado13) == 0){rm(Estado13)}else{
 
 
 if(exists("Estado14") ==T){Estado14<-as.data.frame(Estado14)}else{Estado14<- data.frame(NULL)}
-if(count(Estado14) == 1){if(Estado14$MUNICIPIOS == ""){Estado14$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado14) == 0){rm(Estado14)}else{
+if(dplyr::count(Estado14) == 1){if(Estado14$MUNICIPIOS == ""){Estado14$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado14) == 0){rm(Estado14)}else{
   Estado14<-Estado14[!(Estado14$MUNICIPIOS == ""), ]
   Estado14<-as.matrix(Estado14)
   Municip_count<-as.numeric(length(Estado14[,2]))
@@ -927,8 +927,8 @@ if(count(Estado14) == 0){rm(Estado14)}else{
 
 
 if(exists("Estado15") ==T){Estado15<-as.data.frame(Estado15)}else{Estado15<- data.frame(NULL)}
-if(count(Estado15) == 1){if(Estado15$MUNICIPIOS == ""){Estado15$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado15) == 0){rm(Estado15)}else{
+if(dplyr::count(Estado15) == 1){if(Estado15$MUNICIPIOS == ""){Estado15$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado15) == 0){rm(Estado15)}else{
   Estado15<-Estado15[!(Estado15$MUNICIPIOS == ""), ]
   Estado15<-as.matrix(Estado15)
   Municip_count<-as.numeric(length(Estado15[,2]))
@@ -972,8 +972,8 @@ if(count(Estado15) == 0){rm(Estado15)}else{
 
 
 if(exists("Estado16") ==T){Estado16<-as.data.frame(Estado16)}else{Estado16<- data.frame(NULL)}
-if(count(Estado16) == 1){if(Estado16$MUNICIPIOS == ""){Estado16$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado16) == 0){rm(Estado16)}else{
+if(dplyr::count(Estado16) == 1){if(Estado16$MUNICIPIOS == ""){Estado16$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado16) == 0){rm(Estado16)}else{
   Estado16<-Estado16[!(Estado16$MUNICIPIOS == ""), ]
   Estado16<-as.matrix(Estado16)
   Municip_count<-as.numeric(length(Estado16[,2]))
@@ -1017,8 +1017,8 @@ if(count(Estado16) == 0){rm(Estado16)}else{
 
 
 if(exists("Estado17") ==T){Estado17<-as.data.frame(Estado17)}else{Estado17<- data.frame(NULL)}
-if(count(Estado17) == 1){if(Estado17$MUNICIPIOS == ""){Estado17$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado17) == 0){rm(Estado17)}else{
+if(dplyr::count(Estado17) == 1){if(Estado17$MUNICIPIOS == ""){Estado17$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado17) == 0){rm(Estado17)}else{
   Estado17<-Estado17[!(Estado17$MUNICIPIOS == ""), ]
   Estado17<-as.matrix(Estado17)
   Municip_count<-as.numeric(length(Estado17[,2]))
@@ -1062,8 +1062,8 @@ if(count(Estado17) == 0){rm(Estado17)}else{
 
 
 if(exists("Estado18") ==T){Estado18<-as.data.frame(Estado18)}else{Estado18<- data.frame(NULL)}
-if(count(Estado18) == 1){if(Estado18$MUNICIPIOS == ""){Estado18$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado18) == 0){rm(Estado18)}else{
+if(dplyr::count(Estado18) == 1){if(Estado18$MUNICIPIOS == ""){Estado18$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado18) == 0){rm(Estado18)}else{
   Estado18<-Estado18[!(Estado18$MUNICIPIOS == ""), ]
   Estado18<-as.matrix(Estado18)
   Municip_count<-as.numeric(length(Estado18[,2]))
@@ -1107,8 +1107,8 @@ if(count(Estado18) == 0){rm(Estado18)}else{
 
 
 if(exists("Estado19") ==T){Estado19<-as.data.frame(Estado19)}else{Estado19<- data.frame(NULL)}
-if(count(Estado19) == 1){if(Estado19$MUNICIPIOS == ""){Estado19$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado19) == 0){rm(Estado19)}else{
+if(dplyr::count(Estado19) == 1){if(Estado19$MUNICIPIOS == ""){Estado19$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado19) == 0){rm(Estado19)}else{
   Estado19<-Estado19[!(Estado19$MUNICIPIOS == ""), ]
   Estado19<-as.matrix(Estado19)
   Municip_count<-as.numeric(length(Estado19[,2]))
@@ -1152,8 +1152,8 @@ if(count(Estado19) == 0){rm(Estado19)}else{
 
 
 if(exists("Estado20") ==T){Estado20<-as.data.frame(Estado20)}else{Estado20<- data.frame(NULL)}
-if(count(Estado20) == 1){if(Estado20$MUNICIPIOS == ""){Estado20$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado20) == 0){rm(Estado20)}else{
+if(dplyr::count(Estado20) == 1){if(Estado20$MUNICIPIOS == ""){Estado20$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado20) == 0){rm(Estado20)}else{
   Estado20<-Estado20[!(Estado20$MUNICIPIOS == ""), ]
   Estado20<-as.matrix(Estado20)
   Municip_count<-as.numeric(length(Estado20[,2]))
@@ -1197,8 +1197,8 @@ if(count(Estado20) == 0){rm(Estado20)}else{
 
 
 if(exists("Estado21") ==T){Estado21<-as.data.frame(Estado21)}else{Estado21<- data.frame(NULL)}
-if(count(Estado21) == 1){if(Estado21$MUNICIPIOS == ""){Estado21$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado21) == 0){rm(Estado21)}else{
+if(dplyr::count(Estado21) == 1){if(Estado21$MUNICIPIOS == ""){Estado21$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado21) == 0){rm(Estado21)}else{
   Estado21<-Estado21[!(Estado21$MUNICIPIOS == ""), ]
   Estado21<-as.matrix(Estado21)
   Municip_count<-as.numeric(length(Estado21[,2]))
@@ -1242,8 +1242,8 @@ if(count(Estado21) == 0){rm(Estado21)}else{
 
 
 if(exists("Estado22") ==T){Estado22<-as.data.frame(Estado22)}else{Estado22<- data.frame(NULL)}
-if(count(Estado22) == 1){if(Estado22$MUNICIPIOS == ""){Estado22$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado22) == 0){rm(Estado22)}else{
+if(dplyr::count(Estado22) == 1){if(Estado22$MUNICIPIOS == ""){Estado22$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado22) == 0){rm(Estado22)}else{
   Estado22<-Estado22[!(Estado22$MUNICIPIOS == ""), ]
   Estado22<-as.matrix(Estado22)
   Municip_count<-as.numeric(length(Estado22[,2]))
@@ -1287,8 +1287,8 @@ if(count(Estado22) == 0){rm(Estado22)}else{
 
 
 if(exists("Estado23") ==T){Estado23<-as.data.frame(Estado23)}else{Estado23<- data.frame(NULL)}
-if(count(Estado23) == 1){if(Estado23$MUNICIPIOS == ""){Estado23$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado23) == 0){rm(Estado23)}else{
+if(dplyr::count(Estado23) == 1){if(Estado23$MUNICIPIOS == ""){Estado23$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado23) == 0){rm(Estado23)}else{
   Estado23<-Estado23[!(Estado23$MUNICIPIOS == ""), ]
   Estado23<-as.matrix(Estado23)
   Municip_count<-as.numeric(length(Estado23[,2]))
@@ -1332,8 +1332,8 @@ if(count(Estado23) == 0){rm(Estado23)}else{
 
 
 if(exists("Estado24") ==T){Estado24<-as.data.frame(Estado24)}else{Estado24<- data.frame(NULL)}
-if(count(Estado24) == 1){if(Estado24$MUNICIPIOS == ""){Estado24$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado24) == 0){rm(Estado24)}else{
+if(dplyr::count(Estado24) == 1){if(Estado24$MUNICIPIOS == ""){Estado24$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado24) == 0){rm(Estado24)}else{
   Estado24<-Estado24[!(Estado24$MUNICIPIOS == ""), ]
   Estado24<-as.matrix(Estado24)
   Municip_count<-as.numeric(length(Estado24[,2]))
@@ -1377,8 +1377,8 @@ if(count(Estado24) == 0){rm(Estado24)}else{
 
 
 if(exists("Estado25") ==T){Estado25<-as.data.frame(Estado25)}else{Estado25<- data.frame(NULL)}
-if(count(Estado25) == 1){if(Estado25$MUNICIPIOS == ""){Estado25$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado25) == 0){rm(Estado25)}else{
+if(dplyr::count(Estado25) == 1){if(Estado25$MUNICIPIOS == ""){Estado25$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado25) == 0){rm(Estado25)}else{
   Estado25<-Estado25[!(Estado25$MUNICIPIOS == ""), ]
   Estado25<-as.matrix(Estado25)
   Municip_count<-as.numeric(length(Estado25[,2]))
@@ -1422,8 +1422,8 @@ if(count(Estado25) == 0){rm(Estado25)}else{
 
 
 if(exists("Estado26") ==T){Estado26<-as.data.frame(Estado26)}else{Estado26<- data.frame(NULL)}
-if(count(Estado26) == 1){if(Estado26$MUNICIPIOS == ""){Estado26$MUNICIPIOS<-"município(s) desconhecido(s)"}}
-if(count(Estado26) == 0){rm(Estado26)}else{
+if(dplyr::count(Estado26) == 1){if(Estado26$MUNICIPIOS == ""){Estado26$MUNICIPIOS<-"município(s) desconhecido(s)"}}
+if(dplyr::count(Estado26) == 0){rm(Estado26)}else{
   Estado26<-Estado26[!(Estado26$MUNICIPIOS == ""), ]
   Estado26<-as.matrix(Estado26)
   Municip_count<-as.numeric(length(Estado26[,2]))
@@ -1544,14 +1544,14 @@ ter <- fread(
 if(
 
   length(ter) == 1 &
-  nrow(ter) &
+  nrow(ter) == 1 &
   is.na(ter[1,1]) == T
 
 ){} else{
 
-  if(count(OCORRENCinv) == 0){}else{
+  if(dplyr::count(OCORRENCinv) == 0){}else{
     OCORRENCinv_ter<-data.frame(nome_aceit="NA", id_da_ocor=OCORRENCinv$URNs.toDelete..., Estado="NA", territorio="NA", info_Nome="NA")
-    ter<-rbind(ter,OCORRENCinv_ter)
+    ter<-rbind(ter,OCORRENCinv_ter, use.names=FALSE)
     ter_inv<-which(ter$id_da_ocor %in% OCORRENCinv_ter$id_da_ocor)
     ter<-ter[-c(ter_inv),]}
   ter2<-as.matrix(ter[,1])
@@ -1989,12 +1989,12 @@ ucs <- fread(
 if(
 
   length(ucs) == 1 &
-  nrow(ucs) &
+  nrow(ucs) == 1 &
   is.na(ucs[1,1]) == T
 
 ){} else{
 
-  if(count(OCORRENCinv) == 0){}else{
+  if(dplyr::count(OCORRENCinv) == 0){}else{
 
     OCORRENCinv_ucs <-
       data.frame(
@@ -2005,7 +2005,7 @@ if(
 
       )
 
-    ucs <- rbind(ucs, OCORRENCinv_ucs)
+    ucs <- rbind(ucs, OCORRENCinv_ucs, use.names=FALSE)
 
     ucs_inv<-which(ucs$id_da_ocor %in% OCORRENCinv_ucs$id_da_ocor)
 
@@ -2259,9 +2259,9 @@ if(listOfSpecies$flow == "PA"){
   d<-data.frame(UC = a$V9)
   e<-data.frame(UC = b$V3)
   UC<-rbind(d,e)
-  d<-data.frame(Ameaca = a$V12)
-  e<-data.frame(Ameaca = b$V8)
-  ameaca<-rbind(d,e)
+  d<-data.frame(Classe = a$V12)
+  e<-data.frame(Classe = b$V8)
+  Classe<-rbind(d,e)
   d<-data.frame(Texto = a$V18)
   e<-data.frame(Texto = b$V12)
   texto<-rbind(d,e)
@@ -2323,7 +2323,7 @@ if(listOfSpecies$flow == "PA"){
   OCORRENCIAS$Municipio<-str_trim(OCORRENCIAS$Municipio, side = c("both"))
   OCORRENCIAS2<-paste("^", OCORRENCIAS$Municipio," (",OCORRENCIAS$Estado,")", sep="")
 
-  g<-cbind(ameaca,bioma,vegetacao,estado,municipio,UC,texto,referencia,fonte)
+  g<-cbind(Classe,bioma,vegetacao,estado,municipio,UC,texto,referencia,fonte)
 
   message("  Filtering threats by occurrence records...")
 
@@ -2372,17 +2372,17 @@ if(listOfSpecies$flow == "PA"){
   i<-g %>% filter(Bioma %in% BIOMAS & Estado == "" & Vegetacao == "" & UC == "")
   j<-rbind(i,h,if(exists("y")){y})
   j$UC<-replace_na(j$UC,"")
-  k<-j[order(j$Ameaca),]
+  k<-j[order(j$Classe),]
 
   ### Mesclando MapBiomas ####
 
   message("  Collecting data from MapBiomas Municipalities 2020...")
 
-  ameacas_MapBiomas<-k %>% filter(Fonte == "MapBiomas")
+  Classes_MapBiomas<-k %>% filter(Fonte == "MapBiomas")
   k<-k %>% filter(!Fonte == "MapBiomas")
 
   #### Urban Areas - MapBiomas ####
-  urban_areas_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "1.1 Housing & urban areas")
+  urban_areas_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "1.1 Housing & urban areas")
   urban_areas_MapBiomas<-urban_areas_MapBiomas %>% arrange(Municipio)
 
   ##### Excluindo áreas urbanas abaixo de 5% ####
@@ -2408,7 +2408,7 @@ if(listOfSpecies$flow == "PA"){
   if(exists("quatro_porc_exat")){urban_areas_MapBiomas<-urban_areas_MapBiomas[-c(quatro_porc_exat),]}
 
   #### Silvicultura - MapBiomas ####
-  silvicultura_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "2.2.3 Scale Unknown/Unrecorded")
+  silvicultura_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "2.2.3 Scale Unknown/Unrecorded")
   silvicultura_MapBiomas<-silvicultura_MapBiomas %>% arrange(Municipio)
 
   ##### Excluindo silvicultura abaixo de 5% ####
@@ -2434,7 +2434,7 @@ if(listOfSpecies$flow == "PA"){
   if(exists("quatro_porc_exat")){silvicultura_MapBiomas<-silvicultura_MapBiomas[-c(quatro_porc_exat),]}
 
   #### Pastagens - MapBiomas ####
-  pastagens_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded")
+  pastagens_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded")
   pastagens_MapBiomas<-pastagens_MapBiomas %>% filter(str_detect(Texto, "de pastagens"))
   pastagens_MapBiomas<-pastagens_MapBiomas %>% arrange(Municipio)
 
@@ -2461,7 +2461,7 @@ if(listOfSpecies$flow == "PA"){
   if(exists("quatro_porc_exat")){pastagens_MapBiomas<-pastagens_MapBiomas[-c(quatro_porc_exat),]}
 
   #### Culturas agrícolas - Mapbiomas ####
-  cult_agric_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded")
+  cult_agric_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded")
   cult_agric_MapBiomas<-cult_agric_MapBiomas %>% filter(str_detect(Texto, "culturas"))
   cult_agric_MapBiomas<-cult_agric_MapBiomas %>% arrange(Municipio)
 
@@ -2480,7 +2480,7 @@ if(listOfSpecies$flow == "PA"){
   if(exists("zero_porc_exat")){cult_agric_MapBiomas<-cult_agric_MapBiomas[-c(zero_porc_exat),]}
 
   #### Cana-de-açúcar - Mapbiomas ####
-  cana_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded")
+  cana_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded")
   cana_MapBiomas<-cana_MapBiomas %>% filter(str_detect(Texto, "áreas de culturas de cana-de-açúcar"))
   cana_MapBiomas<-cana_MapBiomas %>% arrange(Municipio)
 
@@ -2499,7 +2499,7 @@ if(listOfSpecies$flow == "PA"){
   if(exists("zero_porc_exat")){cana_MapBiomas<-cana_MapBiomas[-c(zero_porc_exat),]}
 
   #### Soja - Mapbiomas ####
-  soja_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded")
+  soja_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded")
   soja_MapBiomas<-soja_MapBiomas %>% filter(str_detect(Texto, "áreas de culturas de soja"))
   soja_MapBiomas<-soja_MapBiomas %>% arrange(Municipio)
 
@@ -2526,7 +2526,7 @@ if(listOfSpecies$flow == "PA"){
   if(exists("quatro_porc_exat")){soja_MapBiomas<-soja_MapBiomas[-c(quatro_porc_exat),]}
 
   #### Mining - MapBiomas ####
-  mining_MapBiomas<-ameacas_MapBiomas %>% filter(Ameaca == "3.2 Mining & quarrying")
+  mining_MapBiomas<-Classes_MapBiomas %>% filter(Classe == "3.2 Mining & quarrying")
   mining_MapBiomas<-mining_MapBiomas %>% arrange(Municipio)
 
   ##### Excluindo mineração abaixo de 1% ####
@@ -2559,12 +2559,12 @@ if(listOfSpecies$flow == "PA"){
 
   message("  Collecting data from Lapig Municipalities 2020...")
 
-  ameacas_lapig<-k %>% filter(Fonte == "Lapig")
+  Classes_lapig<-k %>% filter(Fonte == "Lapig")
   k<-k %>% filter(!Fonte == "Lapig")
 
   #### Pastagens ####
-  pastagens_lapig<-ameacas_lapig %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded")
-  #ameacas_lapig<-ameacas_lapig %>% filter(!Ameaca == "2.3.4 Scale Unknown/Unrecorded")
+  pastagens_lapig<-Classes_lapig %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded")
+  #Classes_lapig<-Classes_lapig %>% filter(!Classe == "2.3.4 Scale Unknown/Unrecorded")
 
   ##### Excluindo pastagens abaixo de 5% ####
   zero_porc<-grep("\\s0\\,.*%",pastagens_lapig$Texto);if(length(zero_porc)==0){rm(zero_porc)}
@@ -2594,10 +2594,10 @@ if(listOfSpecies$flow == "PA"){
 
   l<-k %>% filter(Fonte == "IBGE")
   k<-k %>% filter(!Fonte == "IBGE")
-  m<-l %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded")
-  l<-l %>% filter(!Ameaca == "2.1.4 Scale Unknown/Unrecorded")
-  n<-l %>% filter(Ameaca == "2.2.3 Scale Unknown/Unrecorded")
-  l<-l %>% filter(!Ameaca == "2.2.3 Scale Unknown/Unrecorded")
+  m<-l %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded")
+  l<-l %>% filter(!Classe == "2.1.4 Scale Unknown/Unrecorded")
+  n<-l %>% filter(Classe == "2.2.3 Scale Unknown/Unrecorded")
+  l<-l %>% filter(!Classe == "2.2.3 Scale Unknown/Unrecorded")
 
 
   message("    Forestry...")
@@ -2624,10 +2624,10 @@ if(listOfSpecies$flow == "PA"){
   quatro_porc_exat<-grep("\\s4%",n$Texto);if(length(quatro_porc_exat)==0){rm(quatro_porc_exat)}
   if(exists("quatro_porc_exat")){n<-n[-c(quatro_porc_exat),]}
 
-  #o<-l %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded")
-  #l<-l %>% filter(!Ameaca == "2.3.4 Scale Unknown/Unrecorded")
-  p<-l %>% filter(Ameaca == "5.3.5 Motivation Unknown/Unrecorded")
-  l<-l %>% filter(!Ameaca == "5.3.5 Motivation Unknown/Unrecorded")
+  #o<-l %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded")
+  #l<-l %>% filter(!Classe == "2.3.4 Scale Unknown/Unrecorded")
+  p<-l %>% filter(Classe == "5.3.5 Motivation Unknown/Unrecorded")
+  l<-l %>% filter(!Classe == "5.3.5 Motivation Unknown/Unrecorded")
   ### Resultado IBGE: m,n,o,p
 
   m1<-as.matrix(m$Texto)
@@ -2669,8 +2669,8 @@ if(listOfSpecies$flow == "PA"){
   m5<-m5[order(m5$m4),]
 
   m5_cult_agricolas<-m5 %>% filter(m4 == "agrícolas")
-  if(count(m5_cult_agricolas) == 0){rm(m5_cult_agricolas)} else{
-    if(count(m5_cult_agricolas) == 1){m5_cult_agricolas_munES<-m5_cult_agricolas$m2;m5_cult_agricolas<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_cult_agricolas$m2), "possui", as.matrix(m5_cult_agricolas$m3), "do seu território convertido em áreas de culturas agrícolas, segundo dados de 2020 (IBGE, 2022)."));m5_cult_agricolas_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: total, dados de 2020. Município: ", m5_cult_agricolas_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA,").", sep=""))} else{
+  if(dplyr::count(m5_cult_agricolas) == 0){rm(m5_cult_agricolas)} else{
+    if(dplyr::count(m5_cult_agricolas) == 1){m5_cult_agricolas_munES<-m5_cult_agricolas$m2;m5_cult_agricolas<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_cult_agricolas$m2), "possui", as.matrix(m5_cult_agricolas$m3), "do seu território convertido em áreas de culturas agrícolas, segundo dados de 2020 (IBGE, 2022)."));m5_cult_agricolas_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: total, dados de 2020. Município: ", m5_cult_agricolas_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA,").", sep=""))} else{
       m5_cult_agricolas_mun<-str_extract(as.matrix(m5_cult_agricolas$m2), ".*\\(")
       m5_cult_agricolas_mun<-substr(m5_cult_agricolas_mun,1,nchar(m5_cult_agricolas_mun)-2)
       m5_cult_agricolas_ES<-str_extract(as.matrix(m5_cult_agricolas$m2), "\\(..\\)")
@@ -2692,8 +2692,8 @@ if(listOfSpecies$flow == "PA"){
   message("      Coton...")
 
   m5_algodao<-m5 %>% filter(m4 == "algodão")
-  if(count(m5_algodao) == 0){rm(m5_algodao)} else{
-    if(count(m5_algodao) == 1){m5_algodao_munES<-as.matrix(m5_algodao$m2);m5_algodao<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_algodao$m2), "possui", as.matrix(m5_algodao$m3), "do seu território convertido em áreas de cultivo de algodão, segundo dados de 2020 (IBGE, 2022)."));m5_algodao_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: algodão, dados de 2020. Município: ", m5_algodao_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
+  if(dplyr::count(m5_algodao) == 0){rm(m5_algodao)} else{
+    if(dplyr::count(m5_algodao) == 1){m5_algodao_munES<-as.matrix(m5_algodao$m2);m5_algodao<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_algodao$m2), "possui", as.matrix(m5_algodao$m3), "do seu território convertido em áreas de cultivo de algodão, segundo dados de 2020 (IBGE, 2022)."));m5_algodao_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: algodão, dados de 2020. Município: ", m5_algodao_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
       m5_algodao_mun<-str_extract(as.matrix(m5_algodao$m2), ".*\\(")
       m5_algodao_mun<-substr(m5_algodao_mun,1,nchar(m5_algodao_mun)-2)
       m5_algodao_ES<-str_extract(as.matrix(m5_algodao$m2), "\\(..\\)")
@@ -2712,8 +2712,8 @@ if(listOfSpecies$flow == "PA"){
   message("      Sugarcane...")
 
   m5_cana<-m5 %>% filter(m4 == "cana-de-açúcar")
-  if(count(m5_cana) == 0){rm(m5_cana)} else{
-    if(count(m5_cana) == 1){m5_cana_munES<-as.matrix(m5_cana$m2);m5_cana<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_cana$m2), "possui", as.matrix(m5_cana$m3), "do seu território convertido em áreas de cultivo de cana-de-açúcar, segundo dados de 2020 (IBGE, 2022)."));m5_cana_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: cana-de-açúcar, dados de 2020. Município: ", m5_cana_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
+  if(dplyr::count(m5_cana) == 0){rm(m5_cana)} else{
+    if(dplyr::count(m5_cana) == 1){m5_cana_munES<-as.matrix(m5_cana$m2);m5_cana<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_cana$m2), "possui", as.matrix(m5_cana$m3), "do seu território convertido em áreas de cultivo de cana-de-açúcar, segundo dados de 2020 (IBGE, 2022)."));m5_cana_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: cana-de-açúcar, dados de 2020. Município: ", m5_cana_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
       m5_cana_mun<-str_extract(as.matrix(m5_cana$m2), ".*\\(")
       m5_cana_mun<-substr(m5_cana_mun,1,nchar(m5_cana_mun)-2)
       m5_cana_ES<-str_extract(as.matrix(m5_cana$m2), "\\(..\\)")
@@ -2732,8 +2732,8 @@ if(listOfSpecies$flow == "PA"){
   message("      Corn...")
 
   m5_milho<-m5 %>% filter(m4 == "milho")
-  if(count(m5_milho) == 0){rm(m5_milho)} else{
-    if(count(m5_milho) == 1){m5_milho_munES<-as.matrix(m5_milho$m2);m5_milho<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_milho$m2), "possui", as.matrix(m5_milho$m3), "do seu território convertido em áreas de cultivo de milho, segundo dados de 2020 (IBGE, 2022)."));m5_milho_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: milho, dados de 2020. ", m5_milho_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
+  if(dplyr::count(m5_milho) == 0){rm(m5_milho)} else{
+    if(dplyr::count(m5_milho) == 1){m5_milho_munES<-as.matrix(m5_milho$m2);m5_milho<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_milho$m2), "possui", as.matrix(m5_milho$m3), "do seu território convertido em áreas de cultivo de milho, segundo dados de 2020 (IBGE, 2022)."));m5_milho_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: milho, dados de 2020. ", m5_milho_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
       m5_milho_mun<-str_extract(as.matrix(m5_milho$m2), ".*\\(")
       m5_milho_mun<-substr(m5_milho_mun,1,nchar(m5_milho_mun)-2)
       m5_milho_ES<-str_extract(as.matrix(m5_milho$m2), "\\(..\\)")
@@ -2752,8 +2752,8 @@ if(listOfSpecies$flow == "PA"){
   message("      Soy...")
 
   m5_soja<-m5 %>% filter(m4 == "soja")
-  if(count(m5_soja) == 0){rm(m5_soja)} else{
-    if(count(m5_soja) == 1){m5_soja_munES<-as.matrix(m5_soja$m2);m5_soja<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_soja$m2), "possui", as.matrix(m5_soja$m3), "do seu território convertido em áreas de cultivo de soja, segundo dados de 2020 (IBGE, 2022)."));m5_soja_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: soja, dados de 2020. Município: ", m5_soja_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
+  if(dplyr::count(m5_soja) == 0){rm(m5_soja)} else{
+    if(dplyr::count(m5_soja) == 1){m5_soja_munES<-as.matrix(m5_soja$m2);m5_soja<-capture.output(cat("De acordo com o IBGE, o município de", as.matrix(m5_soja$m2), "possui", as.matrix(m5_soja$m3), "do seu território convertido em áreas de cultivo de soja, segundo dados de 2020 (IBGE, 2022)."));m5_soja_ref<-capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção Agrícola Municipal - Área plantada: soja, dados de 2020. Município: ", m5_soja_munES, ". URL https://sidra.ibge.gov.br/Tabela/1612 (acesso em ", DATA, ").", sep=""))} else{
       m5_soja_mun<-str_extract(as.matrix(m5_soja$m2), ".*\\(")
       m5_soja_mun<-substr(m5_soja_mun,1,nchar(m5_soja_mun)-2)
       m5_soja_ES<-str_extract(as.matrix(m5_soja$m2), "\\(..\\)")
@@ -2786,9 +2786,9 @@ if(listOfSpecies$flow == "PA"){
 
   message("    Merging agriculture...")
 
-  ## Adicionando mesclagem da ameaca 2.1.4
+  ## Adicionando mesclagem da Classe 2.1.4
 
-  if(count(as.data.frame(m1)) == 0){} else {
+  if(dplyr::count(as.data.frame(m1)) == 0){} else {
 
     if(
 
@@ -2800,7 +2800,7 @@ if(listOfSpecies$flow == "PA"){
       ame214 <-
         data.frame(
 
-          Ameaca = "2.1.4 Scale Unknown/Unrecorded",
+          Classe = "2.1.4 Scale Unknown/Unrecorded",
           Bioma = "",
           Vegetacao = "",
           Estado = "",
@@ -2817,11 +2817,11 @@ if(listOfSpecies$flow == "PA"){
   }
 
   ## Mesclando culturas agricolas IBGE e antigas culturas IBGE
-  if(exists("m5_cult_agricolas") == T){ame214_cult_agric<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = m5_cult_agricolas, Referência = m5_cult_agricolas_ref, Fonte = "IBGE")}
+  if(exists("m5_cult_agricolas") == T){ame214_cult_agric<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = m5_cult_agricolas, Referência = m5_cult_agricolas_ref, Fonte = "IBGE")}
 
 
-  if(count(as.data.frame(n)) == 0){rm(n)} else{
-    if (count(n) == 1){n1<-as.matrix(n$Texto); n1<-sub("O município de ", "", n1); n2<-sub("(\\scom.*)", "", n1, perl=T); n3<-str_extract(n1, "possui\\s.*(ha\\))"); n3<-sub("possui ", "", n3); n<-capture.output(cat("De acordo com o IBGE, o município", as.matrix(n2), "possui", as.matrix(n3), "do seu território convertido em áreas de silvicultura, segundo dados de 2020 (IBGE, 2022).")); ame223<-data.frame(Ameaca = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = n, Referência = capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção da Extração Vegetal e da Silvicultura, dados de 2020. Município: ", n2,". URL https://sidra.ibge.gov.br/Tabela/5930 (acesso em ", DATA, ").", sep="")), Fonte = "IBGE"); k<-rbind(k,ame223)} else {
+  if(dplyr::count(as.data.frame(n)) == 0){rm(n)} else{
+    if (dplyr::count(n) == 1){n1<-as.matrix(n$Texto); n1<-sub("O município de ", "", n1); n2<-sub("(\\scom.*)", "", n1, perl=T); n3<-str_extract(n1, "possui\\s.*(ha\\))"); n3<-sub("possui ", "", n3); n<-capture.output(cat("De acordo com o IBGE, o município", as.matrix(n2), "possui", as.matrix(n3), "do seu território convertido em áreas de silvicultura, segundo dados de 2020 (IBGE, 2022).")); ame223<-data.frame(Classe = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = n, Referência = capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção da Extração Vegetal e da Silvicultura, dados de 2020. Município: ", n2,". URL https://sidra.ibge.gov.br/Tabela/5930 (acesso em ", DATA, ").", sep="")), Fonte = "IBGE"); k<-rbind(k,ame223)} else {
       n1<-as.matrix(n$Texto)
       n1<-sub("O município de ", "", n1)
       n2<-sub("(\\scom.*)", "", n1, perl=T)
@@ -2832,14 +2832,14 @@ if(listOfSpecies$flow == "PA"){
       n3<-capture.output(cat(n3, sep=", "))
       n3 <- stri_replace_last(n3, fixed = '),', ') e')
       n<-capture.output(cat("De acordo com o IBGE, os municípios", n2, "possuem, respectivamente,", n3, "de seus territórios convertidos em áreas de silvicultura, segundo dados de 2020 (IBGE, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.2.3
-      ame223<-data.frame(Ameaca = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = n, Referência = capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção da Extração Vegetal e da Silvicultura, dados de 2020. Municípios: ", n2, ". URL https://sidra.ibge.gov.br/Tabela/5930 (acesso em ", DATA, ").", sep="")), Fonte = "IBGE")
+      ## Adicionando mesclagem da Classe 2.2.3
+      ame223<-data.frame(Classe = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = n, Referência = capture.output(cat("IBGE - Instituto Brasileiro de Geografia e Estatística, 2022. Produção da Extração Vegetal e da Silvicultura, dados de 2020. Municípios: ", n2, ". URL https://sidra.ibge.gov.br/Tabela/5930 (acesso em ", DATA, ").", sep="")), Fonte = "IBGE")
       k<-rbind(k,ame223)
     }
   }
 
-  #if(count(o) == 0){rm(o)} else{
-  #  if (count(o) == 1){o1<-as.matrix(o$Texto); o1<-sub("O município de ", "", o1); o2<-sub("(\\scom.*)", "", o1, perl=T); o3<-str_extract(o1, "possui\\s.*(ha\\))"); o3<-sub("possui ", "", o3); o<-capture.output(cat("O município", as.matrix(o2), "possui", as.matrix(o3), "do seu território convertido em áreas de pastagem (Lapig, 2022).")); ame234<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Município = "", UC = "", Texto = o, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", o2, ". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em 20 de março de 2021).", sep="")), Fonte = "Lapig"); k<-rbind(k,ame234)} else {
+  #if(dplyr::count(o) == 0){rm(o)} else{
+  #  if (dplyr::count(o) == 1){o1<-as.matrix(o$Texto); o1<-sub("O município de ", "", o1); o2<-sub("(\\scom.*)", "", o1, perl=T); o3<-str_extract(o1, "possui\\s.*(ha\\))"); o3<-sub("possui ", "", o3); o<-capture.output(cat("O município", as.matrix(o2), "possui", as.matrix(o3), "do seu território convertido em áreas de pastagem (Lapig, 2022).")); ame234<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Município = "", UC = "", Texto = o, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", o2, ". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em 20 de março de 2021).", sep="")), Fonte = "Lapig"); k<-rbind(k,ame234)} else {
   #    o1<-as.matrix(o$Texto)
   #    o1<-sub("O município de ", "", o1)
   #    o2<-sub("(\\scom.*)", "", o1, perl=T)
@@ -2850,16 +2850,16 @@ if(listOfSpecies$flow == "PA"){
   #    o3<-capture.output(cat(o3, sep=", "))
   #    o3 <- stri_replace_last(o3, fixed = ',', ' e')
   #    o<-capture.output(cat("Os municípios", o2, "possuem, respectivamente,", o3, "de seus territórios convertidos em áreas de pastagem (Lapig, 2022)."))
-  #    ## Adicionando mesclagem da ameaca 2.3.4
-  #    ame234<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Município = "", UC = "", Texto = o, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", o2, ". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em 20 de março de 2021).")), Fonte = "Lapig")
+  #    ## Adicionando mesclagem da Classe 2.3.4
+  #    ame234<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Município = "", UC = "", Texto = o, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", o2, ". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em 20 de março de 2021).")), Fonte = "Lapig")
   #k<-rbind(k,ame234)
   #  }
   #}
 
   message("    Logging...")
 
-  if(count(p) == 0){rm(p)} else{
-    if (count(p) == 1){p1<-as.matrix(p$Texto); p1<-sub("O município de ", "", p1); p2<-sub("(\\scom.*)", "", p1, perl=T); p3<-str_extract(p1, "possui\\s.*(ha\\))"); p3<-sub("possui ", "", p3); p<-capture.output(cat("De acordo com o IBGE, o município", as.matrix(p2), "possui", as.matrix(p3), "em desmatamento acumulado em seu território (Lapig, 2022).")); ame535<-data.frame(Ameaca = "5.3.5 Motivation Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = p, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", p2, ". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em ", DATA, ").", sep="")), Fonte = "Lapig"); k<-rbind(k,ame535)} else {
+  if(dplyr::count(p) == 0){rm(p)} else{
+    if (dplyr::count(p) == 1){p1<-as.matrix(p$Texto); p1<-sub("O município de ", "", p1); p2<-sub("(\\scom.*)", "", p1, perl=T); p3<-str_extract(p1, "possui\\s.*(ha\\))"); p3<-sub("possui ", "", p3); p<-capture.output(cat("De acordo com o IBGE, o município", as.matrix(p2), "possui", as.matrix(p3), "em desmatamento acumulado em seu território (Lapig, 2022).")); ame535<-data.frame(Classe = "5.3.5 Motivation Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = p, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", p2, ". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em ", DATA, ").", sep="")), Fonte = "Lapig"); k<-rbind(k,ame535)} else {
       p1<-as.matrix(p$Texto)
       p1<-sub("O município de ", "", p1)
       p2<-sub("(\\scom.*)", "", p1, perl=T)
@@ -2870,16 +2870,16 @@ if(listOfSpecies$flow == "PA"){
       p3<-capture.output(cat(p3, sep=", "))
       p3 <- stri_replace_last(p3, fixed = ',', ' e')
       p<-capture.output(cat("De acordo com o IBGE, os municípios", p2, "possuem, respectivamente,", p3, "em desmatamento acumulado em seus territórios (Lapig, 2022)."))
-      ## Adicionando mesclagem da ameaca 5.3.5
-      ame535<-data.frame(Ameaca = "5.3.5 Motivation Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = p, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", p2,". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em ", DATA, ").", sep="")), Fonte = "Lapig")
+      ## Adicionando mesclagem da Classe 5.3.5
+      ame535<-data.frame(Classe = "5.3.5 Motivation Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = p, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. ", p2,". URL https://maps.lapig.iesa.ufg.br/lapig.html (acesso em ", DATA, ").", sep="")), Fonte = "Lapig")
       k<-rbind(k,ame535)
     }
   }
 
   message("  Collecting data from MapBiomas Cover Land 2020 - Municipalities...")
 
-  if(count(urban_areas_MapBiomas) == 0){rm(urban_areas_MapBiomas)} else{
-    if (count(urban_areas_MapBiomas) == 1){urban_areas_MapBiomas1<-as.matrix(urban_areas_MapBiomas$Texto); urban_areas_MapBiomas1<-sub("O município de ", "", urban_areas_MapBiomas1); urban_areas_MapBiomas2<-sub("(\\scom.*)", "", urban_areas_MapBiomas1, perl=T); urban_areas_MapBiomas3<-str_extract(urban_areas_MapBiomas1, "possui\\s.*(ha\\))"); urban_areas_MapBiomas3<-sub("possui ", "", urban_areas_MapBiomas3); urban_areas_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(urban_areas_MapBiomas2), "possui", as.matrix(urban_areas_MapBiomas3), "do seu território convertido em áreas de infraestrutura urbana, segundo dados de 2020 (MapBiomas, 2022).")); ame11<-data.frame(Ameaca = "1.1 Housing & urban areas", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = urban_areas_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", urban_areas_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame11)} else {
+  if(dplyr::count(urban_areas_MapBiomas) == 0){rm(urban_areas_MapBiomas)} else{
+    if (dplyr::count(urban_areas_MapBiomas) == 1){urban_areas_MapBiomas1<-as.matrix(urban_areas_MapBiomas$Texto); urban_areas_MapBiomas1<-sub("O município de ", "", urban_areas_MapBiomas1); urban_areas_MapBiomas2<-sub("(\\scom.*)", "", urban_areas_MapBiomas1, perl=T); urban_areas_MapBiomas3<-str_extract(urban_areas_MapBiomas1, "possui\\s.*(ha\\))"); urban_areas_MapBiomas3<-sub("possui ", "", urban_areas_MapBiomas3); urban_areas_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(urban_areas_MapBiomas2), "possui", as.matrix(urban_areas_MapBiomas3), "do seu território convertido em áreas de infraestrutura urbana, segundo dados de 2020 (MapBiomas, 2022).")); ame11<-data.frame(Classe = "1.1 Housing & urban areas", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = urban_areas_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", urban_areas_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame11)} else {
       urban_areas_MapBiomas1<-as.matrix(urban_areas_MapBiomas$Texto)
       urban_areas_MapBiomas1<-sub("O município de ", "", urban_areas_MapBiomas1)
       urban_areas_MapBiomas2<-sub("(\\scom.*)", "", urban_areas_MapBiomas1, perl=T)
@@ -2890,14 +2890,14 @@ if(listOfSpecies$flow == "PA"){
       urban_areas_MapBiomas3<-capture.output(cat(urban_areas_MapBiomas3, sep=", "))
       urban_areas_MapBiomas3 <- stri_replace_last(urban_areas_MapBiomas3, fixed = '), ', ') e ')
       urban_areas_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, os municípios", urban_areas_MapBiomas2, "possuem, respectivamente,", urban_areas_MapBiomas3, "de seus territórios convertidos em áreas de infraestrutura urbana, segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 1.1
-      ame11<-data.frame(Ameaca = "1.1 Housing & urban areas", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = urban_areas_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", urban_areas_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 1.1
+      ame11<-data.frame(Classe = "1.1 Housing & urban areas", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = urban_areas_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", urban_areas_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
       k<-rbind(k,ame11)
     }
   }
 
-  if(count(silvicultura_MapBiomas) == 0){rm(silvicultura_MapBiomas)} else{
-    if (count(silvicultura_MapBiomas) == 1){silvicultura_MapBiomas1<-as.matrix(silvicultura_MapBiomas$Texto); silvicultura_MapBiomas1<-sub("O município de ", "", silvicultura_MapBiomas1); silvicultura_MapBiomas2<-sub("(\\scom.*)", "", silvicultura_MapBiomas1, perl=T); silvicultura_MapBiomas3<-str_extract(silvicultura_MapBiomas1, "possui\\s.*(ha\\))"); silvicultura_MapBiomas3<-sub("possui ", "", silvicultura_MapBiomas3); silvicultura_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(silvicultura_MapBiomas2), "possui", as.matrix(silvicultura_MapBiomas3), "do seu território convertido em áreas de silvicultura, segundo dados de 2020 (MapBiomas, 2022).")); ame223<-data.frame(Ameaca = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = silvicultura_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", silvicultura_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame223)} else {
+  if(dplyr::count(silvicultura_MapBiomas) == 0){rm(silvicultura_MapBiomas)} else{
+    if (dplyr::count(silvicultura_MapBiomas) == 1){silvicultura_MapBiomas1<-as.matrix(silvicultura_MapBiomas$Texto); silvicultura_MapBiomas1<-sub("O município de ", "", silvicultura_MapBiomas1); silvicultura_MapBiomas2<-sub("(\\scom.*)", "", silvicultura_MapBiomas1, perl=T); silvicultura_MapBiomas3<-str_extract(silvicultura_MapBiomas1, "possui\\s.*(ha\\))"); silvicultura_MapBiomas3<-sub("possui ", "", silvicultura_MapBiomas3); silvicultura_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(silvicultura_MapBiomas2), "possui", as.matrix(silvicultura_MapBiomas3), "do seu território convertido em áreas de silvicultura, segundo dados de 2020 (MapBiomas, 2022).")); ame223<-data.frame(Classe = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = silvicultura_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", silvicultura_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame223)} else {
       silvicultura_MapBiomas1<-as.matrix(silvicultura_MapBiomas$Texto)
       silvicultura_MapBiomas1<-sub("O município de ", "", silvicultura_MapBiomas1)
       silvicultura_MapBiomas2<-sub("(\\scom.*)", "", silvicultura_MapBiomas1, perl=T)
@@ -2908,14 +2908,14 @@ if(listOfSpecies$flow == "PA"){
       silvicultura_MapBiomas3<-capture.output(cat(silvicultura_MapBiomas3, sep=", "))
       silvicultura_MapBiomas3 <- stri_replace_last(silvicultura_MapBiomas3, fixed = '), ', ') e ')
       silvicultura_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, os municípios", silvicultura_MapBiomas2, "possuem, respectivamente,", silvicultura_MapBiomas3, "de seus territórios convertidos em áreas de silvicultura, segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.2.3
-      ame223<-data.frame(Ameaca = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = silvicultura_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", silvicultura_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 2.2.3
+      ame223<-data.frame(Classe = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = silvicultura_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", silvicultura_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
       k<-rbind(k,ame223)
     }
   }
 
-  if(count(cult_agric_MapBiomas) == 0){rm(cult_agric_MapBiomas)} else{
-    if (count(cult_agric_MapBiomas) == 1){cult_agric_MapBiomas1<-as.matrix(cult_agric_MapBiomas$Texto); cult_agric_MapBiomas1<-sub("O município de ", "", cult_agric_MapBiomas1); cult_agric_MapBiomas2<-sub("(\\scom.*)", "", cult_agric_MapBiomas1, perl=T); cult_agric_MapBiomas3<-str_extract(cult_agric_MapBiomas1, "possui\\s.*(ha\\))"); cult_agric_MapBiomas3<-sub("possui ", "", cult_agric_MapBiomas3); cult_agric_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(cult_agric_MapBiomas2), "possui", as.matrix(cult_agric_MapBiomas3), "do seu território convertido em áreas de culturas agrícolas (exceto soja e cana-de-açúcar), segundo dados de 2020 (MapBiomas, 2022).")); ame214_cult_agric_MB<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cult_agric_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", cult_agric_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas")} else {
+  if(dplyr::count(cult_agric_MapBiomas) == 0){rm(cult_agric_MapBiomas)} else{
+    if (dplyr::count(cult_agric_MapBiomas) == 1){cult_agric_MapBiomas1<-as.matrix(cult_agric_MapBiomas$Texto); cult_agric_MapBiomas1<-sub("O município de ", "", cult_agric_MapBiomas1); cult_agric_MapBiomas2<-sub("(\\scom.*)", "", cult_agric_MapBiomas1, perl=T); cult_agric_MapBiomas3<-str_extract(cult_agric_MapBiomas1, "possui\\s.*(ha\\))"); cult_agric_MapBiomas3<-sub("possui ", "", cult_agric_MapBiomas3); cult_agric_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(cult_agric_MapBiomas2), "possui", as.matrix(cult_agric_MapBiomas3), "do seu território convertido em áreas de culturas agrícolas (exceto soja e cana-de-açúcar), segundo dados de 2020 (MapBiomas, 2022).")); ame214_cult_agric_MB<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cult_agric_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", cult_agric_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas")} else {
       cult_agric_MapBiomas1<-as.matrix(cult_agric_MapBiomas$Texto)
       cult_agric_MapBiomas1<-sub("O município de ", "", cult_agric_MapBiomas1)
       cult_agric_MapBiomas2<-sub("(\\scom.*)", "", cult_agric_MapBiomas1, perl=T)
@@ -2926,13 +2926,13 @@ if(listOfSpecies$flow == "PA"){
       cult_agric_MapBiomas3<-capture.output(cat(cult_agric_MapBiomas3, sep=", "))
       cult_agric_MapBiomas3 <- stri_replace_last(cult_agric_MapBiomas3, fixed = '), ', ') e ')
       cult_agric_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, os municípios", cult_agric_MapBiomas2, "possuem, respectivamente,", cult_agric_MapBiomas3, "de seus territórios convertidos em áreas de culturas agrícolas (exceto soja e cana-de-açúcar), segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.1.4
-      ame214_cult_agric_MB<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cult_agric_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", cult_agric_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 2.1.4
+      ame214_cult_agric_MB<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cult_agric_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", cult_agric_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
     }
   }
 
-  if(count(cana_MapBiomas) == 0){rm(cana_MapBiomas)} else{
-    if (count(cana_MapBiomas) == 1){cana_MapBiomas1<-as.matrix(cana_MapBiomas$Texto); cana_MapBiomas1<-sub("O município de ", "", cana_MapBiomas1); cana_MapBiomas2<-sub("(\\scom.*)", "", cana_MapBiomas1, perl=T); cana_MapBiomas3<-str_extract(cana_MapBiomas1, "possui\\s.*(ha\\))"); cana_MapBiomas3<-sub("possui ", "", cana_MapBiomas3); cana_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(cana_MapBiomas2), "possui", as.matrix(cana_MapBiomas3), "do seu território convertido em áreas de culturas de cana-de-açúcar, segundo dados de 2020 (MapBiomas, 2022).")); ame214_cana_MB<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cana_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", cana_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas")} else {
+  if(dplyr::count(cana_MapBiomas) == 0){rm(cana_MapBiomas)} else{
+    if (dplyr::count(cana_MapBiomas) == 1){cana_MapBiomas1<-as.matrix(cana_MapBiomas$Texto); cana_MapBiomas1<-sub("O município de ", "", cana_MapBiomas1); cana_MapBiomas2<-sub("(\\scom.*)", "", cana_MapBiomas1, perl=T); cana_MapBiomas3<-str_extract(cana_MapBiomas1, "possui\\s.*(ha\\))"); cana_MapBiomas3<-sub("possui ", "", cana_MapBiomas3); cana_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(cana_MapBiomas2), "possui", as.matrix(cana_MapBiomas3), "do seu território convertido em áreas de culturas de cana-de-açúcar, segundo dados de 2020 (MapBiomas, 2022).")); ame214_cana_MB<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cana_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", cana_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas")} else {
       cana_MapBiomas1<-as.matrix(cana_MapBiomas$Texto)
       cana_MapBiomas1<-sub("O município de ", "", cana_MapBiomas1)
       cana_MapBiomas2<-sub("(\\scom.*)", "", cana_MapBiomas1, perl=T)
@@ -2943,13 +2943,13 @@ if(listOfSpecies$flow == "PA"){
       cana_MapBiomas3<-capture.output(cat(cana_MapBiomas3, sep=", "))
       cana_MapBiomas3 <- stri_replace_last(cana_MapBiomas3, fixed = '), ', ') e ')
       cana_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, os municípios", cana_MapBiomas2, "possuem, respectivamente,", cana_MapBiomas3, "de seus territórios convertidos em áreas de culturas de cana-de-açúcar, segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.1.4
-      ame214_cana_MB<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cana_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", cana_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 2.1.4
+      ame214_cana_MB<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = cana_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", cana_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
     }
   }
 
-  if(count(soja_MapBiomas) == 0){rm(soja_MapBiomas)} else{
-    if (count(soja_MapBiomas) == 1){soja_MapBiomas1<-as.matrix(soja_MapBiomas$Texto); soja_MapBiomas1<-sub("O município de ", "", soja_MapBiomas1); soja_MapBiomas2<-sub("(\\scom.*)", "", soja_MapBiomas1, perl=T); soja_MapBiomas3<-str_extract(soja_MapBiomas1, "possui\\s.*(ha\\))"); soja_MapBiomas3<-sub("possui ", "", soja_MapBiomas3); soja_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(soja_MapBiomas2), "possui", as.matrix(soja_MapBiomas3), "do seu território convertido em áreas de culturas de soja, segundo dados de 2020 (MapBiomas, 2022).")); ame214_soja_MB<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = soja_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", soja_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas")} else {
+  if(dplyr::count(soja_MapBiomas) == 0){rm(soja_MapBiomas)} else{
+    if (dplyr::count(soja_MapBiomas) == 1){soja_MapBiomas1<-as.matrix(soja_MapBiomas$Texto); soja_MapBiomas1<-sub("O município de ", "", soja_MapBiomas1); soja_MapBiomas2<-sub("(\\scom.*)", "", soja_MapBiomas1, perl=T); soja_MapBiomas3<-str_extract(soja_MapBiomas1, "possui\\s.*(ha\\))"); soja_MapBiomas3<-sub("possui ", "", soja_MapBiomas3); soja_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(soja_MapBiomas2), "possui", as.matrix(soja_MapBiomas3), "do seu território convertido em áreas de culturas de soja, segundo dados de 2020 (MapBiomas, 2022).")); ame214_soja_MB<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = soja_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", soja_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas")} else {
       soja_MapBiomas1<-as.matrix(soja_MapBiomas$Texto)
       soja_MapBiomas1<-sub("O município de ", "", soja_MapBiomas1)
       soja_MapBiomas2<-sub("(\\scom.*)", "", soja_MapBiomas1, perl=T)
@@ -2960,15 +2960,15 @@ if(listOfSpecies$flow == "PA"){
       soja_MapBiomas3<-capture.output(cat(soja_MapBiomas3, sep=", "))
       soja_MapBiomas3 <- stri_replace_last(soja_MapBiomas3, fixed = '), ', ') e ')
       soja_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, os municípios", soja_MapBiomas2, "possuem, respectivamente,", soja_MapBiomas3, "de seus territórios convertidos em áreas de culturas de soja, segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.1.4
-      ame214_soja_MB<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = soja_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", soja_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 2.1.4
+      ame214_soja_MB<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = soja_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", soja_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
     }
   }
 
-  if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==T){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Ameaca<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cult_agric_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$ Texto); ame214_cana_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Texto); ame214_soja_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022c", ame214_soja_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cult_agric_MB$Texto, ame214_cana_MB$Texto, ame214_soja_MB$Texto)); ame214_cult_agric_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Referência); ame214_cana_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Referência); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022c", ame214_soja_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cult_agric_MB$Referência, "<br> <br>", ame214_cana_MB$Referência, "<br> <br>", ame214_soja_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
-  if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==F){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Ameaca<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cult_agric_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Texto); ame214_cana_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cult_agric_MB$Texto, ame214_cana_MB$Texto)); ame214_cult_agric_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Referência); ame214_cana_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cult_agric_MB$Referência, "<br> <br>", ame214_cana_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
-  if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==F & exists("ame214_soja_MB")==T){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Ameaca<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cult_agric_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Texto); ame214_soja_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cult_agric_MB$Texto, ame214_soja_MB$Texto)); ame214_cult_agric_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Referência); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cult_agric_MB$Referência, "<br> <br>", ame214_soja_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
-  if(exists("ame214_cult_agric_MB")==F & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==T){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Ameaca<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cana_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a", ame214_cana_MB$Texto); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cana_MB$Texto, ame214_soja_MB$Texto)); ame214_cana_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a", ame214_cana_MB$Referência); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cana_MB$Referência, "<br> <br>", ame214_soja_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
+  if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==T){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Classe<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cult_agric_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$ Texto); ame214_cana_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Texto); ame214_soja_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022c", ame214_soja_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cult_agric_MB$Texto, ame214_cana_MB$Texto, ame214_soja_MB$Texto)); ame214_cult_agric_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Referência); ame214_cana_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Referência); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022c", ame214_soja_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cult_agric_MB$Referência, "<br> <br>", ame214_cana_MB$Referência, "<br> <br>", ame214_soja_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
+  if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==F){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Classe<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cult_agric_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Texto); ame214_cana_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cult_agric_MB$Texto, ame214_cana_MB$Texto)); ame214_cult_agric_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Referência); ame214_cana_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_cana_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cult_agric_MB$Referência, "<br> <br>", ame214_cana_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
+  if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==F & exists("ame214_soja_MB")==T){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Classe<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cult_agric_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Texto); ame214_soja_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cult_agric_MB$Texto, ame214_soja_MB$Texto)); ame214_cult_agric_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a",ame214_cult_agric_MB$Referência); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cult_agric_MB$Referência, "<br> <br>", ame214_soja_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
+  if(exists("ame214_cult_agric_MB")==F & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==T){ame214_MB<-""; ame214_MB<-as.data.frame(ame214_MB); ame214_MB$Classe<-"2.1.4 Scale Unknown/Unrecorded"; ame214_MB$Bioma<-""; ame214_MB$Vegetacao<-""; ame214_MB$Estado<-""; ame214_MB$Municipio<-""; ame214_MB$UC<-""; ame214_cana_MB$Texto<-sub("MapBiomas, 2022", "MapBiomas, 2022a", ame214_cana_MB$Texto); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Texto); ame214_MB$Texto<-capture.output(cat(ame214_cana_MB$Texto, ame214_soja_MB$Texto)); ame214_cana_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022a", ame214_cana_MB$Referência); ame214_soja_MB$Referência<-sub("MapBiomas, 2022", "MapBiomas, 2022b", ame214_soja_MB$Referência); ame214_MB$Referência<-capture.output(cat(ame214_cana_MB$Referência, "<br> <br>", ame214_soja_MB$Referência)); ame214_MB$Fonte<-"MapBiomas"; ame214_MB<-ame214_MB[,-1]}
   if(exists("ame214_cult_agric_MB")==T & exists("ame214_cana_MB")==F & exists("ame214_soja_MB")==F){ame214_MB<-ame214_cult_agric_MB}
   if(exists("ame214_cult_agric_MB")==F & exists("ame214_cana_MB")==T & exists("ame214_soja_MB")==F){ame214_MB<-ame214_cana_MB}
   if(exists("ame214_cult_agric_MB")==F & exists("ame214_cana_MB")==F & exists("ame214_soja_MB")==T){ame214_MB<-ame214_soja_MB}
@@ -2976,8 +2976,8 @@ if(listOfSpecies$flow == "PA"){
   k<-rbind(k,if(exists("ame214_MB") == T){ame214_MB})
 
 
-  if(count(pastagens_MapBiomas) == 0){rm(pastagens_MapBiomas)} else{
-    if (count(pastagens_MapBiomas) == 1){pastagens_MapBiomas1<-as.matrix(pastagens_MapBiomas$Texto); pastagens_MapBiomas1<-sub("O município de ", "", pastagens_MapBiomas1); pastagens_MapBiomas2<-sub("(\\scom.*)", "", pastagens_MapBiomas1, perl=T); pastagens_MapBiomas3<-str_extract(pastagens_MapBiomas1, "possui\\s.*(ha\\))"); pastagens_MapBiomas3<-sub("possui ", "", pastagens_MapBiomas3); pastagens_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(pastagens_MapBiomas2), "possui", as.matrix(pastagens_MapBiomas3), "do seu território convertido em áreas de pastagens, segundo dados de 2020 (MapBiomas, 2022).")); ame234<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", pastagens_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame234)} else {
+  if(dplyr::count(pastagens_MapBiomas) == 0){rm(pastagens_MapBiomas)} else{
+    if (dplyr::count(pastagens_MapBiomas) == 1){pastagens_MapBiomas1<-as.matrix(pastagens_MapBiomas$Texto); pastagens_MapBiomas1<-sub("O município de ", "", pastagens_MapBiomas1); pastagens_MapBiomas2<-sub("(\\scom.*)", "", pastagens_MapBiomas1, perl=T); pastagens_MapBiomas3<-str_extract(pastagens_MapBiomas1, "possui\\s.*(ha\\))"); pastagens_MapBiomas3<-sub("possui ", "", pastagens_MapBiomas3); pastagens_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(pastagens_MapBiomas2), "possui", as.matrix(pastagens_MapBiomas3), "do seu território convertido em áreas de pastagens, segundo dados de 2020 (MapBiomas, 2022).")); ame234<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", pastagens_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame234)} else {
       pastagens_MapBiomas1<-as.matrix(pastagens_MapBiomas$Texto)
       pastagens_MapBiomas1<-sub("O município de ", "", pastagens_MapBiomas1)
       pastagens_MapBiomas2<-sub("(\\scom.*)", "", pastagens_MapBiomas1, perl=T)
@@ -2988,14 +2988,14 @@ if(listOfSpecies$flow == "PA"){
       pastagens_MapBiomas3<-capture.output(cat(pastagens_MapBiomas3, sep=", "))
       pastagens_MapBiomas3 <- stri_replace_last(pastagens_MapBiomas3, fixed = '), ', ') e ')
       pastagens_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, os municípios", pastagens_MapBiomas2, "possuem, respectivamente,", pastagens_MapBiomas3, "de seus territórios convertidos em áreas de pastagens, segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.3.4
-      ame234<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", pastagens_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 2.3.4
+      ame234<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", pastagens_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
       k<-rbind(k,ame234)
     }
   }
 
-  if(count(pastagens_lapig) == 0){rm(pastagens_lapig)} else{
-    if (count(pastagens_lapig) == 1){pastagens_lapig1<-as.matrix(pastagens_lapig$Texto); pastagens_lapig1<-sub("O município de ", "", pastagens_lapig1); pastagens_lapig2<-sub("(\\scom.*)", "", pastagens_lapig1, perl=T); pastagens_lapig3<-str_extract(pastagens_lapig1, "possui\\s.*(ha\\))"); pastagens_lapig3<-sub("possui ", "", pastagens_lapig3); pastagens_lapig<-capture.output(cat("De acordo com o Atlas das Pastagens Brasileiras, o município", as.matrix(pastagens_lapig2), "possui", as.matrix(pastagens_lapig3), "do seu território convertido em áreas de pastagem, segundo dados de 2020 (Lapig, 2022).")); ame234<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_lapig, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. Atlas Digital das Pastagens Brasileiras, dados de 2020. Município: ", pastagens_lapig2, ". URL https://www.lapig.iesa.ufg.br/lapig/index.php/produtos/atlas-digital-das-pastagens-brasileiras (acesso em ", DATA, ").", sep="")), Fonte = "Lapig"); k<-rbind(k,ame234)} else {
+  if(dplyr::count(pastagens_lapig) == 0){rm(pastagens_lapig)} else{
+    if (dplyr::count(pastagens_lapig) == 1){pastagens_lapig1<-as.matrix(pastagens_lapig$Texto); pastagens_lapig1<-sub("O município de ", "", pastagens_lapig1); pastagens_lapig2<-sub("(\\scom.*)", "", pastagens_lapig1, perl=T); pastagens_lapig3<-str_extract(pastagens_lapig1, "possui\\s.*(ha\\))"); pastagens_lapig3<-sub("possui ", "", pastagens_lapig3); pastagens_lapig<-capture.output(cat("De acordo com o Atlas das Pastagens Brasileiras, o município", as.matrix(pastagens_lapig2), "possui", as.matrix(pastagens_lapig3), "do seu território convertido em áreas de pastagem, segundo dados de 2020 (Lapig, 2022).")); ame234<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_lapig, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. Atlas Digital das Pastagens Brasileiras, dados de 2020. Município: ", pastagens_lapig2, ". URL https://www.lapig.iesa.ufg.br/lapig/index.php/produtos/atlas-digital-das-pastagens-brasileiras (acesso em ", DATA, ").", sep="")), Fonte = "Lapig"); k<-rbind(k,ame234)} else {
       pastagens_lapig1<-as.matrix(pastagens_lapig$Texto)
       pastagens_lapig1<-sub("O município de ", "", pastagens_lapig1)
       pastagens_lapig2<-sub("(\\scom.*)", "", pastagens_lapig1, perl=T)
@@ -3006,14 +3006,14 @@ if(listOfSpecies$flow == "PA"){
       pastagens_lapig3<-capture.output(cat(pastagens_lapig3, sep=", "))
       pastagens_lapig3 <- stri_replace_last(pastagens_lapig3, fixed = '), ', ') e ')
       pastagens_lapig<-capture.output(cat("De acordo com o Atlas das Pastagens Brasileiras, os municípios", pastagens_lapig2, "possuem, respectivamente,", pastagens_lapig3, "de seus territórios convertidos em áreas de pastagem, segundo dados de 2020 (Lapig, 2022)."))
-      ## Adicionando mesclagem da ameaca 2.3.4
-      ame234<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_lapig, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. Atlas Digital das Pastagens Brasileiras, dados de 2020. Municípios: ", pastagens_lapig2, ". URL https://www.lapig.iesa.ufg.br/lapig/index.php/produtos/atlas-digital-das-pastagens-brasileiras (acesso em ", DATA, ").", sep = "")), Fonte = "Lapig")
+      ## Adicionando mesclagem da Classe 2.3.4
+      ame234<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = pastagens_lapig, Referência = capture.output(cat("Lapig - Laboratório de Processamento de Imagens e Geoprocessamento, 2022. Atlas Digital das Pastagens Brasileiras, dados de 2020. Municípios: ", pastagens_lapig2, ". URL https://www.lapig.iesa.ufg.br/lapig/index.php/produtos/atlas-digital-das-pastagens-brasileiras (acesso em ", DATA, ").", sep = "")), Fonte = "Lapig")
       k<-rbind(k,ame234)
     }
   }
 
-  if(count(mining_MapBiomas) == 0){rm(mining_MapBiomas)} else{
-    if (count(mining_MapBiomas) == 1){mining_MapBiomas1<-as.matrix(mining_MapBiomas$Texto); mining_MapBiomas1<-sub("O município de ", "", mining_MapBiomas1); mining_MapBiomas2<-sub("(\\scom.*)", "", mining_MapBiomas1, perl=T); mining_MapBiomas3<-str_extract(mining_MapBiomas1, "possui\\s.*(ha\\))"); mining_MapBiomas3<-sub("possui ", "", mining_MapBiomas3); mining_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(mining_MapBiomas2), "possui", as.matrix(mining_MapBiomas3), "do seu território convertido em áreas de mineração, segundo dados de 2020 (MapBiomas, 2022).")); ame32<-data.frame(Ameaca = "3.2 Mining & quarrying", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = mining_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", mining_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame32)} else {
+  if(dplyr::count(mining_MapBiomas) == 0){rm(mining_MapBiomas)} else{
+    if (dplyr::count(mining_MapBiomas) == 1){mining_MapBiomas1<-as.matrix(mining_MapBiomas$Texto); mining_MapBiomas1<-sub("O município de ", "", mining_MapBiomas1); mining_MapBiomas2<-sub("(\\scom.*)", "", mining_MapBiomas1, perl=T); mining_MapBiomas3<-str_extract(mining_MapBiomas1, "possui\\s.*(ha\\))"); mining_MapBiomas3<-sub("possui ", "", mining_MapBiomas3); mining_MapBiomas<-capture.output(cat("De acordo com o MapBiomas, o município", as.matrix(mining_MapBiomas2), "possui", as.matrix(mining_MapBiomas3), "do seu território convertido em áreas de mineração, segundo dados de 2020 (MapBiomas, 2022).")); ame32<-data.frame(Classe = "3.2 Mining & quarrying", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = mining_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Município: ", mining_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep="")), Fonte = "MapBiomas"); k<-rbind(k,ame32)} else {
       mining_MapBiomas1<-as.matrix(mining_MapBiomas$Texto)
       mining_MapBiomas1<-sub("O município de ", "", mining_MapBiomas1)
       mining_MapBiomas2<-sub("(\\scom.*)", "", mining_MapBiomas1, perl=T)
@@ -3024,8 +3024,8 @@ if(listOfSpecies$flow == "PA"){
       mining_MapBiomas3<-capture.output(cat(mining_MapBiomas3, sep=", "))
       mining_MapBiomas3 <- stri_replace_last(mining_MapBiomas3, fixed = '), ', ') e ')
       mining_MapBiomas<-capture.output(cat("Os municípios", mining_MapBiomas2, "possuem, respectivamente,", mining_MapBiomas3, "de seus territórios convertidos em áreas de mineração, segundo dados de 2020 (MapBiomas, 2022)."))
-      ## Adicionando mesclagem da ameaca 3.2
-      ame32<-data.frame(Ameaca = "3.2 Mining & quarrying", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = mining_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", mining_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
+      ## Adicionando mesclagem da Classe 3.2
+      ame32<-data.frame(Classe = "3.2 Mining & quarrying", Bioma = "", Vegetacao = "", Estado = "", Municipio = "", UC = "", Texto = mining_MapBiomas, Referência = capture.output(cat("MapBiomas, 2022. Projeto MapBiomas - Coleção 6 da Série Anual de Mapas de Cobertura e Uso de Solo do Brasil, dados de 2020. Municípios: ", mining_MapBiomas2, ". URL https://drive.google.com/file/d/1RT7J2jS6LKyISM49ctfRO31ynJZXX_TY/view?usp=sharing (acesso em ", DATA, ").", sep = "")), Fonte = "MapBiomas")
       k<-rbind(k,ame32)
     }
   }
@@ -3034,50 +3034,50 @@ if(listOfSpecies$flow == "PA"){
 
   message("  Making text of the overlay analysis from MapBiomas 1985-2020 ...")
 
-  c <- c %>% dplyr::filter(Ameaca %in% c("Mosaico Agricultura e Pastagem", "Silvicultura", "Pastagem", "Cana-de-açúcar", "Infraestrutura Urbana", "Mineração", "Lavouras perenes", "Soja", "Outras lavouras temporárias", "Total"))
-  c_AOOporc <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO"))
-  c_AOOkm2 <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2"))
-  c_EOOporc <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO"))
-  c_EOOkm2 <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2"))
-  c_AOOporc_2020 <- c %>% dplyr::select(Ameaca, Porcentagem_AOO_2020)
-  c_AOOkm2_2020 <- c %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020")
-  c_EOOporc_2020 <- c %>% dplyr::select(Ameaca, Porcentagem_EOO_2020)
-  c_EOOkm2_2020 <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020"))
+  c <- c %>% dplyr::filter(Classe %in% c("Mosaico Agricultura e Pastagem", "Silvicultura", "Pastagem", "Cana-de-açúcar", "Infraestrutura Urbana", "Mineração", "Lavouras perenes", "Soja", "Outras lavouras temporárias", "Total"))
+  c_AOOporc <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO"))
+  c_AOOkm2 <- c %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2"))
+  c_EOOporc <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO"))
+  c_EOOkm2 <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2"))
+  c_AOOporc_2020 <- c %>% dplyr::select(Classe, Porcentagem_AOO_2020)
+  c_AOOkm2_2020 <- c %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020")
+  c_EOOporc_2020 <- c %>% dplyr::select(Classe, Porcentagem_EOO_2020)
+  c_EOOkm2_2020 <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020"))
 
   #### Mosaico Agricultura-Pastagem ####
 
   message("    Mosaic agriculture-pastures...")
-  c_mosaico <- c %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")
+  c_mosaico <- c %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")
 
-  c_AOOporc_mosaico <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem") %>% dplyr::select(-Ameaca)
+  c_AOOporc_mosaico <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem") %>% dplyr::select(-Classe)
   c_AOOporc_mosaico <- t(c_AOOporc_mosaico)
   c_AOOporc_mosaico <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOporc_mosaico[,1]))
   rownames(c_AOOporc_mosaico) <- 1:length(c_AOOporc_mosaico$Ano)
 
-  c_AOOkm2_mosaico <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem") %>% dplyr::select(-Ameaca)
+  c_AOOkm2_mosaico <- c %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem") %>% dplyr::select(-Classe)
   c_AOOkm2_mosaico <- t(c_AOOkm2_mosaico)
   c_AOOkm2_mosaico <- data.frame(Ano = 1985:2020, Area_AOO_sites_km2 = c_AOOkm2_mosaico[,1])
   rownames(c_AOOkm2_mosaico) <- 1:length(c_AOOkm2_mosaico$Ano)
 
-  c_EOOporc_mosaico <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Ameaca)
+  c_EOOporc_mosaico <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Classe)
   c_EOOporc_mosaico <- t(c_EOOporc_mosaico)
   c_EOOporc_mosaico <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOporc_mosaico[,1]))
   rownames(c_EOOporc_mosaico) <- 1:length(c_EOOporc_mosaico$Ano)
 
-  c_EOOkm2_mosaico <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Ameaca)
+  c_EOOkm2_mosaico <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Classe)
   c_EOOkm2_mosaico <- t(c_EOOkm2_mosaico)
   c_EOOkm2_mosaico <- data.frame(Ano = 1985:2020, Area_EOO_sites_km2 = as.numeric(c_EOOkm2_mosaico[,1]))
   rownames(c_EOOkm2_mosaico) <- 1:length(c_EOOkm2_mosaico$Ano)
 
-  c_AOOporc_2020_mosaico <- c %>% dplyr::select(Ameaca, Porcentagem_AOO_2020) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Ameaca)
-  c_AOOkm2_2020_mosaico <- c %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Ameaca)
-  c_EOOporc_2020_mosaico <- c %>% dplyr::select(Ameaca, Porcentagem_EOO_2020) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Ameaca)
-  c_EOOkm2_2020_mosaico <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Ameaca == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Ameaca)
+  c_AOOporc_2020_mosaico <- c %>% dplyr::select(Classe, Porcentagem_AOO_2020) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Classe)
+  c_AOOkm2_2020_mosaico <- c %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Classe)
+  c_EOOporc_2020_mosaico <- c %>% dplyr::select(Classe, Porcentagem_EOO_2020) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Classe)
+  c_EOOkm2_2020_mosaico <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Classe == "Mosaico Agricultura e Pastagem")  %>% dplyr::select(-Classe)
 
 
   #### Agricultura Total ####
   message("    Agriculture total...")
-  c_agricultura <- c %>% dplyr::filter(Ameaca %in% c("Soja",
+  c_agricultura <- c %>% dplyr::filter(Classe %in% c("Soja",
                                                      "Cana-de-açúcar",
                                                      "Citrus",
                                                      "Arroz",
@@ -3100,156 +3100,156 @@ if(listOfSpecies$flow == "PA"){
                           as.numeric)
   c_agricultura <- as.data.frame(c_agricultura)
   c_agricultura <- c_agricultura %>% dplyr::select(dplyr::contains(c("Area_AOO_sites_km2_", "Porcentagem_AOO_", "Area_EOO_sites_km2_", "Porcentagem_EOO_"))) %>% summarise_all(sum)
-  c_agricultura <- cbind(Ameaca = "Agricultura Total", c_agricultura)
+  c_agricultura <- cbind(Classe = "Agricultura Total", c_agricultura)
 
-  c_AOOporc_agricultura <- c_agricultura %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
+  c_AOOporc_agricultura <- c_agricultura %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
   c_AOOporc_agricultura <- t(c_AOOporc_agricultura)
   c_AOOporc_agricultura <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOporc_agricultura[,1]))
   rownames(c_AOOporc_agricultura) <- 1:length(c_AOOporc_agricultura$Ano)
 
-  c_AOOkm2_agricultura <- c_agricultura %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
+  c_AOOkm2_agricultura <- c_agricultura %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
   c_AOOkm2_agricultura <- t(c_AOOkm2_agricultura)
   c_AOOkm2_agricultura <- data.frame(Ano = 1985:2020, Area_AOO_sites_km2 = c_AOOkm2_agricultura[,1])
   rownames(c_AOOkm2_agricultura) <- 1:length(c_AOOkm2_agricultura$Ano)
 
-  c_EOOporc_agricultura <- c_agricultura %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
+  c_EOOporc_agricultura <- c_agricultura %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
   c_EOOporc_agricultura <- t(c_EOOporc_agricultura)
   c_EOOporc_agricultura <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOporc_agricultura[,1]))
   rownames(c_EOOporc_agricultura) <- 1:length(c_EOOporc_agricultura$Ano)
 
-  c_EOOkm2_agricultura <- c_agricultura %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
+  c_EOOkm2_agricultura <- c_agricultura %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
   c_EOOkm2_agricultura <- t(c_EOOkm2_agricultura)
   c_EOOkm2_agricultura <- data.frame(Ano = 1985:2020, Area_EOO_sites_km2 = as.numeric(c_EOOkm2_agricultura[,1]))
   rownames(c_EOOkm2_agricultura) <- 1:length(c_EOOkm2_agricultura$Ano)
 
-  c_AOOporc_2020_agricultura <- c_agricultura %>% dplyr::select(Ameaca, Porcentagem_AOO_2020) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
-  c_AOOkm2_2020_agricultura <- c_agricultura %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
-  c_EOOporc_2020_agricultura <- c_agricultura %>% dplyr::select(Ameaca, Porcentagem_EOO_2020) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
-  c_EOOkm2_2020_agricultura <- c_agricultura %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Ameaca == "Agricultura Total") %>% dplyr::select(-Ameaca)
+  c_AOOporc_2020_agricultura <- c_agricultura %>% dplyr::select(Classe, Porcentagem_AOO_2020) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
+  c_AOOkm2_2020_agricultura <- c_agricultura %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
+  c_EOOporc_2020_agricultura <- c_agricultura %>% dplyr::select(Classe, Porcentagem_EOO_2020) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
+  c_EOOkm2_2020_agricultura <- c_agricultura %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Classe == "Agricultura Total") %>% dplyr::select(-Classe)
 
 
   #### Pastagem ####
   message("    Pastures...")
 
-  c_pastagem <- c %>% dplyr::filter(Ameaca == "Pastagem")
+  c_pastagem <- c %>% dplyr::filter(Classe == "Pastagem")
 
-  c_AOOporc_pastagem <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
+  c_AOOporc_pastagem <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
   c_AOOporc_pastagem <- t(c_AOOporc_pastagem)
   c_AOOporc_pastagem <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOporc_pastagem[,1]))
   rownames(c_AOOporc_pastagem) <- 1:length(c_AOOporc_pastagem$Ano)
 
-  c_AOOkm2_pastagem <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
+  c_AOOkm2_pastagem <- c %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
   c_AOOkm2_pastagem <- t(c_AOOkm2_pastagem)
   c_AOOkm2_pastagem <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOkm2_pastagem[,1]))
   rownames(c_AOOkm2_pastagem) <- 1:length(c_AOOkm2_pastagem$Ano)
 
-  c_EOOporc_pastagem <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
+  c_EOOporc_pastagem <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
   c_EOOporc_pastagem <- t(c_EOOporc_pastagem)
   c_EOOporc_pastagem <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOporc_pastagem[,1]))
   rownames(c_EOOporc_pastagem) <- 1:length(c_EOOporc_pastagem$Ano)
 
-  c_EOOkm2_pastagem <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
+  c_EOOkm2_pastagem <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
   c_EOOkm2_pastagem <- t(c_EOOkm2_pastagem)
   c_EOOkm2_pastagem <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOkm2_pastagem[,1]))
   rownames(c_EOOkm2_pastagem) <- 1:length(c_EOOkm2_pastagem$Ano)
 
-  c_AOOporc_2020_pastagem <- c %>% dplyr::select(Ameaca, Porcentagem_AOO_2020) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
-  c_AOOkm2_2020_pastagem <- c %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
-  c_EOOporc_2020_pastagem <- c %>% dplyr::select(Ameaca, Porcentagem_EOO_2020) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
-  c_EOOkm2_2020_pastagem <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Ameaca == "Pastagem") %>% dplyr::select(-Ameaca)
+  c_AOOporc_2020_pastagem <- c %>% dplyr::select(Classe, Porcentagem_AOO_2020) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
+  c_AOOkm2_2020_pastagem <- c %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
+  c_EOOporc_2020_pastagem <- c %>% dplyr::select(Classe, Porcentagem_EOO_2020) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
+  c_EOOkm2_2020_pastagem <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Classe == "Pastagem") %>% dplyr::select(-Classe)
 
 
   #### Infraestrutura Urbana ####
   message("    Urban infrastructure...")
 
-  c_urbana <- c %>% dplyr::filter(Ameaca == "Infraestrutura Urbana")
+  c_urbana <- c %>% dplyr::filter(Classe == "Infraestrutura Urbana")
 
-  c_AOOporc_urbana <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
+  c_AOOporc_urbana <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
   c_AOOporc_urbana <- t(c_AOOporc_urbana)
   c_AOOporc_urbana <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOporc_urbana[,1]))
   rownames(c_AOOporc_urbana) <- 1:length(c_AOOporc_urbana$Ano)
 
-  c_AOOkm2_urbana <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
+  c_AOOkm2_urbana <- c %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
   c_AOOkm2_urbana <- t(c_AOOkm2_urbana)
   c_AOOkm2_urbana <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOkm2_urbana[,1]))
   rownames(c_AOOkm2_urbana) <- 1:length(c_AOOkm2_urbana$Ano)
 
-  c_EOOporc_urbana <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
+  c_EOOporc_urbana <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
   c_EOOporc_urbana <- t(c_EOOporc_urbana)
   c_EOOporc_urbana <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOporc_urbana[,1]))
   rownames(c_EOOporc_urbana) <- 1:length(c_EOOporc_urbana$Ano)
 
-  c_EOOkm2_urbana <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
+  c_EOOkm2_urbana <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
   c_EOOkm2_urbana <- t(c_EOOkm2_urbana)
   c_EOOkm2_urbana <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOkm2_urbana[,1]))
   rownames(c_EOOkm2_urbana) <- 1:length(c_EOOkm2_urbana$Ano)
 
-  c_AOOporc_2020_urbana <- c %>% dplyr::select(Ameaca, Porcentagem_AOO_2020) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
-  c_AOOkm2_2020_urbana <- c %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
-  c_EOOporc_2020_urbana <- c %>% dplyr::select(Ameaca, Porcentagem_EOO_2020) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
-  c_EOOkm2_2020_urbana <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Ameaca == "Infraestrutura Urbana") %>% dplyr::select(-Ameaca)
+  c_AOOporc_2020_urbana <- c %>% dplyr::select(Classe, Porcentagem_AOO_2020) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
+  c_AOOkm2_2020_urbana <- c %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
+  c_EOOporc_2020_urbana <- c %>% dplyr::select(Classe, Porcentagem_EOO_2020) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
+  c_EOOkm2_2020_urbana <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Classe == "Infraestrutura Urbana") %>% dplyr::select(-Classe)
 
 
   #### Silvicultura ####
   message("    Forestry...")
 
-  c_silvicultura <- c %>% dplyr::filter(Ameaca == "Silvicultura")
+  c_silvicultura <- c %>% dplyr::filter(Classe == "Silvicultura")
 
-  c_AOOporc_silvicultura <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
+  c_AOOporc_silvicultura <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
   c_AOOporc_silvicultura <- t(c_AOOporc_silvicultura)
   c_AOOporc_silvicultura <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOporc_silvicultura[,1]))
   rownames(c_AOOporc_silvicultura) <- 1:length(c_AOOporc_silvicultura$Ano)
 
-  c_AOOkm2_silvicultura <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
+  c_AOOkm2_silvicultura <- c %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
   c_AOOkm2_silvicultura <- t(c_AOOkm2_silvicultura)
   c_AOOkm2_silvicultura <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOkm2_silvicultura[,1]))
   rownames(c_AOOkm2_silvicultura) <- 1:length(c_AOOkm2_silvicultura$Ano)
 
-  c_EOOporc_silvicultura <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
+  c_EOOporc_silvicultura <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
   c_EOOporc_silvicultura <- t(c_EOOporc_silvicultura)
   c_EOOporc_silvicultura <- data.frame(Ano = 1985:2020, Porcentagem_EOO = c_EOOporc_silvicultura[,1])
   rownames(c_EOOporc_silvicultura) <- 1:length(c_EOOporc_silvicultura$Ano)
 
-  c_EOOkm2_silvicultura <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
+  c_EOOkm2_silvicultura <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
   c_EOOkm2_silvicultura <- t(c_EOOkm2_silvicultura)
   c_EOOkm2_silvicultura <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOkm2_silvicultura[,1]))
   rownames(c_EOOkm2_silvicultura) <- 1:length(c_EOOkm2_silvicultura$Ano)
 
-  c_AOOporc_2020_silvicultura <- c %>% dplyr::select(Ameaca, Porcentagem_AOO_2020) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
-  c_AOOkm2_2020_silvicultura <- c %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
-  c_EOOporc_2020_silvicultura <- c %>% dplyr::select(Ameaca, Porcentagem_EOO_2020) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
-  c_EOOkm2_2020_silvicultura <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Ameaca == "Silvicultura") %>% dplyr::select(-Ameaca)
+  c_AOOporc_2020_silvicultura <- c %>% dplyr::select(Classe, Porcentagem_AOO_2020) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
+  c_AOOkm2_2020_silvicultura <- c %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
+  c_EOOporc_2020_silvicultura <- c %>% dplyr::select(Classe, Porcentagem_EOO_2020) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
+  c_EOOkm2_2020_silvicultura <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Classe == "Silvicultura") %>% dplyr::select(-Classe)
 
 
   #### Mineração ####
   message("    Mining...")
 
-  c_mineracao <- c %>% dplyr::filter(Ameaca == "Mineração")
+  c_mineracao <- c %>% dplyr::filter(Classe == "Mineração")
 
-  c_AOOporc_mineracao <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
+  c_AOOporc_mineracao <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_AOO")) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
   c_AOOporc_mineracao <- t(c_AOOporc_mineracao)
   c_AOOporc_mineracao <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOporc_mineracao[,1]))
   rownames(c_AOOporc_mineracao) <- 1:length(c_AOOporc_mineracao$Ano)
 
-  c_AOOkm2_mineracao <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
+  c_AOOkm2_mineracao <- c %>% dplyr::select(Classe, dplyr::contains("Area_AOO_sites_km2")) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
   c_AOOkm2_mineracao <- t(c_AOOkm2_mineracao)
   c_AOOkm2_mineracao <- data.frame(Ano = 1985:2020, Porcentagem_AOO = as.numeric(c_AOOkm2_mineracao[,1]))
   rownames(c_AOOkm2_mineracao) <- 1:length(c_AOOkm2_mineracao$Ano)
 
-  c_EOOporc_mineracao <- c %>% dplyr::select(Ameaca, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
+  c_EOOporc_mineracao <- c %>% dplyr::select(Classe, dplyr::contains("Porcentagem_EOO")) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
   c_EOOporc_mineracao <- t(c_EOOporc_mineracao)
   c_EOOporc_mineracao <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOporc_mineracao[,1]))
   rownames(c_EOOporc_mineracao) <- 1:length(c_EOOporc_mineracao$Ano)
 
-  c_EOOkm2_mineracao <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
+  c_EOOkm2_mineracao <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2")) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
   c_EOOkm2_mineracao <- t(c_EOOkm2_mineracao)
   c_EOOkm2_mineracao <- data.frame(Ano = 1985:2020, Porcentagem_EOO = as.numeric(c_EOOkm2_mineracao[,1]))
   rownames(c_EOOkm2_mineracao) <- 1:length(c_EOOkm2_mineracao$Ano)
 
-  c_AOOporc_2020_mineracao <- c %>% dplyr::select(Ameaca, Porcentagem_AOO_2020) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
-  c_AOOkm2_2020_mineracao <- c %>% dplyr::select(Ameaca, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
-  c_EOOporc_2020_mineracao <- c %>% dplyr::select(Ameaca, Porcentagem_EOO_2020) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
-  c_EOOkm2_2020_mineracao <- c %>% dplyr::select(Ameaca, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Ameaca == "Mineração") %>% dplyr::select(-Ameaca)
+  c_AOOporc_2020_mineracao <- c %>% dplyr::select(Classe, Porcentagem_AOO_2020) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
+  c_AOOkm2_2020_mineracao <- c %>% dplyr::select(Classe, "Area_AOO_sites_km2_2020") %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
+  c_EOOporc_2020_mineracao <- c %>% dplyr::select(Classe, Porcentagem_EOO_2020) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
+  c_EOOkm2_2020_mineracao <- c %>% dplyr::select(Classe, dplyr::contains("Area_EOO_sites_km2_2020")) %>% dplyr::filter(Classe == "Mineração") %>% dplyr::select(-Classe)
 
   ### Análise de tendência: AOO ####
 
@@ -3544,7 +3544,7 @@ if(listOfSpecies$flow == "PA"){
     }
   }
 
-  c_silvicultura<-data.frame(Ameaca = "2.2.3 Scale Unknown/Unrecorded",
+  c_silvicultura<-data.frame(Classe = "2.2.3 Scale Unknown/Unrecorded",
                              Bioma = "",
                              Vegetacao = "",
                              Estado = "",
@@ -3719,7 +3719,7 @@ if(listOfSpecies$flow == "PA"){
     }
   }
 
-  c_mineracao<-data.frame(Ameaca = "3.2 Mining & quarrying",
+  c_mineracao<-data.frame(Classe = "3.2 Mining & quarrying",
                           Bioma = "",
                           Vegetacao = "",
                           Estado = "",
@@ -3894,7 +3894,7 @@ if(listOfSpecies$flow == "PA"){
     }
   }
 
-  c_urbana<-data.frame(Ameaca = "1.1 Housing & urban areas",
+  c_urbana<-data.frame(Classe = "1.1 Housing & urban areas",
                        Bioma = "",
                        Vegetacao = "",
                        Estado = "",
@@ -4226,7 +4226,7 @@ if(listOfSpecies$flow == "PA"){
     }
   }
 
-  c_agricultura<-data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded",
+  c_agricultura<-data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded",
                             Bioma = "",
                             Vegetacao = "",
                             Estado = "",
@@ -4498,7 +4498,7 @@ if(listOfSpecies$flow == "PA"){
 
   }
 
-  c_pastagem<-data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded",
+  c_pastagem<-data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded",
                          Bioma = "",
                          Vegetacao = "",
                          Estado = "",
@@ -4555,39 +4555,39 @@ if(listOfSpecies$flow == "PA"){
      }
 
   #Mesclando MapBiomas_Land_Use com municípios
-  if(count(k %>% filter(Ameaca == "1.1 Housing & urban areas" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
-    k_urbana_mapB <- k %>% filter(Ameaca == "1.1 Housing & urban areas" & Fonte == "MapBiomas")
-    k_urbana_mapB_LU <- k %>% filter(Ameaca == "1.1 Housing & urban areas" & Fonte == "MapBiomas_Land_Use")
-    k_urbana <- data.frame(Ameaca = "1.1 Housing & urban areas", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_urbana_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_urbana_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_urbana_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_urbana_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
-    k <- anti_join(k, k %>% filter(Ameaca == "1.1 Housing & urban areas" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
+  if(dplyr::count(k %>% filter(Classe == "1.1 Housing & urban areas" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
+    k_urbana_mapB <- k %>% filter(Classe == "1.1 Housing & urban areas" & Fonte == "MapBiomas")
+    k_urbana_mapB_LU <- k %>% filter(Classe == "1.1 Housing & urban areas" & Fonte == "MapBiomas_Land_Use")
+    k_urbana <- data.frame(Classe = "1.1 Housing & urban areas", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_urbana_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_urbana_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_urbana_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_urbana_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
+    k <- anti_join(k, k %>% filter(Classe == "1.1 Housing & urban areas" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
     k <- rbind (k, k_urbana)
   }
-  if(count(k %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
-    k_agricultura_mapB <- k %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas")
-    k_agricultura_mapB_LU <- k %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas_Land_Use")
-    k_agricultura <- data.frame(Ameaca = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_agricultura_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_agricultura_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_agricultura_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_agricultura_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
-    k <- anti_join(k, k %>% filter(Ameaca == "2.1.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
+  if(dplyr::count(k %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
+    k_agricultura_mapB <- k %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas")
+    k_agricultura_mapB_LU <- k %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas_Land_Use")
+    k_agricultura <- data.frame(Classe = "2.1.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_agricultura_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_agricultura_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_agricultura_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_agricultura_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
+    k <- anti_join(k, k %>% filter(Classe == "2.1.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
     k <- rbind (k, k_agricultura)
   }
-  if(count(k %>% filter(Ameaca == "2.2.3 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
-    k_silvicultura_mapB <- k %>% filter(Ameaca == "2.2.3 Scale Unknown/Unrecorded" & Fonte == "MapBiomas")
-    k_silvicultura_mapB_LU <- k %>% filter(Ameaca == "2.2.3 Scale Unknown/Unrecorded" & Fonte == "MapBiomas_Land_Use")
-    k_silvicultura <- data.frame(Ameaca = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_silvicultura_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_silvicultura_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_silvicultura_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_silvicultura_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
-    k <- anti_join(k, k %>% filter(Ameaca == "2.2.3 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
+  if(dplyr::count(k %>% filter(Classe == "2.2.3 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
+    k_silvicultura_mapB <- k %>% filter(Classe == "2.2.3 Scale Unknown/Unrecorded" & Fonte == "MapBiomas")
+    k_silvicultura_mapB_LU <- k %>% filter(Classe == "2.2.3 Scale Unknown/Unrecorded" & Fonte == "MapBiomas_Land_Use")
+    k_silvicultura <- data.frame(Classe = "2.2.3 Scale Unknown/Unrecorded", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_silvicultura_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_silvicultura_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_silvicultura_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_silvicultura_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
+    k <- anti_join(k, k %>% filter(Classe == "2.2.3 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
     k <- rbind (k, k_silvicultura)
   }
-  if(count(k %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
-    k_pastagem_mapB <- k %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas")
-    k_pastagem_mapB_LU <- k %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas_Land_Use")
-    k_pastagem <- data.frame(Ameaca = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_pastagem_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_pastagem_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_pastagem_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_pastagem_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
-    k <- anti_join(k, k %>% filter(Ameaca == "2.3.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
+  if(dplyr::count(k %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
+    k_pastagem_mapB <- k %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas")
+    k_pastagem_mapB_LU <- k %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded" & Fonte == "MapBiomas_Land_Use")
+    k_pastagem <- data.frame(Classe = "2.3.4 Scale Unknown/Unrecorded", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_pastagem_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_pastagem_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_pastagem_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_pastagem_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
+    k <- anti_join(k, k %>% filter(Classe == "2.3.4 Scale Unknown/Unrecorded" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
     k <- rbind (k, k_pastagem)
   }
-  if(count(k %>% filter(Ameaca == "3.2 Mining & quarrying" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
-    k_mineracao_mapB <- k %>% filter(Ameaca == "3.2 Mining & quarrying" & Fonte == "MapBiomas")
-    k_mineracao_mapB_LU <- k %>% filter(Ameaca == "3.2 Mining & quarrying" & Fonte == "MapBiomas_Land_Use")
-    k_mineracao <- data.frame(Ameaca = "3.2 Mining & quarrying", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_mineracao_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_mineracao_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_mineracao_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_mineracao_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
-    k <- anti_join(k, k %>% filter(Ameaca == "3.2 Mining & quarrying" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
+  if(dplyr::count(k %>% filter(Classe == "3.2 Mining & quarrying" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use"))) == 2){
+    k_mineracao_mapB <- k %>% filter(Classe == "3.2 Mining & quarrying" & Fonte == "MapBiomas")
+    k_mineracao_mapB_LU <- k %>% filter(Classe == "3.2 Mining & quarrying" & Fonte == "MapBiomas_Land_Use")
+    k_mineracao <- data.frame(Classe = "3.2 Mining & quarrying", Bioma = "", Vegetacao ="", Estado ="", Municipio ="", UC ="", Texto = paste(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_mineracao_mapB$Texto), " ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_mineracao_mapB_LU$Texto), sep=""), Referência = capture.output(cat(sub("MapBiomas\\, 2022", "MapBiomas, 2022a", k_mineracao_mapB$Referência), " <br> <br> ", sub("MapBiomas\\, 2022", "MapBiomas, 2022b", k_mineracao_mapB_LU$Referência), sep="")), Fonte = "MapBiomas")
+    k <- anti_join(k, k %>% filter(Classe == "3.2 Mining & quarrying" & Fonte %in% c("MapBiomas","MapBiomas_Land_Use")))
     k <- rbind (k, k_mineracao)
   }
 
@@ -4603,7 +4603,7 @@ if(listOfSpecies$flow == "PA"){
         rank_fogo<-rank_fogo %>% filter(Classe != "Total")
         rank_fogo<-rank_fogo %>% filter(Porcentagem_AOO_2020 != 0.00)
         rank_fogo_texto<-paste("[", paste(rank_fogo$Classe, " (", sub("\\.", ",", rank_fogo$Porcentagem_AOO_2020), "%)", sep="", collapse = ", "),"]", sep="")
-        SIG_fogo<-data.frame(Ameaca="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
+        SIG_fogo<-data.frame(Classe="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
                              Texto=paste("Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_AOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Classe == "Total") %>% select(Area_AOO_sites_km2_2020)), 2)), "km²) da AOO útil da espécie queimaram em 2020 ", rank_fogo_texto, " (MapBiomas-Fogo, 2022).", sep=""),
                              Referência=paste("MapBiomas-Fogo, 2022. Projeto MapBiomas - Coleção 1 do Mapeamento de cicatrizes de fogo no Brasil, dados de 2020. URL https://https://mapbiomas.org (acesso em ", DATA, ").", sep=""),
                              Fonte="MapBiomas_Fogo")
@@ -4623,8 +4623,8 @@ if(listOfSpecies$flow == "PA"){
         rank_fogo_EOO<-rank_fogo_EOO %>% filter(Porcentagem_EOO_2020 != 0.00)
         rank_fogo_EOO_texto<-paste("[", paste(rank_fogo_EOO$Classe, " (", sub("\\.", ",", rank_fogo_EOO$Porcentagem_EOO_2020), "%)", sep="", collapse = ", "),"]", sep="")
 
-        SIG_fogo<-data.frame(Ameaca="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
-                             Texto=paste("Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_AOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Ameaca == "Total") %>% select(Area_AOO_sites_km2_2020)), 2)), "km²) da AOO útil da espécie queimaram em 2020 ", rank_fogo_texto, ". Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_EOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Classe == "Total") %>% select(Area_EOO_sites_km2_2020)), 2)), "km²) da EOO útil da espécie queimaram em 2020 ", rank_fogo_EOO_texto, " (MapBiomas-Fogo, 2022).", sep=""),
+        SIG_fogo<-data.frame(Classe="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
+                             Texto=paste("Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_AOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Classe == "Total") %>% select(Area_AOO_sites_km2_2020)), 2)), "km²) da AOO útil da espécie queimaram em 2020 ", rank_fogo_texto, ". Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_EOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Classe == "Total") %>% select(Area_EOO_sites_km2_2020)), 2)), "km²) da EOO útil da espécie queimaram em 2020 ", rank_fogo_EOO_texto, " (MapBiomas-Fogo, 2022).", sep=""),
                              Referência=paste("MapBiomas-Fogo, 2022. Projeto MapBiomas - Coleção 1 do Mapeamento de cicatrizes de fogo no Brasil, dados de 2020. URL https://https://mapbiomas.org (acesso em ", DATA, ").", sep=""),
                              Fonte="MapBiomas_Fogo")
         k <- rbind (k, SIG_fogo)
@@ -4635,7 +4635,7 @@ if(listOfSpecies$flow == "PA"){
           rank_fogo<-rank_fogo %>% filter(Porcentagem_AOO_2020 != 0.00)
           rank_fogo_texto<-paste("[", paste(rank_fogo$Classe, " (", sub("\\.", ",", rank_fogo$Porcentagem_AOO_2020), "%)", sep="", collapse = ", "),"]", sep="")
 
-          SIG_fogo<-data.frame(Ameaca="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
+          SIG_fogo<-data.frame(Classe="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
                                Texto=paste("Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_AOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Classe == "Total") %>% select(Area_AOO_sites_km2_2020)), 2)), "km²) da AOO útil da espécie queimaram em 2020 ", rank_fogo_texto, " (MapBiomas-Fogo, 2022).", sep=""),
                                Referência=paste("MapBiomas-Fogo, 2022. Projeto MapBiomas - Coleção 1 do Mapeamento de cicatrizes de fogo no Brasil, dados de 2020. URL https://https://mapbiomas.org (acesso em ", DATA, ").", sep=""),
                                Fonte="MapBiomas_Fogo")
@@ -4647,7 +4647,7 @@ if(listOfSpecies$flow == "PA"){
             rank_fogo_EOO<-rank_fogo_EOO %>% filter(Porcentagem_EOO_2020 != 0.00)
             rank_fogo_EOO_texto<-paste("[", paste(rank_fogo_EOO$Classe, " (", sub("\\.", ",", rank_fogo_EOO$Porcentagem_EOO_2020), "%)", sep="", collapse = ", "),"]", sep="")
 
-            SIG_fogo<-data.frame(Ameaca="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
+            SIG_fogo<-data.frame(Classe="7.1.3 Trend Unknown/Unrecorded", Bioma="", Vegetacao="", Estado="", Municipio="", UC="",
                                  Texto=paste("Um total de ", sub("\\.", ",", as.numeric(fogo %>% filter(Classe == "Total") %>% select(Porcentagem_EOO_2020))), "% (", sub("\\.", ",", round(as.numeric(fogo %>% filter(Classe == "Total") %>% select(Area_EOO_sites_km2_2020)), 2)), "km²) da EOO útil da espécie queimaram em 2020 ", rank_fogo_EOO_texto, " (MapBiomas-Fogo, 2022).", sep=""),
                                  Referência=paste("MapBiomas-Fogo, 2022. Projeto MapBiomas - Coleção 1 do Mapeamento de cicatrizes de fogo no Brasil, dados de 2020. URL https://https://mapbiomas.org (acesso em ", DATA, ").", sep=""),
                                  Fonte="MapBiomas_Fogo")
@@ -4661,7 +4661,7 @@ if(listOfSpecies$flow == "PA"){
   }
 
   q<-k[order(k$Bioma),]
-  q<-k[order(k$Ameaca),]
+  q<-k[order(k$Classe),]
   q<-remove_rownames(q)
 
   #Highlight MapBiomas
@@ -4694,7 +4694,7 @@ if(listOfSpecies$flow == "PA"){
   #Apagando coluna fonte
   q<-select(q, -Fonte)
 
-  Ameacas <- q %>%
+  Classes <- q %>%
     kable("html") %>%
     kable_styling()  %>%
     row_spec(hl_MapBiomas, color = "black", background = "lightgreen") %>%
@@ -4751,7 +4751,14 @@ ESTADOS <- sub("PARANA", "PARANÁ",ESTADOS)
 ESTADOS <- sub("PIAUI", "PIAUÍ",ESTADOS)
 ESTADOS <- sub("RONDONIA", "RONDÔNIA",ESTADOS)
 ESTADOS <- sub("SAO PAULO", "SÃO PAULO",ESTADOS)
-Validacao<-data.frame(Validade=registros,ESTADOS=ESTADOS,MUNICIPIOS=MUNICIPIOS)
+Validacao<-data.frame(
+  
+  URNs = URNs$`URNs[toDelete, ]`,
+  Validade=registros,
+  ESTADOS=ESTADOS,
+  MUNICIPIOS=MUNICIPIOS
+  
+)
 if(listOfSpecies$flow == "PA"){
 
   OCORRENC <- Validacao %>% filter(Validade == "Válido")
@@ -4786,10 +4793,10 @@ if(CITES[,2] == ""){}else{
   statusCITES<-sub("yes\\s\\(Appendix\\sII\\)", "apêndice II", statusCITES)
   statusCITES<-sub("yes\\s\\(Appendix\\sI\\)", "apêndice I", statusCITES)
   if(statusCITES == "apêndice I"){
-    TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui espécies ameacadas de extinção, cujo comércio somente será permitido em circunstâncias excepcionais."))
+    TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui espécies Classedas de extinção, cujo comércio somente será permitido em circunstâncias excepcionais."))
   }else{
     if(statusCITES == "apêndice II"){
-      TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui as espécies não necessariamente ameacadas de extinção, mas cujo comércio deve ser controlado a fim de evitar usos incompatíveis com sua sobrevivência."))
+      TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui as espécies não necessariamente Classedas de extinção, mas cujo comércio deve ser controlado a fim de evitar usos incompatíveis com sua sobrevivência."))
     } else{
       if(statusCITES == "apêndice III"){
         TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui as espécies que são protegidas em pelo menos um país e que tenha solicitado assistência às demais partes da Convenção para controlar seu comércio."))
@@ -4819,7 +4826,7 @@ statusMMA443<-MMA443$STATUS[whichMMA443]
 statusMMA443<-sub("VU", "Vulnerável (VU)", statusMMA443)
 statusMMA443<-sub("EN", "Em Perigo (EN)", statusMMA443)
 statusMMA443<-sub("CR", "Criticamente em Perigo (CR)", statusMMA443)
-TextoMMA443<-capture.output(cat("A espécie foi avaliada como", statusMMA443, "e está incluída no ANEXO I da Lista Nacional Oficial de Espécies da Flora Ameacadas de Extinção (MMA, 2014)."))
+TextoMMA443<-capture.output(cat("A espécie foi avaliada como", statusMMA443, "e está incluída no ANEXO I da Lista Nacional Oficial de Espécies da Flora Classedas de Extinção (MMA, 2014)."))
 MMA443table<-data.frame(Acao="5.1.2 National level", Situacao="on going", Texto=TextoMMA443, Referencia=capture.output(cat("MMA - Ministério do Meio Ambiente, 2014. Portaria nº 443, de 17 de dezembro de 2014. Diário Oficial da União, 18/12/2014, Seção 1, p. 110-121. URL http://www.dados.gov.br/dataset/portaria_443 (acesso em ", DATA,").", sep="")))
 } else{}
 
@@ -4935,6 +4942,8 @@ if(exists("whichMunPrioAL")==T){
 
 }
 
+message("  Priority municipalities checked.")
+
 IEMA1499R <- fread(
 
   paste0(
@@ -4957,8 +4966,8 @@ if(hasIEMA1499R == T){
   statusIEMA1499R<-sub("VU", "Vulnerável (VU)", statusIEMA1499R)
   statusIEMA1499R<-sub("EN", "Em Perigo (EN)", statusIEMA1499R)
   statusIEMA1499R<-sub("CR", "Criticamente em Perigo (CR)", statusIEMA1499R)
-  TextoIEMA1499R<-capture.output(cat("A espécie foi avaliada como", statusIEMA1499R, "na lista oficial das espécies ameacadas de extinção no Estado do Espírito Santo (Espírito Santo, 2005)."))
-  IEMA1499Rtable<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoIEMA1499R, Referencia="Espírito Santo, 2005. Lista de Espécies Ameacadas de Extinção no Espírito Santo. Decreto nº 1.499-R. Diário Oficial do Estado do Espírito Santo, 14/06/2005.")
+  TextoIEMA1499R<-capture.output(cat("A espécie foi avaliada como", statusIEMA1499R, "na lista oficial das espécies Classedas de extinção no Estado do Espírito Santo (Espírito Santo, 2005)."))
+  IEMA1499Rtable<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoIEMA1499R, Referencia="Espírito Santo, 2005. Lista de Espécies Classedas de Extinção no Espírito Santo. Decreto nº 1.499-R. Diário Oficial do Estado do Espírito Santo, 14/06/2005.")
 
 }
 
@@ -4984,8 +4993,8 @@ if(hasCOEMA54 == T){
   statusCOEMA54<-sub("VU", "Vulnerável (VU)", statusCOEMA54)
   statusCOEMA54<-sub("EN", "Em Perigo (EN)", statusCOEMA54)
   statusCOEMA54<-sub("CR", "Criticamente em Perigo (CR)", statusCOEMA54)
-  TextoCOEMA54<-capture.output(cat("A espécie foi avaliada como", statusCOEMA54, "na lista oficial das espécies ameacadas de extinção no Estado do Pará (COEMA, 2007)."))
-  COEMA54table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCOEMA54, Referencia=capture.output(cat("COEMA - Conselho Estadual de Meio Ambiente, 2007. Lista de Espécies Ameacadas de Extinção no Espírito Santo. Resolução nº 54, de 24 de outubro de 2007. URL https://iema.es.gov.br/especiesameacadas. (acesso em ", DATA,").", sep="")))
+  TextoCOEMA54<-capture.output(cat("A espécie foi avaliada como", statusCOEMA54, "na lista oficial das espécies Classedas de extinção no Estado do Pará (COEMA, 2007)."))
+  COEMA54table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCOEMA54, Referencia=capture.output(cat("COEMA - Conselho Estadual de Meio Ambiente, 2007. Lista de Espécies Classedas de Extinção no Espírito Santo. Resolução nº 54, de 24 de outubro de 2007. URL https://iema.es.gov.br/especiesClassedas. (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5011,8 +5020,8 @@ if(hasRS52109 == T){
   statusRS52109<-sub("VU", "Vulnerável (VU)", statusRS52109)
   statusRS52109<-sub("EN", "Em Perigo (EN)", statusRS52109)
   statusRS52109<-sub("CR", "Criticamente em Perigo (CR)", statusRS52109)
-  TextoRS52109<-capture.output(cat("A espécie foi avaliada como", statusRS52109, "na lista oficial das espécies da flora ameacadas de extinção no Estado do Rio Grande do Sul (Rio Grande do Sul, 2014)."))
-  RS52109table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoRS52109, Referencia=capture.output(cat("Rio Grande do Sul, 2014. Lista de espécies da flora nativa ameacadas de extinção no Estado do Rio Grande do Sul. Decreto nº 52.109, 01/12/2014, Diário Oficial do Estado do Rio Grande do Sul, 02/12/2014, nº 233, pp. 2-12. URL http://www.al.rs.gov.br/filerepository/repLegis/arquivos/DEC%2052.109.pdf (acesso em ", DATA,").", sep="")))
+  TextoRS52109<-capture.output(cat("A espécie foi avaliada como", statusRS52109, "na lista oficial das espécies da flora Classedas de extinção no Estado do Rio Grande do Sul (Rio Grande do Sul, 2014)."))
+  RS52109table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoRS52109, Referencia=capture.output(cat("Rio Grande do Sul, 2014. Lista de espécies da flora nativa Classedas de extinção no Estado do Rio Grande do Sul. Decreto nº 52.109, 01/12/2014, Diário Oficial do Estado do Rio Grande do Sul, 02/12/2014, nº 233, pp. 2-12. URL http://www.al.rs.gov.br/filerepository/repLegis/arquivos/DEC%2052.109.pdf (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5038,8 +5047,8 @@ if(hasCONSEMA51 == T){
   statusCONSEMA51<-sub("VU", "Vulnerável (VU)", statusCONSEMA51)
   statusCONSEMA51<-sub("EN", "Em Perigo (EN)", statusCONSEMA51)
   statusCONSEMA51<-sub("CR", "Criticamente em Perigo (CR)", statusCONSEMA51)
-  TextoCONSEMA51<-capture.output(cat("A espécie foi avaliada como", statusCONSEMA51, "na lista oficial das espécies da flora ameacadas de extinção no Estado de Santa Catarina (CONSEMA, 2014)."))
-  CONSEMA51table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCONSEMA51, Referencia="CONSEMA - Conselho Estadual do Meio Ambiente. 2014. Resolução nº 51/2014. Lista oficial das espécies da flora ameacada de extinção no Estado de Santa Catarina.")
+  TextoCONSEMA51<-capture.output(cat("A espécie foi avaliada como", statusCONSEMA51, "na lista oficial das espécies da flora Classedas de extinção no Estado de Santa Catarina (CONSEMA, 2014)."))
+  CONSEMA51table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCONSEMA51, Referencia="CONSEMA - Conselho Estadual do Meio Ambiente. 2014. Resolução nº 51/2014. Lista oficial das espécies da flora Ameaçada de extinção no Estado de Santa Catarina.")
 
 }
 
@@ -5067,8 +5076,8 @@ if(hasSMA57 == T){
   statusSMA57<-sub("CR", "Criticamente em Perigo (CR)", statusSMA57)
   statusSMA57<-sub("EX", "Extinto (EX)", statusSMA57)
   statusSMA57<-sub("EW", "Extinto na Natureza (EW)", statusSMA57)
-  TextoSMA57<-capture.output(cat("A espécie foi avaliada como", statusSMA57, "na lista oficial das espécies da flora ameacadas de extinção no Estado de São Paulo (SMA, 2016)."))
-  SMA57table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSMA57, Referencia=capture.output(cat("SMA - Secretaria do Meio Ambiente do Estado de São Paulo, 2016. Resolução nº 57, de 05 de junho de 2016. Lista de espécies da flora ameacadas de extinção no Estado de São Paulo. Diário Oficial do Estado de São Paulo, 07/06/2016, Seção I, pp. 69-71. URL https://cetesb.sp.gov.br/licenciamentoambiental/wp-content/uploads/sites/32/2019/05/Resolução-SMA-nz-57-2016.pdf (acesso em ", DATA,").", sep="")))
+  TextoSMA57<-capture.output(cat("A espécie foi avaliada como", statusSMA57, "na lista oficial das espécies da flora Classedas de extinção no Estado de São Paulo (SMA, 2016)."))
+  SMA57table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSMA57, Referencia=capture.output(cat("SMA - Secretaria do Meio Ambiente do Estado de São Paulo, 2016. Resolução nº 57, de 05 de junho de 2016. Lista de espécies da flora Classedas de extinção no Estado de São Paulo. Diário Oficial do Estado de São Paulo, 07/06/2016, Seção I, pp. 69-71. URL https://cetesb.sp.gov.br/licenciamentoambiental/wp-content/uploads/sites/32/2019/05/Resolução-SMA-nz-57-2016.pdf (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5096,15 +5105,15 @@ if(hasSEMA40 == T){
   statusSEMA40<-sub("CR", "Criticamente em Perigo (CR)", statusSEMA40)
   statusSEMA40<-sub("EX", "Extinto (EX)", statusSEMA40)
   statusSEMA40<-sub("EX", "Extinto na Natureza (EW)", statusSEMA40)
-  TextoSEMA40<-capture.output(cat("A espécie foi avaliada como", statusSEMA40, "na lista oficial das espécies da flora ameacadas de extinção no Estado da Bahia (SEMA, 2017)."))
-  SEMA40table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSEMA40, Referencia=capture.output(cat("SEMA - Secretaria do Meio Ambiente do Governo do Estado da Bahia, 2017. Portaria SEMA nº 40, de 21 de agosto de 2017. Lista oficial das espécies da flora ameacadas de extinção do Estado da Bahia. Diário Oficial do Estado da Bahia, Ano CI, nº 22.244, 22/08/2017, pp. 22-27. URL http://www.meioambiente.ba.gov.br/arquivos/File/Editais/portaria40flora.docx (acesso em ", DATA,").", sep="")))
+  TextoSEMA40<-capture.output(cat("A espécie foi avaliada como", statusSEMA40, "na lista oficial das espécies da flora Classedas de extinção no Estado da Bahia (SEMA, 2017)."))
+  SEMA40table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSEMA40, Referencia=capture.output(cat("SEMA - Secretaria do Meio Ambiente do Governo do Estado da Bahia, 2017. Portaria SEMA nº 40, de 21 de agosto de 2017. Lista oficial das espécies da flora Classedas de extinção do Estado da Bahia. Diário Oficial do Estado da Bahia, Ano CI, nº 22.244, 22/08/2017, pp. 22-27. URL http://www.meioambiente.ba.gov.br/arquivos/File/Editais/portaria40flora.docx (acesso em ", DATA,").", sep="")))
 
 }
 
 if(exists("TER") == F){}else{
   TERRITORIOS<-TER[,2]
   TERRITORIOS<-as.data.frame(TERRITORIOS)
-  if(count(TERRITORIOS) == 1){
+  if(dplyr::count(TERRITORIOS) == 1){
     TERRITORIOS<-as.matrix(TERRITORIOS)
     TERRITORIOS<-capture.output(cat(TERRITORIOS, sep =", "))
     TextoTERRITORIOS<-capture.output(cat("A espécie ocorre em território que será contemplado por Plano de Ação Nacional Territorial (PAT), no âmbito do projeto GEF Pró-Espécies - Todos Contra a Extinção: ", TERRITORIOS, ".", sep= ""))
@@ -5124,7 +5133,7 @@ if(exists("UCs") == F){
 }else{
   UNIDADESDECONSERV<-UCs[,2]
   UNIDADESDECONSERV<-as.data.frame(UNIDADESDECONSERV)
-  if(count(UNIDADESDECONSERV) == 1){
+  if(dplyr::count(UNIDADESDECONSERV) == 1){
     UNIDADESDECONSERV<-as.matrix(UNIDADESDECONSERV)
     UNIDADESDECONSERV<-capture.output(cat(UNIDADESDECONSERV, sep =", "))
     TextoUNIDADESDECONSERV<-capture.output(cat("A espécie foi registrada na seguinte Unidade de Conservação: ", UNIDADESDECONSERV, ".", sep=""))
@@ -5157,44 +5166,44 @@ PANs <- fread(
 if(
 
   length(PANs) == 1 &
-  nrow(PANs) &
+  nrow(PANs) == 1 &
   is.na(PANs[1,1]) == T
 
 ){} else{
 
-  if(count(OCORRENCinv) == 0){}else{
+  if(dplyr::count(OCORRENCinv) == 0){}else{
 
-    OCORRENCinv_PAN<-data.frame(nome_aceit="NA", id_da_ocor=OCORRENCinv$URNs.toDelete..., PAN="NA")
-    PANs<-rbind(PANs,OCORRENCinv_PAN)
+    OCORRENCinv_PAN<-data.frame(nome_aceit="NA", id_da_ocor=OCORRENCinv$URNs, PAN="NA")
+    PANs<-rbind(PANs,OCORRENCinv_PAN, use.names=FALSE)
     PANs_inv<-which(PANs$id_da_ocor %in% OCORRENCinv_PAN$id_da_ocor)
     PANs<-PANs[-c(PANs_inv),]
 
   }
 
-  if(count(OCORRENCinv) == 0){}else{
+  if(dplyr::count(OCORRENCinv) == 0){}else{
 
-    PAN_EndRJ<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional para a Conservação da Flora Endêmica Ameacada de Extinção do Estado do Rio de Janeiro")
-    if(count(PAN_EndRJ)>0){hasPAN_EndRJ<-TRUE} else{hasPAN_EndRJ<-FALSE}
+    PAN_EndRJ<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional para a Conservação da Flora Endêmica Ameaçada de Extinção do Estado do Rio de Janeiro")
+    if(dplyr::count(PAN_EndRJ)>0){hasPAN_EndRJ<-TRUE} else{hasPAN_EndRJ<-FALSE}
     PAN_Lagos_do_Sul<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional Lagoas do Sul")
-    if(count(PAN_Lagos_do_Sul)>0){hasPAN_Lagos_do_Sul<-TRUE} else{hasPAN_Lagos_do_Sul<-FALSE}
-    PAN_EspMerid<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional para a Conservação da Flora Ameacada de Extinção da Serra do Espinhaço Meridional")
-    if(count(PAN_EspMerid)>0){hasPAN_EspMerid<-TRUE} else{hasPAN_EspMerid<-FALSE}
-    PAN_GraoMogol<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional para a Conservação da Flora Ameacada de Extinção da Região de Grão Mogol - Francisco Sá")
-    if(count(PAN_GraoMogol)>0){hasPAN_GraoMogol<-TRUE} else{hasPAN_GraoMogol<-FALSE}
+    if(dplyr::count(PAN_Lagos_do_Sul)>0){hasPAN_Lagos_do_Sul<-TRUE} else{hasPAN_Lagos_do_Sul<-FALSE}
+    PAN_EspMerid<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Serra do Espinhaço Meridional")
+    if(dplyr::count(PAN_EspMerid)>0){hasPAN_EspMerid<-TRUE} else{hasPAN_EspMerid<-FALSE}
+    PAN_GraoMogol<-PANs %>% filter(nome_aceit == ESPECIE & PAN == "Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Região de Grão Mogol - Francisco Sá")
+    if(dplyr::count(PAN_GraoMogol)>0){hasPAN_GraoMogol<-TRUE} else{hasPAN_GraoMogol<-FALSE}
 
 
     if(hasPAN_EndRJ == T){
       Acao<-"5.1.2 National level"
       Situacao<-"on going"
-      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora endêmica ameacada de extinção do estado do Rio de Janeiro (Pougy et al., 2018)."
-      Referencia<-"Pougy, N., Martins, E., Verdi, M., Fernandez, E., Loyola, R., Silveira-Filho, T.B., Martinelli, G. (Orgs.), 2018. Plano de Ação Nacional para a conservação da flora endêmica ameacada de extinção do estado do Rio de Janeiro. Secretaria de Estado do Ambiente-SEA: Andrea Jakobsson Estúdio, Rio de Janeiro. 80 p."
+      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora endêmica Ameaçada de extinção do estado do Rio de Janeiro (Pougy et al., 2018)."
+      Referencia<-"Pougy, N., Martins, E., Verdi, M., Fernandez, E., Loyola, R., Silveira-Filho, T.B., Martinelli, G. (Orgs.), 2018. Plano de Ação Nacional para a conservação da flora endêmica Ameaçada de extinção do estado do Rio de Janeiro. Secretaria de Estado do Ambiente-SEA: Andrea Jakobsson Estúdio, Rio de Janeiro. 80 p."
       PANEndRJtable<-data.frame(Acao,Situacao,Texto,Referencia)
     }
 
     if(hasPAN_Lagos_do_Sul == T){
       Acao<-"5.1.2 National level"
       Situacao<-"on going"
-      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional Lagoas do Sul para a conservação da flora melhorar o estado de conservação das espécies ameacadas e dos ecossistemas das lagoas da planície costeira do sul do Brasil (ICMBio, 2018)."
+      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional Lagoas do Sul para a conservação da flora melhorar o estado de conservação das espécies Classedas e dos ecossistemas das lagoas da planície costeira do sul do Brasil (ICMBio, 2018)."
       Referencia<-capture.output(cat("ICMBio - Instituto Chico Mendes de Conservação da Biodiversidade, 2018. Portaria nº 751, de 27 de agosto de 2018. Diário Oficial da União, 29/08/2018, Edição 167, Seção 1, p. 54. URL https://www.icmbio.gov.br/portal/images/stories/docs-pan/pan-lagoas-do-sul/1-ciclo/pan-lagoas-do-sul-portaria-aprovacao.pdf (acesso em ", DATA,").", sep=""))
       PANLagosSultable<-data.frame(Acao,Situacao,Texto,Referencia)
     }
@@ -5202,16 +5211,16 @@ if(
     if(hasPAN_EspMerid == T){
       Acao<-"5.1.2 National level"
       Situacao<-"on going"
-      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora ameacada de extinção da Serra do Espinhaço Meridional (Pougy et al., 2015)."
-      Referencia<-"Pougy, N., Verdi, M., Martins, E., Loyola, R., Martinelli, G. (Orgs.), 2015. Plano de Ação Nacional para a conservação da flora ameacada de extinção da Serra do Espinhaço Meridional. CNCFlora: Jardim Botânico do Rio de Janeiro: Laboratório de Biogeografia da Conservação: Andrea Jakobsson Estúdio, Rio de Janeiro. 100 p."
+      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora Ameaçada de extinção da Serra do Espinhaço Meridional (Pougy et al., 2015)."
+      Referencia<-"Pougy, N., Verdi, M., Martins, E., Loyola, R., Martinelli, G. (Orgs.), 2015. Plano de Ação Nacional para a conservação da flora Ameaçada de extinção da Serra do Espinhaço Meridional. CNCFlora: Jardim Botânico do Rio de Janeiro: Laboratório de Biogeografia da Conservação: Andrea Jakobsson Estúdio, Rio de Janeiro. 100 p."
       PANEspMeridtable<-data.frame(Acao,Situacao,Texto,Referencia)
     }
 
     if(hasPAN_GraoMogol == T){
       Acao<-"5.1.2 National level"
       Situacao<-"on going"
-      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora ameacada de extinção da região de Grão Mogol - Francisco Sá (Pougy et al., 2015)."
-      Referencia<-"Pougy, N., Martins, E., Verdi, M., Maurenza, D., Loyola, R., Martinelli, G. (Orgs.), 2015. Plano de Ação Nacional para a Conservação da Flora Ameacada de Extinção da Região de Grão Mogol-Francisco Sá. CNCFlora: Jardim Botânico do Rio de Janeiro: Laboratório de Biogeografia da Conservação: Andrea Jakobsson Estúdio, Rio de Janeiro. 76 p."
+      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora Ameaçada de extinção da região de Grão Mogol - Francisco Sá (Pougy et al., 2015)."
+      Referencia<-"Pougy, N., Martins, E., Verdi, M., Maurenza, D., Loyola, R., Martinelli, G. (Orgs.), 2015. Plano de Ação Nacional para a Conservação da Flora Ameaçada de Extinção da Região de Grão Mogol-Francisco Sá. CNCFlora: Jardim Botânico do Rio de Janeiro: Laboratório de Biogeografia da Conservação: Andrea Jakobsson Estúdio, Rio de Janeiro. 76 p."
       PAN_GraoMogoltable<-data.frame(Acao,Situacao,Texto,Referencia)
     }
 
@@ -5986,7 +5995,7 @@ if(listOfSpecies$flow == "PA"){
   cat("<br>")
   cat("<body>\n")
   cat("<h1>Amea&ccedil;as</h1>")
-  cat(Ameacas)
+  cat(Classes)
   cat("</body>\n")
 
 }
