@@ -1,5 +1,5 @@
 # CNCFloraR
-Programa para produção dos painéis do perfil e de avaliação
+Programa para produção dos painéis do perfil e de avaliação de espécies
 
 ## Install
 
@@ -93,9 +93,23 @@ menu_intersect_occurrenceRecords_with_PANs_TERs_UCs()
 
 A condução da análise de interseção com PANS, TERs e UCs também pode ser executada utilizando as funções específicas para produção e execução do *script*, além da checagem dos arquivos (*script* e resultados).
 
-### 
+### Criação dos *scripts* para condução da análise de interseção com PANS, TERs e UCs
 
+```r
+intersect_PANs_TERs_UCs_create_scripts()
+```
 
+### Execução dos *scripts* para condução da análise de interseção com PANS, TERs e UCs
+
+```r
+intersect_PANs_TERs_UCs_execute_scripts()
+```
+
+### Checa os arquivos da análise de interseção com PANS, TERs e UCs (*scripts* e resultados)
+
+```r
+intersect_PANs_TERs_UCs_check_files()
+```
 
 ## Profile of species HTML
 
