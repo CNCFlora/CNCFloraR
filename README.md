@@ -16,6 +16,13 @@ menu_CNCFlora()
 
 ## Baixa lista de espécies da planilha de acompanhamento para criação do HTML do perfil
 
+URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY](https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY)
+
+- Sheet 6 : [https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=265256008](https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=265256008)
+(List_for_HTML_profile)
+
+
+
 ```r
 prepare_listOfSpecies_from_followUpTable_sheet6()
 ```
