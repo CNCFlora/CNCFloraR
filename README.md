@@ -14,6 +14,11 @@ devtools::install.packages("CNCFlora/CNCFloraR")
 menu_CNCFlora()
 ```
 
+## Baixa lista de espécies da planilha de acompanhamento para criação do HTML do perfil
+
+```r
+prepare_listOfSpecies_from_followUpTable_sheet6()
+```
 
 ## Profile of species HTML
 
