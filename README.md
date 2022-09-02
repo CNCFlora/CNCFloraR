@@ -1,7 +1,7 @@
 # CNCFloraR
 Programa para produção dos painéis do perfil e de avaliação de espécies
 
-## Install
+## Instalação
 
 ```r
 if (!require(devtools)) install.packages('devtools')
