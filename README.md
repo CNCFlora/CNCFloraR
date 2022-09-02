@@ -111,6 +111,32 @@ intersect_PANs_TERs_UCs_execute_scripts()
 intersect_PANs_TERs_UCs_check_files()
 ```
 
+## Menu para condução da análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
+
+```r
+menu_overlayAnalysis()
+```
+
+A condução da análise de sobreposição também pode ser executada utilizando as funções específicas para produção e execução do *script*, além da checagem dos arquivos (*script* e resultados).
+
+### Criação dos *scripts* para condução da análise de sobreposição
+
+```r
+overlayAnalysis_create_scripts()
+```
+
+### Execução dos *scripts* para condução da análise de sobreposição
+
+```r
+overlayAnalysis_execute_scripts()
+```
+
+### Checa os arquivos da análise de sobreposição (*scripts* e resultados)
+
+```r
+overlayAnalysis_check_files()
+```
+
 ## Profile of species HTML
 
 ## Assessment HTML
