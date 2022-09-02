@@ -1,4 +1,4 @@
-prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentFile = F){
+prepare_listOfSpecies_files_to_overlayAnalysis <- function(onlyNonExistentAnalysis = F){
 
   library(stringr)
   library(googlesheets4)
@@ -14,7 +14,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
   }
 
 
-  if(onlyNonExistentFile == T){
+  if(onlyNonExistentAnalysis == T){
 
     listOfSpecies <- colnames(
 
@@ -23,9 +23,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
         which(
 
           df["occurrenceRecords",] == T &
-            df["intersectPANs",] == F &
-            df["intersectTERs",] == F &
-            df["intersectUCs",] == F
+            df["overlayMapBiomasTodosOsAnos",] == F
 
         )
 
@@ -35,7 +33,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
 
   } else{
 
-    if(onlyNonExistentFile == F){
+    if(onlyNonExistentAnalysis == F){
 
       listOfSpecies <- colnames(
 
@@ -60,7 +58,8 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
   ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
   followUpTable <- read_sheet(ss, sheet = 6)
 
-  followUpTable.filtered <- followUpTable %>% dplyr::filter(Espécie %in% listOfSpecies)
+  followUpTable.filtered <- followUpTable %>%
+    dplyr::filter(Espécie %in% listOfSpecies & `PA/PNA` == "PA")
 
   output <- data.frame(
 
@@ -79,6 +78,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
 
   }
 
+
   # Print the results
 
   options(colorDF_n = Inf)
@@ -95,7 +95,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
   )
 
 
-  # Ask to write the `species_intersect_UCs_PANs_TERs.csv` file
+  # Ask to write the `species_landCover-MapBiomas.csv` file
 
   answer <- ""
 
@@ -107,7 +107,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
   ){
 
     answer <-
-      toupper(readline("Write the list of species file (species_intersect_UCs_PANs_TERs.csv)? (y/n): "))
+      toupper(readline("Write the list of species file (species_landCover-MapBiomas.csv)? (y/n): "))
 
     if(answer == "Y"){
 
@@ -117,7 +117,7 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
         paste0(
 
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_intersect_UCs_PANs_TERs.csv"
+          "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas.csv"
 
         ),
         col.names = F,

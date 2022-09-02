@@ -89,8 +89,7 @@ validationOccurrences <- function() {
 
     listOfSpecies_localPath,
     header = F,
-    sep = ",",
-    encoding = "UTF-8"
+    sep = ";"
 
   )
 
@@ -176,6 +175,16 @@ validationOccurrences <- function() {
 
     )
 
+  ## Verify if the name of species in HTML is the same of the file ####
+
+  are.species_the_same_in_file <- registros %>%
+    select(Species, is.species_the_same_in_file) %>% unique()
+  colnames(are.species_the_same_in_file) <- c(
+
+    "Species",
+    "SpName_file_HTML"
+
+  )
 
   ## Verify if there are invalid records ####
 
@@ -208,7 +217,8 @@ validationOccurrences <- function() {
     group_by(Species) %>%
     summarise(Species, SIG_NOT_OK = n())
 
-  output <- left_join(records_n, result_invalid_n)
+  output <- left_join(are.species_the_same_in_file, records_n)
+  output <- left_join(output, result_invalid_n)
   output <- left_join(output, records_SIG_NOT_OK)
 
   output <- unique(output)

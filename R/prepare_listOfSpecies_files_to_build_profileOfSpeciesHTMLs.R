@@ -132,6 +132,13 @@ prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs <- function(onlyNonEx
 
   )
 
+  if(T %in% duplicated(output)){
+
+    output <- output[-which(duplicated(output)),]
+
+  }
+
+
 
   # Print the results
 

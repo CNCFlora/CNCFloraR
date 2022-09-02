@@ -31,6 +31,12 @@ prepare_listOfSpecies_files_to_getOccurrences <- function(){
 
   )
 
+  if(T %in% duplicated(output)){
+
+    output <- output[-which(duplicated(output)),]
+
+  }
+
   # Print the results
 
   options(colorDF_n = Inf)

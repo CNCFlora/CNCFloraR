@@ -82,6 +82,8 @@ prepare_listOfSpecies_files_for_all_methods <- function(){
 
   )
 
+  output <- output[-which(duplicated(output)),]
+
   # Print the results
 
   options(colorDF_n = Inf)
