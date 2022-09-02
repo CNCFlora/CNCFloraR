@@ -14,6 +14,20 @@ devtools::install.packages("CNCFlora/CNCFloraR")
 menu_CNCFlora()
 ```
 
+Outros menus:
+
+- Menu para preparação dos arquivos de listas de espécies para todos os processos
+  - `menu_prepare_listOfSpecies_files()`
+- Menu para condução da análise de interseção com PANS, TERs e UCs
+  - `menu_intersect_occurrenceRecords_with_PANs_TERs_UCs()`
+- Menu para condução da análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
+  - `menu_overlayAnalysis()`
+- Menu para condução da criação do perfil de espécies Possivelmente Ameaçadas (PAs)
+  - `menu_create_profileOfSpeciesHTMLs_PTs()`
+- Menu para condução da criação do perfil de espécies Possivelmente Não Ameaçadas (PNAs)
+  - `menu_create_profileOfSpeciesHTMLs_PNTs()`
+
+
 ## Baixa lista de espécies da planilha de acompanhamento para criação do HTML do perfil
 
 URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY](https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY)
@@ -109,6 +123,14 @@ intersect_PANs_TERs_UCs_execute_scripts()
 
 ```r
 intersect_PANs_TERs_UCs_check_files()
+```
+
+## Prepara a lista de espécies para análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
+
+Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espécies que não possuem resultados para as análises
+
+```r
+prepare_listOfSpecies_files_to_overlayAnalysis(onlyNonExistentFile = T)
 ```
 
 ## Menu para condução da análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
