@@ -57,8 +57,6 @@ get_citations_from_FloraFungaBrasil()
 fill_followUpTable_with_citations_from_FloraFungaBrasil()
 ```
 
-
-
 ## Checa todos os arquivos da lista de espécies
 
 ```r
@@ -77,6 +75,8 @@ prepare_listOfSpecies_files_to_getOccurrences()
 AHKscript_to_download_occurrenceRecords_from_oldSystem()
 ```
 
+Execute o arquivo gerado.
+
 ## Prepara a lista de espécies para análise de interseção com PANS, TERs e UCs
 
 Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espécies que não possuem resultados para as análises
@@ -85,6 +85,15 @@ Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espé
 prepare_listOfSpecies_files_to_intersectPANsTERsUCs(onlyNonExistentFile = T)
 ```
 
+## Menu para condução da análise de interseção com PANS, TERs e UCs
+
+```r
+menu_intersect_occurrenceRecords_with_PANs_TERs_UCs()
+```
+
+A condução da análise de interseção com PANS, TERs e UCs também pode ser executada utilizando as funções específicas para produção e execução do *script*, além da checagem dos arquivos (*script* e resultados).
+
+### 
 
 
 
