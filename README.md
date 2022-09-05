@@ -39,7 +39,9 @@ URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2n
 prepare_listOfSpecies_from_followUpTable_sheet6()
 ```
 
-## Prepara lista de espécies para obtenção dos dados das espécies da planilha de acompanhamento da nuvem para o arquivo local, das obras princeps e citações da Flora e Funga do Brasil
+## Construção da planilha de acompanhamento no arquivo local
+
+### Prepara lista de espécies para obtenção dos dados das espécies da planilha de acompanhamento da nuvem para o arquivo local, das obras princeps e citações da Flora e Funga do Brasil
 
 ```r
 prepare_listOfSpecies_files_to_build_followUpTable()
@@ -83,7 +85,9 @@ fill_followUpTable_with_citations_from_FloraFungaBrasil()
 check_all_files_of_species()
 ```
 
-## Prepara a lista de espécies para baixamento da página de registros de ocorrências, para baixá-las via script AHK do antigo sistema 
+## Baixamento da página de registros de ocorrências
+
+### Prepara a lista de espécies para baixamento da página de registros de ocorrências, para baixá-las via script AHK do antigo sistema 
 
 ```r
 prepare_listOfSpecies_files_to_getOccurrences()
@@ -97,7 +101,9 @@ AHKscript_to_download_occurrenceRecords_from_oldSystem()
 
 Execute o arquivo gerado.
 
-## Prepara a lista de espécies para análise de interseção com PANS, TERs e UCs
+## Condução da análise de interseção com PANS, TERs e UCs
+
+### Prepara a lista de espécies para análise de interseção com PANS, TERs e UCs
 
 Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espécies que não possuem resultados para as análises
 
@@ -131,7 +137,9 @@ intersect_PANs_TERs_UCs_execute_scripts()
 intersect_PANs_TERs_UCs_check_files()
 ```
 
-## Prepara a lista de espécies para análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
+## Condução da análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
+
+### Prepara a lista de espécies para análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
 
 Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espécies que não possuem resultados para as análises
 
