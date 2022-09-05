@@ -39,7 +39,7 @@ URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2n
 prepare_listOfSpecies_from_followUpTable_sheet6()
 ```
 
-## Prepara lista de espécies para obtenção dos dados das espécies da planilha de acompanhamento da nuvem para o arquivo local
+## Prepara lista de espécies para obtenção dos dados das espécies da planilha de acompanhamento da nuvem para o arquivo local, das obras princeps e citações da Flora e Funga do Brasil
 
 ```r
 prepare_listOfSpecies_files_to_build_followUpTable()
