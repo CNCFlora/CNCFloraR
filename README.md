@@ -177,6 +177,40 @@ overlayAnalysis_execute_scripts()
 overlayAnalysis_check_files()
 ```
 
-## Profile of species HTML
+## Condução da criação dos HTMLs dos perfis das espécies
+
+### Prepara a lista de espécies para criação dos HTMLs dos perfis das espécies
+
+Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espécies que não possuem HTMLs dos perfil
+
+```r
+prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs(onlyNonExistentFile = T)
+```
+
+### Menu para condução da criação dos HTMLs dos perfis das espécies
+
+```r
+menu_create_profileOfSpeciesHTMLs()
+```
+
+A condução da criação dos HTMLs dos perfis das espécies também pode ser executada utilizando as funções específicas para produção e execução do *script*, além da checagem dos arquivos (*script* e resultados).
+
+#### Criação dos *scripts* para condução da criação dos HTMLs dos perfis das espécies
+
+```r
+create_profileOfSpeciesHTML_create_scripts()
+```
+
+#### Execução dos *scripts* para condução da criação dos HTMLs dos perfis das espécies
+
+```r
+create_profileOfSpeciesHTML__execute_scripts()
+```
+
+#### Checa os arquivos dos HTMLs dos perfis das espécies
+
+```r
+create_profileOfSpeciesHTML__check_files()
+```
 
 ## Assessment HTML
