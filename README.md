@@ -28,7 +28,7 @@ Outros menus:
   - `menu_create_profileOfSpeciesHTMLs_PNTs()`
 
 
-## Baixa lista de espécies da planilha de acompanhamento para criação do HTML do perfil
+## Prepara lista de espécies a partir da planilha de acompanhamento para criação do HTML do perfil
 
 URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY](https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY)
 
@@ -39,7 +39,13 @@ URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2n
 prepare_listOfSpecies_from_followUpTable_sheet6()
 ```
 
-## Baixa os dados das espécies da planilha de acompanhamento da nuvem para o arquivo local
+## Prepara lista de espécies para obtenção dos dados das espécies da planilha de acompanhamento da nuvem para o arquivo local
+
+```r
+prepare_listOfSpecies_files_to_build_followUpTable()
+```
+
+## Obtém os dados das espécies da planilha de acompanhamento da nuvem para o arquivo local
 
 ```r
 get_species_from_followUpTable()
