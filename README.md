@@ -45,13 +45,13 @@ prepare_listOfSpecies_from_followUpTable_sheet6()
 prepare_listOfSpecies_files_to_build_followUpTable()
 ```
 
-## Obtém os dados das espécies da planilha de acompanhamento da nuvem para o arquivo local
+### Obtém os dados das espécies da planilha de acompanhamento da nuvem para o arquivo local
 
 ```r
 get_species_from_followUpTable()
 ```
 
-## Obtém as *obras princeps* do Tropicos e IPNI da lista de espécies
+### Obtém as *obras princeps* do Tropicos e IPNI da lista de espécies
 
 Ao término da obtenção, é necessário proceder a revisão manual das *strings* obtidas, salvando a forma correta na aba `revision`.
 
@@ -59,19 +59,19 @@ Ao término da obtenção, é necessário proceder a revisão manual das *string
 get_obraPrinceps_from_Tropicos_IPNI()
 ```
 
-## Preenche a planilha de acompanhamento no arquivo local com as *obras princeps* obtidas
+### Preenche a planilha de acompanhamento no arquivo local com as *obras princeps* obtidas
 
 ```r
 fill_followUpTable_with_obrasPrinceps()
 ```
 
-## Obtém as citações da Flora e Funga do Brasil via scraping
+### Obtém as citações da Flora e Funga do Brasil via scraping
 
 ```r
 get_citations_from_FloraFungaBrasil()
 ```
 
-## Preenche a planilha de acompanhamento no arquivo local com as citações da Flora e Funga do Brasil obtidas
+### Preenche a planilha de acompanhamento no arquivo local com as citações da Flora e Funga do Brasil obtidas
 
 ```r
 fill_followUpTable_with_citations_from_FloraFungaBrasil()
