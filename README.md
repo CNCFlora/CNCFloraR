@@ -89,7 +89,7 @@ check_all_files_of_species()
 prepare_listOfSpecies_files_to_getOccurrences()
 ```
 
-## Prepara o script AHK para baixar a página de registros de ocorrências do antigo sistema
+### Gera o script AHK para baixar a página de registros de ocorrências do antigo sistema
 
 ```r
 AHKscript_to_download_occurrenceRecords_from_oldSystem()
@@ -105,7 +105,7 @@ Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espé
 prepare_listOfSpecies_files_to_intersectPANsTERsUCs(onlyNonExistentFile = T)
 ```
 
-## Menu para condução da análise de interseção com PANS, TERs e UCs
+### Menu para condução da análise de interseção com PANS, TERs e UCs
 
 ```r
 menu_intersect_occurrenceRecords_with_PANs_TERs_UCs()
@@ -113,19 +113,19 @@ menu_intersect_occurrenceRecords_with_PANs_TERs_UCs()
 
 A condução da análise de interseção com PANS, TERs e UCs também pode ser executada utilizando as funções específicas para produção e execução do *script*, além da checagem dos arquivos (*script* e resultados).
 
-### Criação dos *scripts* para condução da análise de interseção com PANS, TERs e UCs
+#### Criação dos *scripts* para condução da análise de interseção com PANS, TERs e UCs
 
 ```r
 intersect_PANs_TERs_UCs_create_scripts()
 ```
 
-### Execução dos *scripts* para condução da análise de interseção com PANS, TERs e UCs
+#### Execução dos *scripts* para condução da análise de interseção com PANS, TERs e UCs
 
 ```r
 intersect_PANs_TERs_UCs_execute_scripts()
 ```
 
-### Checa os arquivos da análise de interseção com PANS, TERs e UCs (*scripts* e resultados)
+#### Checa os arquivos da análise de interseção com PANS, TERs e UCs (*scripts* e resultados)
 
 ```r
 intersect_PANs_TERs_UCs_check_files()
@@ -139,7 +139,7 @@ Utilizando o argumento `onlyNonExistentFile = T`, apenas são arroladas as espé
 prepare_listOfSpecies_files_to_overlayAnalysis(onlyNonExistentFile = T)
 ```
 
-## Menu para condução da análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
+### Menu para condução da análise de sobreposição com a série histórica do MapBiomas - Cobertura do Solo: 1985-2020
 
 ```r
 menu_overlayAnalysis()
@@ -147,19 +147,19 @@ menu_overlayAnalysis()
 
 A condução da análise de sobreposição também pode ser executada utilizando as funções específicas para produção e execução do *script*, além da checagem dos arquivos (*script* e resultados).
 
-### Criação dos *scripts* para condução da análise de sobreposição
+#### Criação dos *scripts* para condução da análise de sobreposição
 
 ```r
 overlayAnalysis_create_scripts()
 ```
 
-### Execução dos *scripts* para condução da análise de sobreposição
+#### Execução dos *scripts* para condução da análise de sobreposição
 
 ```r
 overlayAnalysis_execute_scripts()
 ```
 
-### Checa os arquivos da análise de sobreposição (*scripts* e resultados)
+#### Checa os arquivos da análise de sobreposição (*scripts* e resultados)
 
 ```r
 overlayAnalysis_check_files()
