@@ -175,6 +175,8 @@ get_citations_from_FloraFungaBrasil <- function(){
   citations <- NULL
   for(i in URLs_n){
 
+    message(paste0(data_from_followUpTable$NameFB_semAutor[i]))
+
     Sys.sleep(3)
     remDr$navigate(URLs[i])
     Sys.sleep(3)

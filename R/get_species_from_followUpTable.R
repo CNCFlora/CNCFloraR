@@ -122,7 +122,6 @@ get_species_from_followUpTable <- function(){
 
   followUpTable <- bind_rows(followUpTable, listOfSpecies)
 
-
   # Loop start ####
 
   for(i in species_n){
@@ -150,7 +149,25 @@ get_species_from_followUpTable <- function(){
       followUpTable$CITES[species_i] <- info_species$CITES
       followUpTable$use[species_i] <- info_species$url
       followUpTable$url[species_i] <- info_species$url
-      followUpTable$Validacao.Registro.REDBOOK2013[species_i] <- if(is.na(info_species$CategoriaAvaliacao1_CNCFlora)){NA} else{paste('<a href="http://www.cncflora.jbrj.gov.br/portal/pt-br/profile/', SPECIES, '/" target="_blank">', info_species$CategoriaAvaliacao1_CNCFlora, '</a>', sep = '')}
+      followUpTable$Validacao.Registro.REDBOOK2013[species_i] <-
+        if(
+
+          is.na(info_species$CategoriaAvaliacao1_CNCFlora)
+
+        ){""} else {
+
+          paste(
+
+            '<a href="http://www.cncflora.jbrj.gov.br/portal/pt-br/profile/',
+            SPECIES,
+            '/" target="_blank">',
+            info_species$CategoriaAvaliacao1_CNCFlora,
+            '</a>',
+            sep = ''
+
+          )
+
+        }
       followUpTable <- followUpTable %>% replace(., is.na(.), "")
 
       followUpTable$FB2020_endemism <- sub("NO", "Não", followUpTable$FB2020_endemism)

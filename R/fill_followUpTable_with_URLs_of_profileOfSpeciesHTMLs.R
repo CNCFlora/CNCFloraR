@@ -42,7 +42,7 @@ fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs <- function(){
   read_ss_sheet6 <- read_sheet(ss, sheet = 6)
 
   read_ss_sheet6.filtered <-
-    read_ss_sheet6[read_ss_sheet6$hasHTMLprofile == T & is.na(read_ss_sheet6$Status) == T,]
+    read_ss_sheet6[read_ss_sheet6$hasHTMLprofile == F & is.na(read_ss_sheet6$Status) == T,]
 
   URLs_to_fill_sheet6 <- files %>% dplyr::filter(name %in% sub("$",".html", read_ss_sheet6.filtered$Espécie))
 
