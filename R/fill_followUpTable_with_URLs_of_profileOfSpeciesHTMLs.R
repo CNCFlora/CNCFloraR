@@ -27,7 +27,7 @@ fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs <- function(){
 
   URLs_to_fill_sheet1 <- data.frame(
 
-    species = sub("\\.html", "", species_without_profileOfSpeciesHTML_in_followUpTable_sheet1),
+    species = sub("\\.html", "", URLs_to_fill_sheet1$name),
     URL = paste0(
 
       '=HIPERLINK("',

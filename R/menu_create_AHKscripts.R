@@ -2,7 +2,7 @@
 #'
 #' Criar scripts AHK
 
-create_AHKscripts <- function(){
+menu_create_AHKscripts <- function(){
 
   cat("\nCreate AHK scripts:\n(press '0' to exit)\n\n")
 
@@ -14,7 +14,8 @@ create_AHKscripts <- function(){
       c(
 
         "Get occurrence records from old system",
-        "Get the profile of species (ID) from old system",
+        "Get the profile IDs of the species in old system",
+        "Store the profile IDs of the species in old system",
         "Read basic informations from the profile of species HTML",
         "Read Actions from the profile of species HTML",
         "Read Threats from the profile of species HTML",
@@ -30,13 +31,14 @@ create_AHKscripts <- function(){
     # Actions
     "Nothing done.",
     AHKscript_to_download_occurrenceRecords_from_oldSystem(),
-    cat("Por enquanto, nada.\n"),
+    get_profileIDs_from_oldSystem(),
+    store_profileIDs(),
     read_infoBasic_from_profileOfSpeciesHTML(),
     read_Actions_from_profileOfSpeciesHTML(),
     read_Threats_from_profileOfSpeciesHTML(),
-    cat("Por enquanto, nada.\n"),
-    cat("Por enquanto, nada.\n"),
-    cat("Por enquanto, nada.\n"),
+    fill_infoBasic(),
+    fill_threats(),
+    fill_actions(),
     cat("Por enquanto, nada.\n")
 
   )

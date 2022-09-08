@@ -4793,10 +4793,10 @@ if(CITES[,2] == ""){}else{
   statusCITES<-sub("yes\\s\\(Appendix\\sII\\)", "apêndice II", statusCITES)
   statusCITES<-sub("yes\\s\\(Appendix\\sI\\)", "apêndice I", statusCITES)
   if(statusCITES == "apêndice I"){
-    TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui espécies Classedas de extinção, cujo comércio somente será permitido em circunstâncias excepcionais."))
+    TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui espécies ameaçadas de extinção, cujo comércio somente será permitido em circunstâncias excepcionais."))
   }else{
     if(statusCITES == "apêndice II"){
-      TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui as espécies não necessariamente Classedas de extinção, mas cujo comércio deve ser controlado a fim de evitar usos incompatíveis com sua sobrevivência."))
+      TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui as espécies não necessariamente ameaçadas de extinção, mas cujo comércio deve ser controlado a fim de evitar usos incompatíveis com sua sobrevivência."))
     } else{
       if(statusCITES == "apêndice III"){
         TextoCITES<-capture.output(cat("A espécie está incluída no", statusCITES, "da CITES (2022), que inclui as espécies que são protegidas em pelo menos um país e que tenha solicitado assistência às demais partes da Convenção para controlar seu comércio."))
@@ -4826,7 +4826,7 @@ statusMMA443<-MMA443$STATUS[whichMMA443]
 statusMMA443<-sub("VU", "Vulnerável (VU)", statusMMA443)
 statusMMA443<-sub("EN", "Em Perigo (EN)", statusMMA443)
 statusMMA443<-sub("CR", "Criticamente em Perigo (CR)", statusMMA443)
-TextoMMA443<-capture.output(cat("A espécie foi avaliada como", statusMMA443, "e está incluída no ANEXO I da Lista Nacional Oficial de Espécies da Flora Classedas de Extinção (MMA, 2014)."))
+TextoMMA443<-capture.output(cat("A espécie foi avaliada como", statusMMA443, "e está incluída no ANEXO I da Lista Nacional Oficial de Espécies da Flora Ameaçadas de Extinção (MMA, 2014)."))
 MMA443table<-data.frame(Acao="5.1.2 National level", Situacao="on going", Texto=TextoMMA443, Referencia=capture.output(cat("MMA - Ministério do Meio Ambiente, 2014. Portaria nº 443, de 17 de dezembro de 2014. Diário Oficial da União, 18/12/2014, Seção 1, p. 110-121. URL http://www.dados.gov.br/dataset/portaria_443 (acesso em ", DATA,").", sep="")))
 } else{}
 
@@ -4966,8 +4966,8 @@ if(hasIEMA1499R == T){
   statusIEMA1499R<-sub("VU", "Vulnerável (VU)", statusIEMA1499R)
   statusIEMA1499R<-sub("EN", "Em Perigo (EN)", statusIEMA1499R)
   statusIEMA1499R<-sub("CR", "Criticamente em Perigo (CR)", statusIEMA1499R)
-  TextoIEMA1499R<-capture.output(cat("A espécie foi avaliada como", statusIEMA1499R, "na lista oficial das espécies Classedas de extinção no Estado do Espírito Santo (Espírito Santo, 2005)."))
-  IEMA1499Rtable<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoIEMA1499R, Referencia="Espírito Santo, 2005. Lista de Espécies Classedas de Extinção no Espírito Santo. Decreto nº 1.499-R. Diário Oficial do Estado do Espírito Santo, 14/06/2005.")
+  TextoIEMA1499R<-capture.output(cat("A espécie foi avaliada como", statusIEMA1499R, "na lista oficial das espécies ameaçadas de extinção no Estado do Espírito Santo (Espírito Santo, 2005)."))
+  IEMA1499Rtable<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoIEMA1499R, Referencia="Espírito Santo, 2005. Lista de Espécies Ameaçadas de Extinção no Espírito Santo. Decreto nº 1.499-R. Diário Oficial do Estado do Espírito Santo, 14/06/2005.")
 
 }
 
@@ -4993,8 +4993,8 @@ if(hasCOEMA54 == T){
   statusCOEMA54<-sub("VU", "Vulnerável (VU)", statusCOEMA54)
   statusCOEMA54<-sub("EN", "Em Perigo (EN)", statusCOEMA54)
   statusCOEMA54<-sub("CR", "Criticamente em Perigo (CR)", statusCOEMA54)
-  TextoCOEMA54<-capture.output(cat("A espécie foi avaliada como", statusCOEMA54, "na lista oficial das espécies Classedas de extinção no Estado do Pará (COEMA, 2007)."))
-  COEMA54table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCOEMA54, Referencia=capture.output(cat("COEMA - Conselho Estadual de Meio Ambiente, 2007. Lista de Espécies Classedas de Extinção no Espírito Santo. Resolução nº 54, de 24 de outubro de 2007. URL https://iema.es.gov.br/especiesClassedas. (acesso em ", DATA,").", sep="")))
+  TextoCOEMA54<-capture.output(cat("A espécie foi avaliada como", statusCOEMA54, "na lista oficial das espécies ameaçadas de extinção no Estado do Pará (COEMA, 2007)."))
+  COEMA54table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCOEMA54, Referencia=capture.output(cat("COEMA - Conselho Estadual de Meio Ambiente, 2007. Lista de Espécies Ameaçadas de Extinção no Espírito Santo. Resolução nº 54, de 24 de outubro de 2007. URL https://iema.es.gov.br/especiesClassedas. (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5020,8 +5020,8 @@ if(hasRS52109 == T){
   statusRS52109<-sub("VU", "Vulnerável (VU)", statusRS52109)
   statusRS52109<-sub("EN", "Em Perigo (EN)", statusRS52109)
   statusRS52109<-sub("CR", "Criticamente em Perigo (CR)", statusRS52109)
-  TextoRS52109<-capture.output(cat("A espécie foi avaliada como", statusRS52109, "na lista oficial das espécies da flora Classedas de extinção no Estado do Rio Grande do Sul (Rio Grande do Sul, 2014)."))
-  RS52109table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoRS52109, Referencia=capture.output(cat("Rio Grande do Sul, 2014. Lista de espécies da flora nativa Classedas de extinção no Estado do Rio Grande do Sul. Decreto nº 52.109, 01/12/2014, Diário Oficial do Estado do Rio Grande do Sul, 02/12/2014, nº 233, pp. 2-12. URL http://www.al.rs.gov.br/filerepository/repLegis/arquivos/DEC%2052.109.pdf (acesso em ", DATA,").", sep="")))
+  TextoRS52109<-capture.output(cat("A espécie foi avaliada como", statusRS52109, "na lista oficial das espécies da flora ameaçadas de extinção no Estado do Rio Grande do Sul (Rio Grande do Sul, 2014)."))
+  RS52109table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoRS52109, Referencia=capture.output(cat("Rio Grande do Sul, 2014. Lista de espécies da flora nativa ameaçadas de extinção no Estado do Rio Grande do Sul. Decreto nº 52.109, 01/12/2014, Diário Oficial do Estado do Rio Grande do Sul, 02/12/2014, nº 233, pp. 2-12. URL http://www.al.rs.gov.br/filerepository/repLegis/arquivos/DEC%2052.109.pdf (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5047,7 +5047,7 @@ if(hasCONSEMA51 == T){
   statusCONSEMA51<-sub("VU", "Vulnerável (VU)", statusCONSEMA51)
   statusCONSEMA51<-sub("EN", "Em Perigo (EN)", statusCONSEMA51)
   statusCONSEMA51<-sub("CR", "Criticamente em Perigo (CR)", statusCONSEMA51)
-  TextoCONSEMA51<-capture.output(cat("A espécie foi avaliada como", statusCONSEMA51, "na lista oficial das espécies da flora Classedas de extinção no Estado de Santa Catarina (CONSEMA, 2014)."))
+  TextoCONSEMA51<-capture.output(cat("A espécie foi avaliada como", statusCONSEMA51, "na lista oficial das espécies da flora ameaçadas de extinção no Estado de Santa Catarina (CONSEMA, 2014)."))
   CONSEMA51table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCONSEMA51, Referencia="CONSEMA - Conselho Estadual do Meio Ambiente. 2014. Resolução nº 51/2014. Lista oficial das espécies da flora Ameaçada de extinção no Estado de Santa Catarina.")
 
 }
@@ -5076,8 +5076,8 @@ if(hasSMA57 == T){
   statusSMA57<-sub("CR", "Criticamente em Perigo (CR)", statusSMA57)
   statusSMA57<-sub("EX", "Extinto (EX)", statusSMA57)
   statusSMA57<-sub("EW", "Extinto na Natureza (EW)", statusSMA57)
-  TextoSMA57<-capture.output(cat("A espécie foi avaliada como", statusSMA57, "na lista oficial das espécies da flora Classedas de extinção no Estado de São Paulo (SMA, 2016)."))
-  SMA57table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSMA57, Referencia=capture.output(cat("SMA - Secretaria do Meio Ambiente do Estado de São Paulo, 2016. Resolução nº 57, de 05 de junho de 2016. Lista de espécies da flora Classedas de extinção no Estado de São Paulo. Diário Oficial do Estado de São Paulo, 07/06/2016, Seção I, pp. 69-71. URL https://cetesb.sp.gov.br/licenciamentoambiental/wp-content/uploads/sites/32/2019/05/Resolução-SMA-nz-57-2016.pdf (acesso em ", DATA,").", sep="")))
+  TextoSMA57<-capture.output(cat("A espécie foi avaliada como", statusSMA57, "na lista oficial das espécies da flora ameaçadas de extinção no Estado de São Paulo (SMA, 2016)."))
+  SMA57table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSMA57, Referencia=capture.output(cat("SMA - Secretaria do Meio Ambiente do Estado de São Paulo, 2016. Resolução nº 57, de 05 de junho de 2016. Lista de espécies da flora ameaçadas de extinção no Estado de São Paulo. Diário Oficial do Estado de São Paulo, 07/06/2016, Seção I, pp. 69-71. URL https://cetesb.sp.gov.br/licenciamentoambiental/wp-content/uploads/sites/32/2019/05/Resolução-SMA-nz-57-2016.pdf (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5105,8 +5105,8 @@ if(hasSEMA40 == T){
   statusSEMA40<-sub("CR", "Criticamente em Perigo (CR)", statusSEMA40)
   statusSEMA40<-sub("EX", "Extinto (EX)", statusSEMA40)
   statusSEMA40<-sub("EX", "Extinto na Natureza (EW)", statusSEMA40)
-  TextoSEMA40<-capture.output(cat("A espécie foi avaliada como", statusSEMA40, "na lista oficial das espécies da flora Classedas de extinção no Estado da Bahia (SEMA, 2017)."))
-  SEMA40table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSEMA40, Referencia=capture.output(cat("SEMA - Secretaria do Meio Ambiente do Governo do Estado da Bahia, 2017. Portaria SEMA nº 40, de 21 de agosto de 2017. Lista oficial das espécies da flora Classedas de extinção do Estado da Bahia. Diário Oficial do Estado da Bahia, Ano CI, nº 22.244, 22/08/2017, pp. 22-27. URL http://www.meioambiente.ba.gov.br/arquivos/File/Editais/portaria40flora.docx (acesso em ", DATA,").", sep="")))
+  TextoSEMA40<-capture.output(cat("A espécie foi avaliada como", statusSEMA40, "na lista oficial das espécies da flora ameaçadas de extinção no Estado da Bahia (SEMA, 2017)."))
+  SEMA40table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoSEMA40, Referencia=capture.output(cat("SEMA - Secretaria do Meio Ambiente do Governo do Estado da Bahia, 2017. Portaria SEMA nº 40, de 21 de agosto de 2017. Lista oficial das espécies da flora ameaçadas de extinção do Estado da Bahia. Diário Oficial do Estado da Bahia, Ano CI, nº 22.244, 22/08/2017, pp. 22-27. URL http://www.meioambiente.ba.gov.br/arquivos/File/Editais/portaria40flora.docx (acesso em ", DATA,").", sep="")))
 
 }
 
@@ -5195,15 +5195,15 @@ if(
     if(hasPAN_EndRJ == T){
       Acao<-"5.1.2 National level"
       Situacao<-"on going"
-      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora endêmica Ameaçada de extinção do estado do Rio de Janeiro (Pougy et al., 2018)."
-      Referencia<-"Pougy, N., Martins, E., Verdi, M., Fernandez, E., Loyola, R., Silveira-Filho, T.B., Martinelli, G. (Orgs.), 2018. Plano de Ação Nacional para a conservação da flora endêmica Ameaçada de extinção do estado do Rio de Janeiro. Secretaria de Estado do Ambiente-SEA: Andrea Jakobsson Estúdio, Rio de Janeiro. 80 p."
+      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional para a conservação da flora endêmica ameaçada de extinção do estado do Rio de Janeiro (Pougy et al., 2018)."
+      Referencia<-"Pougy, N., Martins, E., Verdi, M., Fernandez, E., Loyola, R., Silveira-Filho, T.B., Martinelli, G. (Orgs.), 2018. Plano de Ação Nacional para a conservação da flora endêmica ameaçada de extinção do estado do Rio de Janeiro. Secretaria de Estado do Ambiente-SEA: Andrea Jakobsson Estúdio, Rio de Janeiro. 80 p."
       PANEndRJtable<-data.frame(Acao,Situacao,Texto,Referencia)
     }
 
     if(hasPAN_Lagos_do_Sul == T){
       Acao<-"5.1.2 National level"
       Situacao<-"on going"
-      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional Lagoas do Sul para a conservação da flora melhorar o estado de conservação das espécies Classedas e dos ecossistemas das lagoas da planície costeira do sul do Brasil (ICMBio, 2018)."
+      Texto<-"A espécie ocorre no território de abrangência do Plano de Ação Nacional Lagoas do Sul para a conservação da flora melhorar o estado de conservação das espécies ameaçadas e dos ecossistemas das lagoas da planície costeira do sul do Brasil (ICMBio, 2018)."
       Referencia<-capture.output(cat("ICMBio - Instituto Chico Mendes de Conservação da Biodiversidade, 2018. Portaria nº 751, de 27 de agosto de 2018. Diário Oficial da União, 29/08/2018, Edição 167, Seção 1, p. 54. URL https://www.icmbio.gov.br/portal/images/stories/docs-pan/pan-lagoas-do-sul/1-ciclo/pan-lagoas-do-sul-portaria-aprovacao.pdf (acesso em ", DATA,").", sep=""))
       PANLagosSultable<-data.frame(Acao,Situacao,Texto,Referencia)
     }

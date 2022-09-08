@@ -23,6 +23,7 @@ menu_CNCFlora <- function(){
         "Menu to create the profile of species HTMLs",
         "Give access of profile of species HTMLs to everyone with the link",
         "Fill the URLs of the profile of species HTMLs in the follow-up table in cloud",
+        "Fill the follow-up table in cloud with filling of the profile of species completed",
         "Flow to create the assessment panel",
         "Update shapefiles of UCs, PANs, and TERs from cloud",
         "Create AHK scripts"
@@ -42,9 +43,10 @@ menu_CNCFlora <- function(){
     menu_create_profileOfSpeciesHTMLs(),
     give_access_of_profileOfSpeciesHTMLs_to_anyone_with_the_link(),
     fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs(),
+    fill_followUpTable_with_profileOfSpecies_completed_filling(),
     flow_to_create_assessmentHTMLs(),
     update_shapefiles_from_cloud(),
-    create_AHKscripts()
+    menu_create_AHKscripts()
 
   )
 
