@@ -213,6 +213,8 @@ create_profileOfSpeciesHTML__execute_scripts()
 create_profileOfSpeciesHTML__check_files()
 ```
 
+## Preencher planilha de acompanhamento com URLs dos HTMLs dos perfis das espécies e marcar como concluído na lista de demandas (sheet 6)
+
 ## Preenchimento automático dos perfis das espécies no sistema antigo
 
 ### Obtém o profile ID das espécies no sistema antigo
