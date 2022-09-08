@@ -217,7 +217,7 @@ create_profileOfSpeciesHTML__check_files()
 
 ### Obtém o profile ID das espécies no sistema antigo
 
-### Leitura dos dados a partir dos HTMLs dos perfis das espécies
+### Leitura das informações dos HTMLs dos perfis das espécies
 
 #### Informações básicas
 
