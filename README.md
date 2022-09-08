@@ -213,4 +213,24 @@ create_profileOfSpeciesHTML__execute_scripts()
 create_profileOfSpeciesHTML__check_files()
 ```
 
+## Preenchimento automático dos perfis das espécies no sistema antigo
+
+### Obtém o profile ID das espécies no sistema antigo
+
+### Leitura dos dados a partir dos HTMLs dos perfis das espécies
+
+#### Informações básicas
+
+#### Ameaças
+
+#### Ações de conservação
+
+### Preparação dos *scripts* AHK para preenchimento automático no sistema antigo
+
+#### Informações básicas
+
+#### Ameaças
+
+#### Ações de conservação
+
 ## Assessment HTML
