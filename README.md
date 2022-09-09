@@ -213,7 +213,11 @@ create_profileOfSpeciesHTML__execute_scripts()
 create_profileOfSpeciesHTML__check_files()
 ```
 
-## Preencher planilha de acompanhamento com URLs dos HTMLs dos perfis das espécies e marcar como concluído na lista de demandas (sheet 6)
+## Incluir URLs dos HTMLs dos perfis das espécies e marcar como concluído na lista de demandas (sheet 6) da planilha de acompanhamento
+
+```r
+fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs()
+```
 
 ## Preenchimento automático dos perfis das espécies no sistema antigo
 
@@ -234,5 +238,11 @@ create_profileOfSpeciesHTML__check_files()
 #### Ameaças
 
 #### Ações de conservação
+
+## Marcar espécies com preenchimento automático do perfil completo na planilha de acompanhamento
+
+```r
+fill_followUpTable_with_completed_filling()
+```
 
 ## Assessment HTML
