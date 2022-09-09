@@ -96,8 +96,8 @@ check_all_files_of_species(
 
   list = c(
   
-    "Espécie epíteto1",
-    "Espécie epíteto2"
+    "Genus species1",
+    "Genus species2"
     
   )
   
