@@ -221,23 +221,57 @@ fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs()
 
 ## Preenchimento automático dos perfis das espécies no sistema antigo
 
+### Prepara a lista de espécies para preenchimento automático
+
+```r
+prepare_listOfSpecies_files_to_fill_profiles_in_oldSystem()
+```
+
 ### Obtém o profile ID das espécies no sistema antigo
+
+```r
+get_profileIDs_from_oldSystem()
+```
 
 ### Leitura das informações dos HTMLs dos perfis das espécies
 
 #### Informações básicas
 
+```r
+read_infoBasic_from_profileOfSpeciesHTML()
+```
+
 #### Ameaças
 
+```r
+read_threats_from_profileOfSpeciesHTML()
+```
+
 #### Ações de conservação
+
+```r
+read_actions_from_profileOfSpeciesHTML()
+```
 
 ### Preparação dos *scripts* AHK para preenchimento automático no sistema antigo
 
 #### Informações básicas
 
+```r
+fill_infoBasic()
+```
+
 #### Ameaças
 
+```r
+fill_threats()
+```
+
 #### Ações de conservação
+
+```r
+fill_actions()
+```
 
 ## Marcar espécies com preenchimento automático do perfil completo na planilha de acompanhamento
 
