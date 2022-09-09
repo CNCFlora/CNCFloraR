@@ -89,6 +89,21 @@ fill_followUpTable_with_citations_from_FloraFungaBrasil()
 check_all_files_of_species()
 ```
 
+Também é possível consultar uma lista indicada através de um vetor:
+
+```r
+check_all_files_of_species(
+
+  list = c(
+  
+    "Espécie epíteto1",
+    "Espécie epíteto2"
+    
+  )
+  
+)
+```
+
 ## Baixamento da página de registros de ocorrências
 
 ### Prepara a lista de espécies para baixamento da página de registros de ocorrências, para baixá-las via script AHK do antigo sistema 
