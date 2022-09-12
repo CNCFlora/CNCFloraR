@@ -1,4 +1,4 @@
-check_all_files_of_species <- function(){
+check_all_files_of_species <- function(list = ""){
 
 
   # Load package ####
@@ -10,71 +10,85 @@ check_all_files_of_species <- function(){
   library(lubridate)
   library(googlesheets4)
 
-  # Get local path of the downloaded list of species file ####
+  if(list != ""){
 
-  listOfSpecies_localPath <-
-    paste0(
+    listOfSpecies <- data.frame(
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/check_all_files_of_species.csv"
+      V1 = list
 
     )
 
-  ## Ask to open the list of species file ####
+  } else {
 
-  answer <- ""
+    # Get local path of the downloaded list of species file ####
 
-  while(answer != "Y" |
-        answer != "N" ){
+    listOfSpecies_localPath <-
+      paste0(
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/check_all_files_of_species.csv"
 
-    if(answer == "Y"){
+      )
 
-      shell(listOfSpecies_localPath)
+    ## Ask to open the list of species file ####
 
-      answer2 <- ""
+    answer <- ""
 
-      while(answer2 != "Y"){
+    while(answer != "Y" |
+          answer != "N" ){
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+      answer <-
+        toupper(readline("Open the list of species file? (y/n): "))
 
-        if(answer2 == "Y"){
+      if(answer == "Y"){
 
-          break
+        shell(listOfSpecies_localPath)
+
+        answer2 <- ""
+
+        while(answer2 != "Y"){
+
+          answer2 <-
+            toupper(readline("List of species file ready? (y): "))
+
+          if(answer2 == "Y"){
+
+            break
+
+          }
 
         }
 
+        break
+
       }
 
-      break
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
-    if(answer == "N"){
+    # Import the list of species file from local path ####
 
-      break
+    message("Importing the list of species file...")
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+    message("List of species file imported.")
 
   }
 
-  # Import the list of species file from local path ####
 
-  message("Importing the list of species file...")
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
-
-  message("List of species file imported.")
 
 
   ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
@@ -103,6 +117,67 @@ check_all_files_of_species <- function(){
     flow <- listOfSpecies$flow[i]
 
     df_ <- data.frame(
+
+      is_in_local_followUpTable = if(
+
+        species %in% fread(
+
+          paste0(
+
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
+
+          ),
+
+        )$NameFB_semAutor == T
+
+      ){
+
+        text_spec(
+
+          "TRUE",
+          background = "lightgreen",
+          color = "black",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
+
+        )
+
+      } else {
+
+        text_spec(
+
+          "FALSE",
+          background = "red",
+          color = "white",
+          extra_css = if(flow == "PA"){
+
+            "border-bottom: 5px solid gray;"
+
+          } else {
+
+            if(flow == "PNA"){
+
+              "border-bottom: 5px solid green;"
+
+            }
+
+          }
+
+        )
+
+      },
 
       occurrenceRecords = if(file.exists(
 
@@ -642,7 +717,7 @@ check_all_files_of_species <- function(){
 
       overlayMapBiomasQuadOfGrid = if(file.exists(
 
-        paste0(getwd(), "/CNCFlora_data/inputs/speciesProfile_filled/oldSystem/", species, ".html")
+        paste0(getwd(), "/CNCFlora_data/outputs/overlayAnalysis results/QuadOfGrid/", species, ".csv")
 
       ) == T){
 
@@ -655,7 +730,7 @@ check_all_files_of_species <- function(){
                   "",
                   file.info(
 
-                    paste0(getwd(), "/CNCFlora_data/inputs/speciesProfile_filled/oldSystem/", species, ".html")
+                    paste0(getwd(), "/CNCFlora_data/outputs/overlayAnalysis results/QuadOfGrid/", species, ".csv")
 
                   )$mtime
               )
@@ -1888,11 +1963,11 @@ check_all_files_of_species <- function(){
     kbl("html", escape = FALSE, align = "c") %>%
     kable_styling(full_width = F) %>%
     row_spec(1:6, background = "lightyellow") %>%
-    row_spec(7, background = "lightgreen") %>%
-    row_spec(8:14, background = "lightyellow") %>%
+    row_spec(8, background = "lightgreen") %>%
+    row_spec(9:14, background = "lightyellow") %>%
     row_spec(18:19, background = "lightyellow") %>%
     row_spec(23, background = "lightyellow") %>%
-    row_spec(27, background = "lightgreen")
+    row_spec(28, background = "lightgreen")
 
   # Consultar cores em https://htmlcolorcodes.com
 

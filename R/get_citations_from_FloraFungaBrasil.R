@@ -233,7 +233,10 @@ get_citations_from_FloraFungaBrasil <- function(){
   index_2_authors <- which(str_count(citations$citation, ";") == 1)
   index_more_than_2_authors <- which(str_count(citations$citation, ";") > 1)
   index_more_than_1_no_author <- c(index_2_authors, index_more_than_2_authors)
-  index_1_author <- citations$citation_length[-index_more_than_1_no_author]
+  index_1_author <- (1:length(citations$citation))[-c(index_more_than_1_no_author, index_no_author)]
+
+
+
   citations$citation <- gsub(";", ",", citations$citation)
 
   citations2 <- citations$citation

@@ -84,7 +84,8 @@ fill_followUpTable_with_obrasPrinceps <- function(){
 
     followUpTable_localPath,
     header = T,
-    sep = ";"
+    sep = ";",
+    encoding = "UTF-8"
 
   )
 
@@ -104,7 +105,8 @@ fill_followUpTable_with_obrasPrinceps <- function(){
       "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
 
       ),
-    row.names = F
+    row.names = F,
+    fileEncoding = "UTF-8"
 
   )
 

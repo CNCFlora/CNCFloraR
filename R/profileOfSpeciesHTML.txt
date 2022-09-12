@@ -1476,7 +1476,8 @@ a <- fread(
     "follow-up_table.csv"
 
   ),
-  sep = ";"
+  sep = ";",
+  encoding = "UTF-8"
 
 )
 endemic <- a %>% filter(NameFB_semAutor == ESPECIE)
@@ -2047,7 +2048,8 @@ aa <- fread(
     "follow-up_table.csv"
 
   ),
-  sep = ";"
+  sep = ";",
+  encoding = "UTF-8"
 
 )
 
@@ -2226,20 +2228,44 @@ if(listOfSpecies$flow == "PA"){
   message("  Getting threats from overlay analysis with MapBiomas Fire 2020...")
 
   # MapBiomas Fogo
-  fogo <- fread(
-
-    paste0(
-
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire results/",
-      ESPECIE,
-      ".csv"
-
-    ),
-    sep = ",",
-    header = T
-
-  )
+  
+  if(
+    
+    file.exists(
+      
+      paste0(
+        
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire results/",
+        ESPECIE,
+        ".csv"
+        
+      )
+      
+    ) == T
+    
+  ){
+    
+    fogo <- fread(
+      
+      paste0(
+        
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire results/",
+        ESPECIE,
+        ".csv"
+        
+      ),
+      sep = ",",
+      header = T
+      
+    )
+    
+  } else {
+    
+    fogo <- data.frame()
+    
+  }
 
 
   message("  Making dataframe of threats from external databases...")
@@ -2276,6 +2302,13 @@ if(listOfSpecies$flow == "PA"){
 
   ### Distribuição geográfica ####
 
+  OCORRENCIAS <- data.frame(
+    
+    ESTADOS = OCORRENCIAS$ESTADOS,
+    MUNICIPIOS = OCORRENCIAS$MUNICIPIOS
+    
+  )
+  
   OCORRENCIAS[,1]<-sub("ACRE","AC",OCORRENCIAS[,1])
   OCORRENCIAS[,1]<-sub("ALAGOAS","AL",OCORRENCIAS[,1])
   OCORRENCIAS[,1]<-sub("AMAPÁ","AP",OCORRENCIAS[,1])
@@ -4011,7 +4044,7 @@ if(listOfSpecies$flow == "PA"){
                  format(round(as.numeric(c_EOOporc_2020_mosaico), 2), nsmall=2, big.mark=".", decimal.mark=","),
                  "% (",
                  format(round(as.numeric(c_EOOkm2_2020_mosaico)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
-                 " ha) da sua EOO convertidos em áreas de mosaico")
+                 " ha) da sua EOO convertidos em áreas de mosaico de agricultura e pastagem")
         if(mosaico_TaxaAnual > 0){
           c_mosaico_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
