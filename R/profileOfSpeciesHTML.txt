@@ -3364,71 +3364,77 @@ if(listOfSpecies$flow == "PA"){
   } else{
 
     if(c_EOOkm2_mosaico[1,2] != "Análise dispensada"){
-      #### Mosaico Agricultura e Pastagem
-      trendline_mosaico <- trendline_summary(c_EOOporc_mosaico$Ano, c_EOOporc_mosaico$Porcentagem_EOO, model="line2P", eDigit=4)
-      mosaico_TaxaAnual <- data.frame(Taxa_anual = round(trendline_mosaico$parameter$a*100/length(c_EOOporc_mosaico$Ano), 2))
+      
+      #### Mosaico Agricultura e Pastagem ####
+      trendline_EOO_mosaico <- trendline_summary(c_EOOporc_mosaico$Ano, c_EOOporc_mosaico$Porcentagem_EOO, model="line2P", eDigit=4)
+      mosaico_EOO_TaxaAnual <- data.frame(Taxa_anual = round(trendline_EOO_mosaico$parameter$a*100/length(c_EOOporc_mosaico$Ano), 2))
       tsfit <- trendsegment(x = c_EOOporc_mosaico$Porcentagem_EOO, minsegL = 10)
       if(is.null(tsfit$cpt) == F){
-        trendline_mosaico_LastTrend <- trendline_summary(c_EOOporc_mosaico$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_mosaico$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-        mosaico_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mosaico$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_mosaico_LastTrend$parameter$a*100/trendline_mosaico_LastTrend$N, 2))
+        trendline_EOO_mosaico_EOO_LastTrend <- trendline_summary(c_EOOporc_mosaico$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_mosaico$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+        mosaico_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mosaico$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_EOO_mosaico_EOO_LastTrend$parameter$a*100/trendline_EOO_mosaico_EOO_LastTrend$N, 2))
       } else{
-        mosaico_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mosaico$Ano[1], Taxa_ultima_tendencia = 0)
+        mosaico_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mosaico$Ano[1], Taxa_ultima_tendencia = 0)
       }
 
-      #### Agricultura Total
-      trendline_agricultura <- trendline_summary(c_EOOporc_agricultura$Ano, c_EOOporc_agricultura$Porcentagem_EOO, model="line2P", eDigit=4)
-      agricultura_TaxaAnual <- data.frame(Taxa_anual = round(trendline_agricultura$parameter$a*100/length(c_EOOporc_agricultura$Ano), 2))
+      #### Agricultura Total ####
+      
+      trendline_EOO_agricultura <- trendline_summary(c_EOOporc_agricultura$Ano, c_EOOporc_agricultura$Porcentagem_EOO, model="line2P", eDigit=4)
+      agricultura_EOO_TaxaAnual <- data.frame(Taxa_anual = round(trendline_EOO_agricultura$parameter$a*100/length(c_EOOporc_agricultura$Ano), 2))
       tsfit <- trendsegment(x = c_EOOporc_agricultura$Porcentagem_EOO, minsegL = 10)
       if(is.null(tsfit$cpt) == F){
-        trendline_agricultura_LastTrend <- trendline_summary(c_EOOporc_agricultura$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_agricultura$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-        agricultura_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_agricultura$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_agricultura_LastTrend$parameter$a*100/trendline_agricultura_LastTrend$N, 2))
+        trendline_EOO_agricultura_EOO_LastTrend <- trendline_summary(c_EOOporc_agricultura$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_agricultura$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+        agricultura_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_agricultura$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_EOO_agricultura_EOO_LastTrend$parameter$a*100/trendline_EOO_agricultura_EOO_LastTrend$N, 2))
       } else{
-        agricultura_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_agricultura$Ano[1], Taxa_ultima_tendencia = 0)
+        agricultura_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_agricultura$Ano[1], Taxa_ultima_tendencia = 0)
       }
 
 
-      #### Pastagem
-      trendline_pastagem <- trendline_summary(c_EOOporc_pastagem$Ano, c_EOOporc_pastagem$Porcentagem_EOO, model="line2P", eDigit=4)
-      pastagem_TaxaAnual <- data.frame(Taxa_anual = round(trendline_pastagem$parameter$a*100/length(c_EOOporc_pastagem$Ano), 2))
+      #### Pastagem ####
+      
+      trendline_EOO_pastagem <- trendline_summary(c_EOOporc_pastagem$Ano, c_EOOporc_pastagem$Porcentagem_EOO, model="line2P", eDigit=4)
+      pastagem_EOO_TaxaAnual <- data.frame(Taxa_anual = round(trendline_EOO_pastagem$parameter$a*100/length(c_EOOporc_pastagem$Ano), 2))
       tsfit <- trendsegment(x = c_EOOporc_pastagem$Porcentagem_EOO, minsegL = 10)
       if(is.null(tsfit$cpt) == F){
-        trendline_pastagem_LastTrend <- trendline_summary(c_EOOporc_pastagem$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_pastagem$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-        pastagem_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_pastagem$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_pastagem_LastTrend$parameter$a*100/trendline_pastagem_LastTrend$N, 2))
+        trendline_EOO_pastagem_EOO_LastTrend <- trendline_summary(c_EOOporc_pastagem$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_pastagem$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+        pastagem_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_pastagem$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_EOO_pastagem_EOO_LastTrend$parameter$a*100/trendline_EOO_pastagem_EOO_LastTrend$N, 2))
       } else{
-        pastagem_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_pastagem$Ano[1], Taxa_ultima_tendencia = 0)
+        pastagem_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_pastagem$Ano[1], Taxa_ultima_tendencia = 0)
       }
 
-      #### Infraestrutura Urbana
-      trendline_urbana <- trendline_summary(c_EOOporc_urbana$Ano, c_EOOporc_urbana$Porcentagem_EOO, model="line2P", eDigit=4)
-      urbana_TaxaAnual <- data.frame(Taxa_anual = round(trendline_urbana$parameter$a*100/length(c_EOOporc_urbana$Ano), 2))
+      #### Infraestrutura Urbana ####
+      
+      trendline_EOO_urbana <- trendline_summary(c_EOOporc_urbana$Ano, c_EOOporc_urbana$Porcentagem_EOO, model="line2P", eDigit=4)
+      urbana_EOO_TaxaAnual <- data.frame(Taxa_anual = round(trendline_EOO_urbana$parameter$a*100/length(c_EOOporc_urbana$Ano), 2))
       tsfit <- trendsegment(x = c_EOOporc_urbana$Porcentagem_EOO, minsegL = 10)
       if(is.null(tsfit$cpt) == F){
-        trendline_urbana_LastTrend <- trendline_summary(c_EOOporc_urbana$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_urbana$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-        urbana_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_urbana$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_urbana_LastTrend$parameter$a*100/trendline_urbana_LastTrend$N, 2))
+        trendline_EOO_urbana_EOO_LastTrend <- trendline_summary(c_EOOporc_urbana$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_urbana$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+        urbana_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_urbana$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_EOO_urbana_EOO_LastTrend$parameter$a*100/trendline_EOO_urbana_EOO_LastTrend$N, 2))
       } else{
-        urbana_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_urbana$Ano[1], Taxa_ultima_tendencia = 0)
+        urbana_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_urbana$Ano[1], Taxa_ultima_tendencia = 0)
       }
 
-      #### Silvicultura
-      trendline_silvicultura <- trendline_summary(c_EOOporc_silvicultura$Ano, c_EOOporc_silvicultura$Porcentagem_EOO, model="line2P", eDigit=4)
-      silvicultura_TaxaAnual <- data.frame(Taxa_anual = round(trendline_silvicultura$parameter$a*100/length(c_EOOporc_silvicultura$Ano), 2))
+      #### Silvicultura ####
+      
+      trendline_EOO_silvicultura <- trendline_summary(c_EOOporc_silvicultura$Ano, c_EOOporc_silvicultura$Porcentagem_EOO, model="line2P", eDigit=4)
+      silvicultura_EOO_TaxaAnual <- data.frame(Taxa_anual = round(trendline_EOO_silvicultura$parameter$a*100/length(c_EOOporc_silvicultura$Ano), 2))
       tsfit <- trendsegment(x = c_EOOporc_silvicultura$Porcentagem_EOO, minsegL = 10)
       if(is.null(tsfit$cpt) == F){
-        trendline_silvicultura_LastTrend <- trendline_summary(c_EOOporc_silvicultura$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_silvicultura$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-        silvicultura_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_silvicultura$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_silvicultura_LastTrend$parameter$a*100/trendline_silvicultura_LastTrend$N, 2))
+        trendline_EOO_silvicultura_EOO_LastTrend <- trendline_summary(c_EOOporc_silvicultura$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_silvicultura$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+        silvicultura_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_silvicultura$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_EOO_silvicultura_EOO_LastTrend$parameter$a*100/trendline_EOO_silvicultura_EOO_LastTrend$N, 2))
       } else{
-        silvicultura_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_silvicultura$Ano[1], Taxa_ultima_tendencia = 0)
+        silvicultura_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_silvicultura$Ano[1], Taxa_ultima_tendencia = 0)
       }
 
-      #### Mineração
-      trendline_mineracao <- trendline_summary(c_EOOporc_mineracao$Ano, c_EOOporc_mineracao$Porcentagem_EOO, model="line2P", eDigit=4)
-      mineracao_TaxaAnual <- data.frame(Taxa_anual = round(trendline_mineracao$parameter$a*100/length(c_EOOporc_mineracao$Ano), 2))
+      #### Mineração ####
+      
+      trendline_EOO_mineracao <- trendline_summary(c_EOOporc_mineracao$Ano, c_EOOporc_mineracao$Porcentagem_EOO, model="line2P", eDigit=4)
+      mineracao_EOO_TaxaAnual <- data.frame(Taxa_anual = round(trendline_EOO_mineracao$parameter$a*100/length(c_EOOporc_mineracao$Ano), 2))
       tsfit <- trendsegment(x = c_EOOporc_mineracao$Porcentagem_EOO, minsegL = 10)
       if(is.null(tsfit$cpt) == F){
-        trendline_mineracao_LastTrend <- trendline_summary(c_EOOporc_mineracao$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_mineracao$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-        mineracao_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mineracao$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_mineracao_LastTrend$parameter$a*100/trendline_mineracao_LastTrend$N, 2))
+        trendline_EOO_mineracao_EOO_LastTrend <- trendline_summary(c_EOOporc_mineracao$Ano[tsfit$cpt[length(tsfit$cpt)]:36], c_EOOporc_mineracao$Porcentagem_EOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+        mineracao_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mineracao$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_EOO_mineracao_EOO_LastTrend$parameter$a*100/trendline_EOO_mineracao_EOO_LastTrend$N, 2))
       } else{
-        mineracao_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mineracao$Ano[1], Taxa_ultima_tendencia = 0)
+        mineracao_EOO_LastTrend <- data.frame(Inicio_ultima_tendencia = c_EOOporc_mineracao$Ano[1], Taxa_ultima_tendencia = 0)
       }
       EOOanaliseDispensada <- F
     } else{
@@ -3520,16 +3526,16 @@ if(listOfSpecies$flow == "PA"){
                  "% (",
                  format(round(as.numeric(c_EOOkm2_2020_silvicultura)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
                  " ha) da sua EOO convertidos em áreas de silvicultura")
-        if(silvicultura_TaxaAnual > 0){
+        if(silvicultura_EOO_TaxaAnual > 0){
           c_silvicultura_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
-                   format(round(silvicultura_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                   format(round(silvicultura_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                    "% aa desde 1985 até 2020.")
         } else{
-          if(silvicultura_TaxaAnual < 0){
+          if(silvicultura_EOO_TaxaAnual < 0){
             c_silvicultura_texto_EOO_trend <-
               paste0(", atividade que diminui a uma taxa de ",
-                     format(round(silvicultura_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(silvicultura_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa desde 1985 até 2020.")
           } else{
             c_silvicultura_texto_EOO_trend <-
@@ -3538,28 +3544,28 @@ if(listOfSpecies$flow == "PA"){
         }
 
         c_silvicultura_texto_EOO_lastTrend <-
-          if(silvicultura_TaxaAnual == 0 &
+          if(silvicultura_EOO_TaxaAnual == 0 &
              silvicultura_LastTrend$Inicio_ultima_tendencia == 1985 &
-             silvicultura_LastTrend$Taxa_ultima_tendencia == 0
+             silvicultura_EOO_LastTrend$Taxa_ultima_tendencia == 0
           ){
             " Inclusive, não foi verificada qualquer reversão de tendência."
           } else{
-            if(silvicultura_LastTrend$Taxa_ultima_tendencia > 0){
+            if(silvicultura_EOO_LastTrend$Taxa_ultima_tendencia > 0){
               paste0(" No entanto, desde ",
-                     silvicultura_LastTrend$Inicio_ultima_tendencia,
+                     silvicultura_EOO_LastTrend$Inicio_ultima_tendencia,
                      " até 2020, a conversão tem crescido a uma taxa de ",
-                     format(round(silvicultura_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(silvicultura_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa."
               )
             } else{
-              if(silvicultura_LastTrend$Taxa_ultima_tendencia == 0 &
-                 silvicultura_LastTrend$Inicio_ultima_tendencia == 1985){
+              if(silvicultura_EOO_LastTrend$Taxa_ultima_tendencia == 0 &
+                 silvicultura_EOO_LastTrend$Inicio_ultima_tendencia == 1985){
                 " Não foi verificada qualquer reversão de tendência."
               } else{
                 paste0(" No entanto, desde ",
-                       silvicultura_LastTrend$Inicio_ultima_tendencia,
+                       silvicultura_EOO_LastTrend$Inicio_ultima_tendencia,
                        " até 2020, a conversão tem diminuído a uma taxa de ",
-                       format(round(silvicultura_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                       format(round(silvicultura_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                        "% aa."
                 )
               }
@@ -3695,16 +3701,16 @@ if(listOfSpecies$flow == "PA"){
                  "% (",
                  format(round(as.numeric(c_EOOkm2_2020_mineracao)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
                  " ha) da sua EOO convertidos em áreas de mineração")
-        if(mineracao_TaxaAnual > 0){
+        if(mineracao_EOO_TaxaAnual > 0){
           c_mineracao_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
-                   sub("\\.", ",", round(mineracao_TaxaAnual, 2)),
+                   sub("\\.", ",", round(mineracao_EOO_TaxaAnual, 2)),
                    "% aa desde 1985 até 2020.")
         } else{
-          if(mineracao_TaxaAnual < 0){
+          if(mineracao_EOO_TaxaAnual < 0){
             c_mineracao_texto_EOO_trend <-
               paste0(", atividade que diminui a uma taxa de ",
-                     sub("\\.", ",", round(mineracao_TaxaAnual, 2)),
+                     sub("\\.", ",", round(mineracao_EOO_TaxaAnual, 2)),
                      "% aa desde 1985 até 2020.")
           } else{
             c_mineracao_texto_EOO_trend <-
@@ -3713,28 +3719,28 @@ if(listOfSpecies$flow == "PA"){
         }
 
         c_mineracao_texto_EOO_lastTrend <-
-          if(mineracao_TaxaAnual == 0 &
-             mineracao_LastTrend$Inicio_ultima_tendencia == 1985 &
-             mineracao_LastTrend$Taxa_ultima_tendencia == 0
+          if(mineracao_EOO_TaxaAnual == 0 &
+             mineracao_EOO_LastTrend$Inicio_ultima_tendencia == 1985 &
+             mineracao_EOO_LastTrend$Taxa_ultima_tendencia == 0
           ){
             " Inclusive, não foi verificada qualquer reversão de tendência."
           } else{
-            if(mineracao_LastTrend$Taxa_ultima_tendencia > 0){
+            if(mineracao_EOO_LastTrend$Taxa_ultima_tendencia > 0){
               paste0(" No entanto, desde ",
-                     mineracao_LastTrend$Inicio_ultima_tendencia,
+                     mineracao_EOO_LastTrend$Inicio_ultima_tendencia,
                      " até 2020, a conversão tem crescido a uma taxa de ",
-                     sub("\\.", ",", round(mineracao_LastTrend$Taxa_ultima_tendencia, 2)),
+                     sub("\\.", ",", round(mineracao_EOO_LastTrend$Taxa_ultima_tendencia, 2)),
                      "% aa."
               )
             } else{
-              if(mineracao_LastTrend$Taxa_ultima_tendencia == 0 &
-                 mineracao_LastTrend$Inicio_ultima_tendencia == 1985){
+              if(mineracao_EOO_LastTrend$Taxa_ultima_tendencia == 0 &
+                 mineracao_EOO_LastTrend$Inicio_ultima_tendencia == 1985){
                 " Não foi verificada qualquer reversão de tendência."
               } else{
                 paste0(" No entanto, desde ",
-                       mineracao_LastTrend$Inicio_ultima_tendencia,
+                       mineracao_EOO_LastTrend$Inicio_ultima_tendencia,
                        " até 2020, a conversão tem diminuído a uma taxa de ",
-                       format(round(mineracao_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                       format(round(mineracao_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                        "% aa."
                 )
               }
@@ -3870,16 +3876,16 @@ if(listOfSpecies$flow == "PA"){
                  "% (",
                  format(round(as.numeric(c_EOOkm2_2020_urbana)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
                  " ha) da sua EOO convertidos em áreas de infraestrutura urbana")
-        if(urbana_TaxaAnual > 0){
+        if(urbana_EOO_TaxaAnual > 0){
           c_urbana_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
-                   sub("\\.", ",", round(urbana_TaxaAnual, 2)),
+                   sub("\\.", ",", round(urbana_EOO_TaxaAnual, 2)),
                    "% aa desde 1985 até 2020.")
         } else{
-          if(urbana_TaxaAnual < 0){
+          if(urbana_EOO_TaxaAnual < 0){
             c_urbana_texto_EOO_trend <-
               paste0(", atividade que diminui a uma taxa de ",
-                     sub("\\.", ",", round(urbana_TaxaAnual, 2)),
+                     sub("\\.", ",", round(urbana_EOO_TaxaAnual, 2)),
                      "% aa desde 1985 até 2020.")
           } else{
             c_urbana_texto_EOO_trend <-
@@ -3888,28 +3894,28 @@ if(listOfSpecies$flow == "PA"){
         }
 
         c_urbana_texto_EOO_lastTrend <-
-          if(urbana_TaxaAnual == 0 &
-             urbana_LastTrend$Inicio_ultima_tendencia == 1985 &
-             urbana_LastTrend$Taxa_ultima_tendencia == 0
+          if(urbana_EOO_TaxaAnual == 0 &
+             urbana_EOO_LastTrend$Inicio_ultima_tendencia == 1985 &
+             urbana_EOO_LastTrend$Taxa_ultima_tendencia == 0
           ){
             " Inclusive, não foi verificada qualquer reversão de tendência."
           } else{
-            if(urbana_LastTrend$Taxa_ultima_tendencia > 0){
+            if(urbana_EOO_LastTrend$Taxa_ultima_tendencia > 0){
               paste0(" No entanto, desde ",
-                     urbana_LastTrend$Inicio_ultima_tendencia,
+                     urbana_EOO_LastTrend$Inicio_ultima_tendencia,
                      " até 2020, a conversão tem crescido a uma taxa de ",
-                     sub("\\.", ",", round(urbana_LastTrend$Taxa_ultima_tendencia, 2)),
+                     sub("\\.", ",", round(urbana_EOO_LastTrend$Taxa_ultima_tendencia, 2)),
                      "% aa."
               )
             } else{
-              if(urbana_LastTrend$Taxa_ultima_tendencia == 0 &
-                 urbana_LastTrend$Inicio_ultima_tendencia == 1985){
+              if(urbana_EOO_LastTrend$Taxa_ultima_tendencia == 0 &
+                 urbana_EOO_LastTrend$Inicio_ultima_tendencia == 1985){
                 " Não foi verificada qualquer reversão de tendência."
               } else{
                 paste0(" No entanto, desde ",
-                       urbana_LastTrend$Inicio_ultima_tendencia,
+                       urbana_EOO_LastTrend$Inicio_ultima_tendencia,
                        " até 2020, a conversão tem diminuído a uma taxa de ",
-                       format(round(urbana_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                       format(round(urbana_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                        "% aa."
                 )
               }
@@ -4045,16 +4051,16 @@ if(listOfSpecies$flow == "PA"){
                  "% (",
                  format(round(as.numeric(c_EOOkm2_2020_mosaico)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
                  " ha) da sua EOO convertidos em áreas de mosaico de agricultura e pastagem")
-        if(mosaico_TaxaAnual > 0){
+        if(mosaico_EOO_TaxaAnual > 0){
           c_mosaico_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
-                   format(round(mosaico_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                   format(round(mosaico_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                    "% aa desde 1985 até 2020.")
         } else{
-          if(mosaico_TaxaAnual < 0){
+          if(mosaico_EOO_TaxaAnual < 0){
             c_mosaico_texto_EOO_trend <-
               paste0(", atividade que diminui a uma taxa de ",
-                     format(round(mosaico_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(mosaico_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa desde 1985 até 2020.")
           } else{
             c_mosaico_texto_EOO_trend <-
@@ -4063,28 +4069,28 @@ if(listOfSpecies$flow == "PA"){
         }
 
         c_mosaico_texto_EOO_lastTrend <-
-          if(mosaico_TaxaAnual == 0 &
-             mosaico_LastTrend$Inicio_ultima_tendencia == 1985 &
-             mosaico_LastTrend$Taxa_ultima_tendencia == 0
+          if(mosaico_EOO_TaxaAnual == 0 &
+             mosaico_EOO_LastTrend$Inicio_ultima_tendencia == 1985 &
+             mosaico_EOO_LastTrend$Taxa_ultima_tendencia == 0
           ){
             " Inclusive, não foi verificada qualquer reversão de tendência."
           } else{
-            if(mosaico_LastTrend$Taxa_ultima_tendencia > 0){
+            if(mosaico_EOO_LastTrend$Taxa_ultima_tendencia > 0){
               paste0(" No entanto, desde ",
-                     mosaico_LastTrend$Inicio_ultima_tendencia,
+                     mosaico_EOO_LastTrend$Inicio_ultima_tendencia,
                      " até 2020, a conversão tem crescido a uma taxa de ",
-                     format(round(mosaico_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(mosaico_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa."
               )
             } else{
-              if(mosaico_LastTrend$Taxa_ultima_tendencia == 0 &
-                 mosaico_LastTrend$Inicio_ultima_tendencia == 1985){
+              if(mosaico_EOO_LastTrend$Taxa_ultima_tendencia == 0 &
+                 mosaico_EOO_LastTrend$Inicio_ultima_tendencia == 1985){
                 " Não foi verificada qualquer reversão de tendência."
               } else{
                 paste0(" No entanto, desde ",
-                       mosaico_LastTrend$Inicio_ultima_tendencia,
+                       mosaico_EOO_LastTrend$Inicio_ultima_tendencia,
                        " até 2020, a conversão tem diminuído a uma taxa de ",
-                       format(round(mosaico_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                       format(round(mosaico_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                        "% aa."
                 )
               }
@@ -4202,16 +4208,16 @@ if(listOfSpecies$flow == "PA"){
                  "% (",
                  format(round(as.numeric(c_EOOkm2_2020_agricultura)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
                  " ha) da sua EOO convertidos em áreas de agricultura")
-        if(agricultura_TaxaAnual > 0){
+        if(agricultura_EOO_TaxaAnual > 0){
           c_agricultura_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
-                   format(round(agricultura_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                   format(round(agricultura_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                    "% aa desde 1985 até 2020.")
         } else{
-          if(agricultura_TaxaAnual < 0){
+          if(agricultura_EOO_TaxaAnual < 0){
             c_agricultura_texto_EOO_trend <-
               paste0(", atividade que diminui a uma taxa de ",
-                     format(round(agricultura_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(agricultura_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa desde 1985 até 2020.")
           } else{
             c_agricultura_texto_EOO_trend <-
@@ -4220,28 +4226,28 @@ if(listOfSpecies$flow == "PA"){
         }
 
         c_agricultura_texto_EOO_lastTrend <-
-          if(agricultura_TaxaAnual == 0 &
-             agricultura_LastTrend$Inicio_ultima_tendencia == 1985 &
-             agricultura_LastTrend$Taxa_ultima_tendencia == 0
+          if(agricultura_EOO_TaxaAnual == 0 &
+             agricultura_EOO_LastTrend$Inicio_ultima_tendencia == 1985 &
+             agricultura_EOO_LastTrend$Taxa_ultima_tendencia == 0
           ){
             " Inclusive, não foi verificada qualquer reversão de tendência."
           } else{
-            if(agricultura_LastTrend$Taxa_ultima_tendencia > 0){
+            if(agricultura_EOO_LastTrend$Taxa_ultima_tendencia > 0){
               paste0(" No entanto, desde ",
-                     agricultura_LastTrend$Inicio_ultima_tendencia,
+                     agricultura_EOO_LastTrend$Inicio_ultima_tendencia,
                      " até 2020, a conversão tem crescido a uma taxa de ",
-                     format(round(agricultura_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(agricultura_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa."
               )
             } else{
-              if(agricultura_LastTrend$Taxa_ultima_tendencia == 0 &
-                 agricultura_LastTrend$Inicio_ultima_tendencia == 1985){
+              if(agricultura_EOO_LastTrend$Taxa_ultima_tendencia == 0 &
+                 agricultura_EOO_LastTrend$Inicio_ultima_tendencia == 1985){
                 " Não foi verificada qualquer reversão de tendência."
               } else{
                 paste0(" No entanto, desde ",
-                       agricultura_LastTrend$Inicio_ultima_tendencia,
+                       agricultura_EOO_LastTrend$Inicio_ultima_tendencia,
                        " até 2020, a conversão tem diminuído a uma taxa de ",
-                       format(round(agricultura_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                       format(round(agricultura_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                        "% aa."
                 )
               }
@@ -4442,20 +4448,20 @@ if(listOfSpecies$flow == "PA"){
                  format(round(as.numeric(c_EOOkm2_2020_pastagem)*100, 2), nsmall=2, big.mark=".", decimal.mark=","),
                  " ha) da sua EOO convertidos em áreas de pastagem")
 
-        if(pastagem_TaxaAnual > 0){
+        if(pastagem_EOO_TaxaAnual > 0){
 
           c_pastagem_texto_EOO_trend <-
             paste0(", atividade que cresce a uma taxa de ",
-                   format(round(pastagem_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                   format(round(pastagem_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                    "% aa desde 1985 até 2020.")
 
         } else{
 
-          if(pastagem_TaxaAnual < 0){
+          if(pastagem_EOO_TaxaAnual < 0){
 
             c_pastagem_texto_EOO_trend <-
               paste0(", atividade que diminui a uma taxa de ",
-                     format(round(pastagem_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(pastagem_EOO_TaxaAnual, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa desde 1985 até 2020.")
 
           } else{
@@ -4470,9 +4476,9 @@ if(listOfSpecies$flow == "PA"){
         c_pastagem_texto_EOO_lastTrend <-
           if(
 
-            pastagem_TaxaAnual == 0 &
-            pastagem_LastTrend$Inicio_ultima_tendencia == 1985 &
-            pastagem_LastTrend$Taxa_ultima_tendencia == 0
+            pastagem_EOO_TaxaAnual == 0 &
+            pastagem_EOO_LastTrend$Inicio_ultima_tendencia == 1985 &
+            pastagem_EOO_LastTrend$Taxa_ultima_tendencia == 0
 
           ){
 
@@ -4480,12 +4486,12 @@ if(listOfSpecies$flow == "PA"){
 
           } else{
 
-            if(pastagem_LastTrend$Taxa_ultima_tendencia > 0){
+            if(pastagem_EOO_LastTrend$Taxa_ultima_tendencia > 0){
 
               paste0(" No entanto, desde ",
-                     pastagem_LastTrend$Inicio_ultima_tendencia,
+                     pastagem_EOO_LastTrend$Inicio_ultima_tendencia,
                      " até 2020, a conversão tem crescido a uma taxa de ",
-                     format(round(pastagem_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                     format(round(pastagem_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                      "% aa."
               )
 
@@ -4493,8 +4499,8 @@ if(listOfSpecies$flow == "PA"){
 
               if(
 
-                pastagem_LastTrend$Taxa_ultima_tendencia == 0 &
-                pastagem_LastTrend$Inicio_ultima_tendencia == 1985
+                pastagem_EOO_LastTrend$Taxa_ultima_tendencia == 0 &
+                pastagem_EOO_LastTrend$Inicio_ultima_tendencia == 1985
 
               ){
 
@@ -4503,9 +4509,9 @@ if(listOfSpecies$flow == "PA"){
               } else{
 
                 paste0(" No entanto, desde ",
-                       pastagem_LastTrend$Inicio_ultima_tendencia,
+                       pastagem_EOO_LastTrend$Inicio_ultima_tendencia,
                        " até 2020, a conversão tem diminuído a uma taxa de ",
-                       format(round(pastagem_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
+                       format(round(pastagem_EOO_LastTrend$Taxa_ultima_tendencia, 2), nsmall=2, big.mark=".", decimal.mark=","),
                        "% aa."
                 )
 

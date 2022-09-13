@@ -89,7 +89,7 @@ AHKscript_to_download_filledProfileOfSpecies_from_oldSystem <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/AHK_scripts/get_filedProfileOfSpecies.ahk"
+      "/CNCFlora_data/outputs/AHK_scripts/get_filledProfileOfSpecies.ahk"
 
     )
 
@@ -100,9 +100,8 @@ AHKscript_to_download_filledProfileOfSpecies_from_oldSystem <- function(){
 
   for(i in listOfSpecies_n){
 
-    especie <- listOfSpecies$V3[i]
-    recorte <- listOfSpecies$V2[i]
-    flow <- listOfSpecies$V1[i]
+    especie <- listOfSpecies$V2[i]
+    recorte <- listOfSpecies$V1[i]
     i_URL <- especie
     i_URL<-sub("\\s","\\`\\%20", i_URL)
 
@@ -118,6 +117,22 @@ AHKscript_to_download_filledProfileOfSpecies_from_oldSystem <- function(){
 
     cat("Sleep 4000\n")
     cat("Send {Text}")
+    cat(
+
+      gsub(
+
+        "/",
+        "\\\\",
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/inputs/speciesProfile_filled/oldSystem/"
+
+        )
+
+      )
+
+    )
     cat(especie)
     cat("\n")
     cat("Sleep 1000\n")

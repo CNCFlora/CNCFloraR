@@ -12,6 +12,76 @@ prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- func
 
   }
 
+
+  # Get local path of the downloaded list of species file ####
+
+  listOfSpecies_localPath <-
+    paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_to_prepare_assessment.csv"
+
+    )
+
+  ## Ask to open the list of species file ####
+
+  answer <- ""
+
+  while(answer != "Y" |
+        answer != "N" ){
+
+    answer <-
+      toupper(readline("Open the list of species file? (y/n): "))
+
+    if(answer == "Y"){
+
+      shell(listOfSpecies_localPath)
+
+      answer2 <- ""
+
+      while(answer2 != "Y"){
+
+        answer2 <-
+          toupper(readline("List of species file ready? (y): "))
+
+        if(answer2 == "Y"){
+
+          break
+
+        }
+
+      }
+
+      break
+
+    }
+
+    if(answer == "N"){
+
+      break
+
+    }
+
+  }
+
+  # Import the list of species file from local path ####
+
+  message("Importing the list of species file...")
+
+  listOfSpecies <- fread(
+
+    listOfSpecies_localPath,
+    header = F,
+    sep = ";",
+    encoding = "UTF-8"
+
+  )
+
+  message("List of species file imported.")
+
+  df <- df[colnames(df) %in% listOfSpecies$V1]
+
+
   if(onlyNonExistentProfile == F){
 
     listOfSpecies <- colnames(df[which(df["filledProfile_from_oldSystem",] == F)])

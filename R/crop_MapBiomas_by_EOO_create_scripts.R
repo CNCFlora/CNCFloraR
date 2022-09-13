@@ -11,7 +11,7 @@ crop_MapBiomas_by_EOO_create_scripts <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_crop_MapBiomas.csv"
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_crop_MapBiomas_by_EOO.csv"
 
     )
 

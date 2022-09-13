@@ -128,6 +128,22 @@ if(nrow(coords_df_valid) == 0){
     
   }
   
+  # Points ####
+  crs(sites)<-"+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+  shapefile(
+    
+    sites,
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/shapefiles results/points/",
+      ESPECIE,
+      ".shp"
+      
+    )
+    
+  )
+  
   sites_AOO_as_sf<-st_as_sf(sites)
   if(as.numeric(nrow(unique(sites@coords))) == 1){
     

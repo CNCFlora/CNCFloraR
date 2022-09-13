@@ -1626,7 +1626,7 @@ check_all_files_of_species <- function(list = ""){
 
       shapefileAOOinEOObuffer = if(file.exists(
 
-        paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/AOOinEOObuffer/", species, ".shp")
+        paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/EOObuffer/", species, ".shp")
 
       ) == T){
 
@@ -1639,7 +1639,7 @@ check_all_files_of_species <- function(list = ""){
                   "",
                   file.info(
 
-                    paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/AOOinEOObuffer/", species, ".shp")
+                    paste0(getwd(), "/CNCFlora_data/outputs/shapefiles results/EOObuffer/", species, ".shp")
 
                   )$mtime
               )
@@ -1961,13 +1961,14 @@ check_all_files_of_species <- function(list = ""){
   df2 <- df %>%
 
     kbl("html", escape = FALSE, align = "c") %>%
-    kable_styling(full_width = F) %>%
-    row_spec(1:6, background = "lightyellow") %>%
-    row_spec(8, background = "lightgreen") %>%
-    row_spec(9:14, background = "lightyellow") %>%
-    row_spec(18:19, background = "lightyellow") %>%
-    row_spec(23, background = "lightyellow") %>%
-    row_spec(28, background = "lightgreen")
+    kable_styling(full_width = F, fixed_thead = T) %>%
+    row_spec(1:7, background = "lightyellow") %>%
+    row_spec(8, background = "#e6ffe6") %>%
+    row_spec(9:15, background = "lightyellow") %>%
+    row_spec(19:20, background = "lightyellow") %>%
+    row_spec(24, background = "lightyellow") %>%
+    row_spec(28, background = "#e6ffe6") %>%
+    scroll_box(fixed_thead = T)
 
   # Consultar cores em https://htmlcolorcodes.com
 

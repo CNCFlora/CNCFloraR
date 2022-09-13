@@ -10,7 +10,7 @@ crop_MapBiomas_by_AOO_execute_scripts <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_crop_MapBiomas.csv"
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_crop_MapBiomas_by_AOO.csv"
 
     )
 

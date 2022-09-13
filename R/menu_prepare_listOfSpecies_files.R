@@ -15,21 +15,32 @@ menu_prepare_listOfSpecies_files <- function(){
       c(
 
         "For all methods",
-        "to check all files of species from sheet 6 of the follow-up table",
-        "To get occurrences from old System (by AHK script)\n   based on non-existent files",
+        "to check all files of species from sheet 6 (List_for_HTML_profile) of the follow-up table",
+        "To get occurrences from old System (by AHK script) based on non-existent files",
         "To build the follow-up table",
-        "To check validation of occurrences\n   based on all previous tasks done",
-        "To check validation of occurrences\n   based on all previous tasks done & only non-existent overlay analysis",
-        "To intersect PANs, TERs, and UCs\n   based all previous tasks done",
-        "To intersect PANs, TERs, and UCs\n   based all previous tasks done & only non-existent files",
-        "To overlay analysis of MapBiomas - Land Cover 1985-2020\n   based on all previous tasks done",
-        "To overlay analysis of MapBiomas - Land Cover 1985-2020\n   based on all previous tasks done & only non-existent files",
-        "To overlay analysis of MapBiomas - Fire 2020\n   based on all previous tasks done",
-        "To overlay analysis of MapBiomas - Fire 2020\n   based on all previous tasks done & only non-existent files",
-        "To build the profile of species\n   based on all previous tasks done",
-        "To build the profile of species\n   based on all previous tasks done & only non-existent files",
+        "To check validation of occurrences based on all previous tasks done",
+        "To check validation of occurrences based on all previous tasks done & only non-existent overlay analysis",
+        "To intersect PANs, TERs, and UCs based all previous tasks done",
+        "To intersect PANs, TERs, and UCs based all previous tasks done & only non-existent files",
+        "To overlay analysis of MapBiomas - Land Cover 1985-2020 based on all previous tasks done",
+        "To overlay analysis of MapBiomas - Land Cover 1985-2020 based on all previous tasks done & only non-existent files",
+        "To overlay analysis of MapBiomas - Fire 2020 based on all previous tasks done",
+        "To overlay analysis of MapBiomas - Fire 2020 based on all previous tasks done & only non-existent files",
+        "To build the profile of species based on all previous tasks done",
+        "To build the profile of species based on all previous tasks done & only non-existent files",
+        "to get the list of species of sheet 7 (List_for_assessment) in the follow-up table for build the assessment HTMLs",
         "To get the filled profile of species",
-        "To get the filled profile of species\n   based on non-existent files"
+        "To get the filled profile of species based on non-existent files",
+        "To trend analysis of each quad of AOO grid",
+        "To trend analysis of each quad of AOO grid based on non-existent files",
+        "To generate shapefiles of points, AOO, EOO, and EOObuffer",
+        "To generate shapefiles of points, AOO, EOO, and EOObuffer based on non-existent files",
+        "To crop MapBiomas - Land Use 2020 - by EOO",
+        "To crop MapBiomas - Land Use 2020 - by EOO based on non-existent files",
+        "To crop MapBiomas - Land Use 2020 - by AOO",
+        "To crop MapBiomas - Land Use 2020 - by AOO based on non-existent files",
+        "To build the assessment HTMLs",
+        "To build the assessment HTMLs based on non-existent files"
 
       )
 
@@ -51,8 +62,20 @@ menu_prepare_listOfSpecies_files <- function(){
     prepare_listOfSpecies_files_to_overlayAnalysis_Fire(onlyNonExistentAnalysis = T),
     prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs(onlyNonExistentProfile = F),
     prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs(onlyNonExistentProfile = T),
+    prepare_listOfSpecies_from_followUpTable_sheet7(onlyNonExistentAssessment = F),
+    prepare_listOfSpecies_from_followUpTable_sheet7(onlyNonExistentAssessment = T),
     prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem(onlyNonExistentProfile = F),
-    prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem(onlyNonExistentProfile = T)
+    prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem(onlyNonExistentProfile = T),
+    prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid(onlyNonExistentAnalysis == F),
+    prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid(onlyNonExistentAnalysis == T),
+    prepare_listOfSpecies_files_to_generate_shapefiles_points_AOO_EOO_EOObuffer(onlyNonExistentFiles == F),
+    prepare_listOfSpecies_files_to_generate_shapefiles_points_AOO_EOO_EOObuffer(onlyNonExistentFiles == T),
+    prepare_listOfSpecies_files_to_crop_MapBiomas_by_EOO(onlyNonExistentFiles == F),
+    prepare_listOfSpecies_files_to_crop_MapBiomas_by_EOO(onlyNonExistentFiles == T),
+    prepare_listOfSpecies_files_to_crop_MapBiomas_by_AOO(onlyNonExistentFiles == F),
+    prepare_listOfSpecies_files_to_crop_MapBiomas_by_AOO(onlyNonExistentFiles == T),
+    prepare_listOfSpecies_files_to_build_assessmentHTMLs(onlyNonExistentAssessment = F),
+    prepare_listOfSpecies_files_to_build_assessmentHTMLs(onlyNonExistentAssessment = T),
 
   )
 

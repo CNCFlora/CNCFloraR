@@ -5,7 +5,7 @@
 menu_generate_shapefiles_points_AOO_EOO_EOObuffer <- function(){
 
 
-  cat("\nMenu for trend analysis by QuadOfGrid between occurrence records and MapBiomas Land Cover 1985-2020 conduction:\n(press '0' to exit)\n\n")
+  cat("\nMenu to generate shapefiles of points, AOO, EOO, and EOObuffer:\n(press '0' to exit)\n\n")
 
   switch(
 
@@ -24,9 +24,9 @@ menu_generate_shapefiles_points_AOO_EOO_EOObuffer <- function(){
 
     # Actions
     cat("Nothing done\n"),
-    trendAnalysis_QuadOfGrid_create_scripts(),
-    trendAnalysis_QuadOfGrid_execute_scripts(),
-    trendAnalysis_QuadOfGrid_check_files()
+    generate_shapefiles_points_AOO_EOO_EOObuffer_create_scripts(),
+    generate_shapefiles_points_AOO_EOO_EOObuffer_execute_scripts(),
+    generate_shapefiles_points_AOO_EOO_EOObuffer_check_files()
 
   )
 
