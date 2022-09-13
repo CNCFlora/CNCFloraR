@@ -89,6 +89,21 @@ fill_followUpTable_with_citations_from_FloraFungaBrasil()
 check_all_files_of_species()
 ```
 
+Também é possível consultar uma lista indicada através de um vetor:
+
+```r
+check_all_files_of_species(
+
+  list = c(
+  
+    "Genus species1",
+    "Genus species2"
+    
+  )
+  
+)
+```
+
 ## Baixamento da página de registros de ocorrências
 
 ### Prepara a lista de espécies para baixamento da página de registros de ocorrências, para baixá-las via script AHK do antigo sistema 
@@ -211,6 +226,72 @@ create_profileOfSpeciesHTML__execute_scripts()
 
 ```r
 create_profileOfSpeciesHTML__check_files()
+```
+
+## Incluir URLs dos HTMLs dos perfis das espécies e marcar como concluído na lista de demandas (sheet 6) da planilha de acompanhamento
+
+```r
+fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs()
+```
+
+## Preenchimento automático dos perfis das espécies no sistema antigo
+
+### Prepara a lista de espécies para preenchimento automático
+
+```r
+prepare_listOfSpecies_files_to_fill_profiles_in_oldSystem()
+```
+
+### Obtém o profile ID das espécies no sistema antigo
+
+```r
+get_profileIDs_from_oldSystem()
+```
+
+### Leitura das informações dos HTMLs dos perfis das espécies
+
+#### Informações básicas
+
+```r
+read_infoBasic_from_profileOfSpeciesHTML()
+```
+
+#### Ameaças
+
+```r
+read_threats_from_profileOfSpeciesHTML()
+```
+
+#### Ações de conservação
+
+```r
+read_actions_from_profileOfSpeciesHTML()
+```
+
+### Preparação dos *scripts* AHK para preenchimento automático no sistema antigo
+
+#### Informações básicas
+
+```r
+fill_infoBasic()
+```
+
+#### Ameaças
+
+```r
+fill_threats()
+```
+
+#### Ações de conservação
+
+```r
+fill_actions()
+```
+
+## Marcar espécies com preenchimento automático do perfil completo na planilha de acompanhamento
+
+```r
+fill_followUpTable_with_completed_filling()
 ```
 
 ## Assessment HTML
