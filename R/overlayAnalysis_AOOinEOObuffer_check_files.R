@@ -12,7 +12,7 @@ overlayAnalysis_AOOinEOObuffer_check_files <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas.csv"
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas_by_AOOinEOObuffer.csv"
 
     )
 

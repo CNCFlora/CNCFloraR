@@ -1967,8 +1967,7 @@ check_all_files_of_species <- function(list = ""){
     row_spec(9:15, background = "lightyellow") %>%
     row_spec(19:20, background = "lightyellow") %>%
     row_spec(24, background = "lightyellow") %>%
-    row_spec(28, background = "#e6ffe6") %>%
-    scroll_box(fixed_thead = T)
+    row_spec(28, background = "#e6ffe6")
 
   # Consultar cores em https://htmlcolorcodes.com
 

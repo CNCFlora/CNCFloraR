@@ -9,7 +9,7 @@ overlayAnalysis_QuadOfGrid_create_scripts <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas.csv"
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas_by_QuadOfGrid.csv"
 
     )
 
