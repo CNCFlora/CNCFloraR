@@ -46,35 +46,6 @@ fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs <- function(){
 
   }
 
-
-  read_ss_sheet6 <- read_sheet(ss, sheet = 6)
-
-  read_ss_sheet6.filtered <-
-    read_ss_sheet6[read_ss_sheet6$hasHTMLprofile == F & is.na(read_ss_sheet6$Status) == T,]
-
-  URLs_to_fill_sheet6 <- files %>% dplyr::filter(name %in% sub("$",".html", read_ss_sheet6.filtered$Espécie))
-
-  if(nrow(URLs_to_fill_sheet6) == 0){
-
-    rm(URLs_to_fill_sheet6)
-
-  } else {
-
-    URLs_to_fill_sheet6 <- data.frame(
-
-      species = sub("\\.html", "", URLs_to_fill_sheet6$name),
-      URL = paste0(
-
-        '=HIPERLINK("',
-        drive_link(URLs_to_fill_sheet6),
-        '")'
-
-      )
-
-    )
-
-  }
-
   if(exists("URLs_to_fill_sheet1") == T){
 
     for(i in 1:nrow(URLs_to_fill_sheet1)){
@@ -99,28 +70,57 @@ fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs <- function(){
 
   }
 
-  if(exists("URLs_to_fill_sheet6") == T){
 
-    for(i in 1:nrow(URLs_to_fill_sheet6)){
-
-      celula_HTML <- which(read_ss_sheet6$Espécie == URLs_to_fill_sheet6$species[i])
-      celula_HTML <- paste("G", celula_HTML + 1, sep="")
-
-      range_write(
-
-        ss,
-        data = as.data.frame(as.character(paste0("Feito. ", format(Sys.time(), "%d/%m/%Y")))),
-        range = celula_HTML,
-        col_names = F,
-        sheet = 6
-
-      )
-
-      Sys.sleep(2)
-
-    }
-
-  }
+  # read_ss_sheet6 <- read_sheet(ss, sheet = 6)
+  #
+  # read_ss_sheet6.filtered <-
+  #   read_ss_sheet6[read_ss_sheet6$hasHTMLprofile == F & is.na(read_ss_sheet6$Status) == T,]
+  #
+  # URLs_to_fill_sheet6 <- files %>% dplyr::filter(name %in% sub("$",".html", read_ss_sheet6.filtered$Espécie))
+  #
+  # if(nrow(URLs_to_fill_sheet6) == 0){
+  #
+  #   rm(URLs_to_fill_sheet6)
+  #
+  # } else {
+  #
+  #   URLs_to_fill_sheet6 <- data.frame(
+  #
+  #     species = sub("\\.html", "", URLs_to_fill_sheet6$name),
+  #     URL = paste0(
+  #
+  #       '=HIPERLINK("',
+  #       drive_link(URLs_to_fill_sheet6),
+  #       '")'
+  #
+  #     )
+  #
+  #   )
+  #
+  # }
+  #
+  # if(exists("URLs_to_fill_sheet6") == T){
+  #
+  #   for(i in 1:nrow(URLs_to_fill_sheet6)){
+  #
+  #     celula_HTML <- which(read_ss_sheet6$Espécie == URLs_to_fill_sheet6$species[i])
+  #     celula_HTML <- paste("F", celula_HTML + 1, sep="")
+  #
+  #     range_write(
+  #
+  #       ss,
+  #       data = as.data.frame(as.character(paste0("Feito. ", format(Sys.time(), "%d/%m/%Y")))),
+  #       range = celula_HTML,
+  #       col_names = F,
+  #       sheet = 6
+  #
+  #     )
+  #
+  #     Sys.sleep(2)
+  #
+  #   }
+  #
+  # }
 
 }
 

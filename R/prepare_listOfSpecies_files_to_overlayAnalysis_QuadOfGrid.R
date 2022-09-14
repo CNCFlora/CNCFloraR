@@ -30,7 +30,7 @@ prepare_listOfSpecies_files_to_overlayAnalysis_QuadOfGrid <- function(onlyNonExi
 
     )
 
-  } else{
+  } else {
 
     if(onlyNonExistentAnalysis == F){
 

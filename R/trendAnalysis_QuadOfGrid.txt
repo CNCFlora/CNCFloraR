@@ -21,7 +21,7 @@ input <- fread(
   )
 
 input_Quad_AOO <- unique(input$Quad_AOO)
-input_Ameaca <- unique(input$Ameaca)
+input_Classe <- unique(input$Classe)
 
 
 output_trendline <- NULL
@@ -29,9 +29,9 @@ for(j in input_Quad_AOO){
 
   input2 <- input %>% dplyr::filter(Quad_AOO == j)
 
-  for(k in input_Ameaca){
+  for(k in input_Classe){
 
-    input3 <- input2 %>% dplyr::filter(Ameaca == k)
+    input3 <- input2 %>% dplyr::filter(Classe == k)
     input4 <- input3 %>% dplyr::select(contains("Porcentagem_AOO"))
 
     if(sum(input4) == 0){} else{

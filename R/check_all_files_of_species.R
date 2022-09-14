@@ -1821,7 +1821,7 @@ check_all_files_of_species <- function(list = ""){
 
       graphicTrend_AOOinEOObuffer = if(file.exists(
 
-        paste0(getwd(), "/CNCFlora_data/outputs/graphics/AOOinEOObuffer/", species, "_Natural.png")
+        paste0(getwd(), "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer/", species, "_Natural.png")
 
       ) == T){
 
@@ -1834,7 +1834,7 @@ check_all_files_of_species <- function(list = ""){
                   "",
                   file.info(
 
-                    paste0(getwd(), "/CNCFlora_data/outputs/graphics/AOOinEOObuffer/", species, "_Natural.png")
+                    paste0(getwd(), "/CNCFlora_data/outputs/graphics/trend_AOOinEOObuffer/", species, "_Natural.png")
 
                   )$mtime
               )

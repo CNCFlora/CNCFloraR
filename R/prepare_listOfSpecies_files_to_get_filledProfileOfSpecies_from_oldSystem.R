@@ -84,13 +84,13 @@ prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- func
 
   if(onlyNonExistentProfile == F){
 
-    listOfSpecies <- colnames(df[which(df["filledProfile_from_oldSystem",] == F)])
+    listOfSpecies <- colnames(df)
 
   } else {
 
     if(onlyNonExistentProfile == T){
 
-      listOfSpecies <- colnames(df[which(df["filledProfile_from_oldSystem",] == T)])
+      listOfSpecies <- colnames(df[which(df["filledProfile_from_oldSystem",] == F)])
 
     }
 

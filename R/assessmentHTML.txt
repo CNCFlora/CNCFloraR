@@ -12567,8 +12567,18 @@ if(
 
 if(exists("MapBiomas_EOO") == T){
 
-  points <-
-    st_read(paste0("POINTS ", ESPECIE, ".shp")) %>%
+  points <- st_read(
+
+    paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/shapefiles results/points/",
+      ESPECIE,
+      ".shp"
+
+    )
+
+  ) %>%
     st_transform(4326)
 
   points$URNs_ano_clt <-
