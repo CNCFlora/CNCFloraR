@@ -32,11 +32,10 @@ Outros menus:
 
 URL planilha de acomp. atual: [https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY](https://docs.google.com/spreadsheets/u/1/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY)
 
-- Sheet 6 : [https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=265256008](https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=265256008)
-(List_for_HTML_profile)
+- Sheet List_for_HTML_profile: [https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=265256008](https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=265256008)
 
 ```r
-prepare_listOfSpecies_from_followUpTable_sheet6()
+prepare_listOfSpecies_from_followUpTable_List_for_HTML_profile()
 ```
 
 ## Construção da planilha de acompanhamento no arquivo local
@@ -228,7 +227,7 @@ create_profileOfSpeciesHTML__execute_scripts()
 create_profileOfSpeciesHTML__check_files()
 ```
 
-## Incluir URLs dos HTMLs dos perfis das espécies e marcar como concluído na lista de demandas (sheet 6) da planilha de acompanhamento
+## Incluir URLs dos HTMLs dos perfis das espécies e marcar como concluído na lista de demandas (List_for_HTML_profile) da planilha de acompanhamento
 
 ```r
 fill_followUpTable_with_URLs_of_profileOfSpeciesHTMLs()
