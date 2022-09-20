@@ -5,7 +5,7 @@ Programa para produção dos painéis do perfil e de avaliação de espécies
 
 ```r
 if (!require(devtools)) install.packages('devtools')
-devtools::install.packages("CNCFlora/CNCFloraR")
+devtools::install.github("CNCFlora/CNCFloraR")
 ```
 
 ## Menu principal
