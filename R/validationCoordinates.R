@@ -2,7 +2,7 @@
 #'
 #' Verifica se há erros tipográficos nas coordenadas e os corrigede
 
-validationCoordinates <- function() {
+validationCoordinates <- function(list = "", ask_to_open_file = F) {
 
   # Load libraries ####
 
@@ -25,39 +25,55 @@ validationCoordinates <- function() {
     })
   })
 
-  # List of Species file (validationCoordinates.csv) ####
 
-  ## Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  listOfSpecies_localPath <- paste0(
+    # List of Species file (validationCoordinates.csv) ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/validationCoordinates.csv"
+    ## Get local path of the downloaded list of species file ####
+
+    listOfSpecies_localPath <- paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/validationCoordinates.csv"
 
     )
 
-  ## Ask to open the list of species file ####
+    ## Ask to open the list of species file ####
+    if(ask_to_open_file == T){
 
-  answer <- ""
+      answer <- ""
 
-  while(answer != "Y" |
-        answer != "N" ){
+      while(answer != "Y" |
+            answer != "N" ){
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-    if(answer == "Y"){
+        if(answer == "Y"){
 
-      shell(listOfSpecies_localPath)
+          shell(listOfSpecies_localPath)
 
-      answer2 <- ""
+          answer2 <- ""
 
-      while(answer2 != "Y"){
+          while(answer2 != "Y"){
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
 
-        if(answer2 == "Y"){
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -65,29 +81,22 @@ validationCoordinates <- function() {
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
 
-      break
+    ## Import the list of species file from local path ####
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ",",
+      encoding = "UTF-8"
+
+    )
 
   }
 
-
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ",",
-    encoding = "UTF-8"
-
-  )
 
   listOfSpecies_n <- 1:as.numeric(length(listOfSpecies$V1))
 
@@ -201,17 +210,30 @@ validationCoordinates <- function() {
   check <- suppressWarnings(leaflet::validateCoords(as.numeric(output$lon), as.numeric(output$lat), warn = TRUE, mode = "point"))
 
   cat("Longitude errors: ")
+
+  lon_errors <- output[is.na(check$lng),]
+
   print(
 
-    output[is.na(check$lng),] %>% select(Species, URNs, Validade, lon, lat, precision, protocol)
+    lon_errors %>% dplyr::select(Species, URNs, Validade, lon, lat, precision, protocol)
 
-    )
+  )
 
   cat("\n\nLatitude errors: ")
+
+  lat_errors <- output[is.na(check$lat),]
+
   print(
 
-    output[is.na(check$lat),] %>% select(Species, URNs, Validade, lon, lat, precision, protocol)
+    lat_errors %>% select(Species, URNs, Validade, lon, lat, precision, protocol)
 
-    )
+  )
+
+  invisible(return(list(
+
+    "lon_errors" = lon_errors,
+    "lat_errors" = lat_errors
+
+    )))
 
 }

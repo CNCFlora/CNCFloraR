@@ -1,4 +1,4 @@
-check_all_files_of_species <- function(list = ""){
+check_all_files_of_species <- function(list = "", ask_to_open_file = T){
 
 
   # Load package ####
@@ -32,44 +32,49 @@ check_all_files_of_species <- function(list = ""){
 
     ## Ask to open the list of species file ####
 
-    answer <- ""
+    if(ask_to_open_file == T){
 
-    while(answer != "Y" |
-          answer != "N" ){
+      answer <- ""
 
-      answer <-
-        toupper(readline("Open the list of species file? (y/n): "))
+      while(answer != "Y" |
+            answer != "N" ){
 
-      if(answer == "Y"){
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-        shell(listOfSpecies_localPath)
+        if(answer == "Y"){
 
-        answer2 <- ""
+          shell(listOfSpecies_localPath)
 
-        while(answer2 != "Y"){
+          answer2 <- ""
 
-          answer2 <-
-            toupper(readline("List of species file ready? (y): "))
+          while(answer2 != "Y"){
 
-          if(answer2 == "Y"){
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
 
-            break
+            if(answer2 == "Y"){
+
+              break
+
+            }
 
           }
 
+          break
+
         }
 
-        break
+        if(answer == "N"){
 
-      }
+          break
 
-      if(answer == "N"){
-
-        break
+        }
 
       }
 
     }
+
 
     # Import the list of species file from local path ####
 

@@ -15,7 +15,7 @@ menu_prepare_listOfSpecies_files <- function(){
       c(
 
         "For all methods",
-        "to check all files of species from sheet 5 (List_for_HTML_profile) of the follow-up table",
+        "to check all files of species from sheet 'List_for_HTML_profile' of the follow-up table",
         "To get occurrences from old System (by AHK script) based on non-existent files",
         "To build the follow-up table",
         "To check validation of occurrences based on all previous tasks done",
@@ -28,8 +28,8 @@ menu_prepare_listOfSpecies_files <- function(){
         "To overlay analysis of MapBiomas (Fire 2020) based on all previous tasks done & only non-existent files",
         "To build the profile of species based on all previous tasks done",
         "To build the profile of species based on all previous tasks done & only non-existent files",
-        "to get the list of species of sheet 6 (List_for_assessment) in the follow-up table for build the assessment HTMLs",
-        "to get the list of species of sheet 6 (List_for_assessment) in the follow-up table for build the assessment HTMLs based on only non-existent files",
+        "to get the list of species of sheet 'List_for_assessment' in the follow-up table for build the assessment HTMLs",
+        "to get the list of species of sheet 'List_for_assessment' in the follow-up table for build the assessment HTMLs based on only non-existent files",
         "To get the filled profile of species",
         "To get the filled profile of species based on non-existent files",
         "To overlay analysis of MapBiomas (Land Cover 1985-2020) by QuadOfGrid based on all previous tasks done",
@@ -54,7 +54,7 @@ menu_prepare_listOfSpecies_files <- function(){
     # Actions
     cat("Nothing done."),
     prepare_listOfSpecies_files_for_all_methods(),
-    prepare_listOfSpecies_from_followUpTable_sheet5(),
+    prepare_listOfSpecies_from_followUpTable_sheet_List_for_HTML_profile(),
     prepare_listOfSpecies_files_to_getOccurrences(),
     prepare_listOfSpecies_files_to_build_followUpTable(),
     prepare_listOfSpecies_files_to_validationOccurrences(onlyNonExistentOverlayAnalysis = F),

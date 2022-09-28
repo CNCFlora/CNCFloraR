@@ -72,7 +72,7 @@ prepare_listOfSpecies_files_to_build_assessmentHTMLs <- function(onlyNonExistent
   # Load follow-up table from GoogleSheets ####
 
   followUpTable <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=674274536")
-  followUpTable_sheet7 <- read_sheet(followUpTable, sheet = 7)
+  followUpTable_sheet7 <- read_sheet(followUpTable, sheet = which(ss$sheets$name == "List_for_HTML_assessment"))
 
   followUpTable_sheet7.filtered <-
     followUpTable_sheet7 %>%

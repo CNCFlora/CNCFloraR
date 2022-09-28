@@ -1,10 +1,20 @@
-prepare_listOfSpecies_files_to_getOccurrences <- function(){
+prepare_listOfSpecies_files_to_getOccurrences <- function(ask_to_open_file = T, ask_to_write_file = T){
 
   library(stringr)
   library(googlesheets4)
   library(colorDF)
 
-  df <- check_all_files_of_species()
+  if(ask_to_open_file == T){
+
+    df <- check_all_files_of_species()
+
+  }
+
+  if(ask_to_open_file == F){
+
+    df <- check_all_files_of_species(ask_to_open_file = F)
+
+  }
 
   for(i in 1:length(df)){
 
@@ -19,7 +29,7 @@ prepare_listOfSpecies_files_to_getOccurrences <- function(){
   # Load follow-up table from GoogleSheets ####
 
   ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
-  followUpTable <- read_sheet(ss, sheet = 6)
+  followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
 
   followUpTable.filtered <- followUpTable %>% dplyr::filter(Espécie %in% listOfSpecies)
 
@@ -55,48 +65,54 @@ prepare_listOfSpecies_files_to_getOccurrences <- function(){
 
   # Ask to write the `get_occurrenceRecords.csv` file
 
-  answer <- ""
+  if(ask_to_write_file == T){
 
-  while(
+    answer <- ""
 
-    answer != "Y" |
-    answer != "N"
+    while(
 
-  ){
+      answer != "Y" |
+      answer != "N"
 
-    answer <-
-      toupper(readline("Write the list of species file (get_occurrenceRecords.csv)? (y/n): "))
+    ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Write the list of species file (get_occurrenceRecords.csv)? (y/n): "))
 
-      write.table(
+      if(answer == "Y"){
 
-        output,
-        paste0(
+        write.table(
 
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_occurrenceRecords.csv"
+          output,
+          paste0(
 
-        ),
-        col.names = F,
-        row.names = F,
-        sep = ";"
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_occurrenceRecords.csv"
 
-      )
+          ),
+          col.names = F,
+          row.names = F,
+          sep = ";"
 
-      message("File created.")
+        )
 
-      break
+        message("File created.")
 
-    }
+        break
 
-    if(answer == "N"){
+      }
 
-      break
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
   }
+
+  return(output[, 3])
 
   #Done
 

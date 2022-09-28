@@ -1,4 +1,4 @@
-get_obraPrinceps_from_Tropicos_IPNI  <-  function(){
+get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = T){
 
   suppressMessages({
     suppressWarnings({
@@ -21,38 +21,54 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(){
 
   # Get list of species file (species_for_obraPrinceps.csv) ####
 
-  ## Get local path of the downloaded list of species file ####
+  if(list == ""){
 
-  listOfSpecies_localPath <- paste0(
+    ## Get local path of the downloaded list of species file ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_obraPrinceps.csv"
+    listOfSpecies_localPath <- paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_obraPrinceps.csv"
 
     )
 
 
-  ## Ask to open the list of species file ####
+    ## Ask to open the list of species file ####
 
-  answer <- ""
+    if(ask_to_open_file == T){
 
-  while(answer != "Y" |
-        answer != "N" ){
+      answer <- ""
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+      while(answer != "Y" |
+            answer != "N" ){
 
-    if(answer == "Y"){
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      shell(listOfSpecies_localPath)
+        if(answer == "Y"){
 
-      answer2 <- ""
+          shell(listOfSpecies_localPath)
 
-      while(answer2 != "Y"){
+          answer2 <- ""
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          while(answer2 != "Y"){
 
-        if(answer2 == "Y"){
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -60,28 +76,30 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(){
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
 
-      break
+    ## Import the list of species file from local path ####
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+  } else {
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
 
   }
 
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
 
 
   message("Starting...\nWait please...")

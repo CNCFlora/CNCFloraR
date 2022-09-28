@@ -1,4 +1,4 @@
-fill_followUpTable_with_citations_from_FloraFungaBrasil <- function(){
+fill_followUpTable_with_citations_from_FloraFungaBrasil <- function(list = ""){
 
   # Load packages ####
 
@@ -22,27 +22,39 @@ fill_followUpTable_with_citations_from_FloraFungaBrasil <- function(){
   })
 
 
-  # Get list of species file (species_for_FloraFungaBrasil_citations.csv) ####
+  if(list[1] == ""){
 
-  ## Get local path of the downloaded list of species file ####
+    # Get list of species file (species_for_FloraFungaBrasil_citations.csv) ####
 
-  listOfSpecies_localPath <- paste0(
+    ## Get local path of the downloaded list of species file ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_FloraFungaBrasil_citations.csv"
+    listOfSpecies_localPath <- paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_FloraFungaBrasil_citations.csv"
 
     )
 
-  ## Import the list of species file from local path ####
+    ## Import the list of species file from local path ####
 
-  listOfSpecies <- fread(
+    listOfSpecies <- fread(
 
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
 
-  )
+    )
+
+  } else {
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
+
+  }
 
 
   # Import the citations from Flora e Funga do Brasil file ####

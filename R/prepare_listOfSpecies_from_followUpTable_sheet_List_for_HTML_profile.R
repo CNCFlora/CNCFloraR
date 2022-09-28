@@ -1,4 +1,4 @@
-prepare_listOfSpecies_from_followUpTable_sheet5 <- function(onlyNonExistentOverlayAnalysis = F){
+prepare_listOfSpecies_from_followUpTable_sheet_List_for_HTML_profile <- function(onlyNonExistentOverlayAnalysis = F){
 
   library(stringr)
   library(googlesheets4)
@@ -7,19 +7,17 @@ prepare_listOfSpecies_from_followUpTable_sheet5 <- function(onlyNonExistentOverl
   # Load follow-up table from GoogleSheets ####
 
   followUpTable <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
-  followUpTable_sheet5 <- read_sheet(followUpTable, sheet = 5)
+  followUpTable_sheet_List_for_HTML_profile <- read_sheet(followUpTable, sheet = which(followUpTable$sheets$name == "List_for_HTML_profile"))
 
-  followUpTable_sheet5.filtered <-
-    followUpTable_sheet5 %>%
-    dplyr::filter(is.na(as.character(Espécie)) == F) %>%
-    dplyr::filter(is.na(as.character(Status)) == T) %>%
-    unique()
+  followUpTable_sheet_List_for_HTML_profile.filtered <-
+    followUpTable_sheet_List_for_HTML_profile %>%
+    dplyr::filter(is.na(as.character(Espécie)) == F)
 
   output <- data.frame(
 
-    species = followUpTable_sheet5.filtered$Espécie,
-    flow = followUpTable_sheet5.filtered$`PA/PNA`,
-    records = followUpTable_sheet5.filtered$Registros
+    species = followUpTable_sheet_List_for_HTML_profile.filtered$Espécie,
+    flow = followUpTable_sheet_List_for_HTML_profile.filtered$`PA/PNA`,
+    records = followUpTable_sheet_List_for_HTML_profile.filtered$Registros
 
 
   )

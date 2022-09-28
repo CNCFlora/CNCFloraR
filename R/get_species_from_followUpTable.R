@@ -2,7 +2,7 @@
 #'
 #' Obter os dados de uma lista de espécies da tabela de acompanhamento
 
-get_species_from_followUpTable <- function(){
+get_species_from_followUpTable <- function(list = "", ask_to_open_file = F){
 
   suppressMessages({
     suppressWarnings({
@@ -19,39 +19,57 @@ get_species_from_followUpTable <- function(){
   })
 
 
-  # Get list of species file (species_to_get_from_followUpTable.csv) ####
+  # List of species ####
 
-  ## Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  listOfSpecies_localPath <- paste0(
+    ## Get list of species file (species_to_get_from_followUpTable.csv) ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_to_get_from_followUpTable.csv"
+    ### Get local path of the downloaded list of species file ####
+
+    listOfSpecies_localPath <- paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_to_get_from_followUpTable.csv"
 
     )
 
-  ## Ask to open the list of species file ####
+    ### Ask to open the list of species file ####
 
-  answer <- ""
+    if(ask_to_open_file == T){
 
-  while(answer != "Y" |
-        answer != "N" ){
+      answer <- ""
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+      while(answer != "Y" |
+            answer != "N" ){
 
-    if(answer == "Y"){
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      shell(listOfSpecies_localPath)
+        if(answer == "Y"){
 
-      answer2 <- ""
+          shell(listOfSpecies_localPath)
 
-      while(answer2 != "Y"){
+          answer2 <- ""
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          while(answer2 != "Y"){
 
-        if(answer2 == "Y"){
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -59,28 +77,29 @@ get_species_from_followUpTable <- function(){
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
 
-      break
+    ### Import the list of species file from local path ####
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ",",
+      encoding = "UTF-8"
+
+    )
+
+  } else {
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
 
   }
-
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ",",
-    encoding = "UTF-8"
-
-  )
 
 
   # Get follow-up table (follow-up_table.csv) ####
@@ -92,7 +111,7 @@ get_species_from_followUpTable <- function(){
     sub("Packages/CNCFloraR", "", getwd()),
     "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
 
-    )
+  )
 
 
   ## Import the list of species file from local path ####
@@ -101,7 +120,8 @@ get_species_from_followUpTable <- function(){
 
     followUpTable_localPath,
     header = T,
-    sep = ";"
+    sep = ";",
+    encoding = "UTF-8"
 
   )
 
@@ -123,6 +143,13 @@ get_species_from_followUpTable <- function(){
   followUpTable <- bind_rows(followUpTable, listOfSpecies)
 
   # Loop start ####
+
+  output <- data.frame(
+
+    species = "",
+    field_empty = ""
+
+  )
 
   for(i in species_n){
 
@@ -173,39 +200,107 @@ get_species_from_followUpTable <- function(){
       followUpTable$FB2020_endemism <- sub("NO", "Não", followUpTable$FB2020_endemism)
       followUpTable$FB2020_endemism <- sub("YES", "Sim", followUpTable$FB2020_endemism)
 
+
+
       if(followUpTable$FB2020_endemism[species_i]==""){
 
         cat(paste("FB2020_endemism VAZIO:", followUpTable$NameFB_semAutor[species_i]), "\n")
+        output <- rbind(
+
+          output,
+          data.frame(
+
+            species = SPECIES,
+            field_empty = "FB2020_endemism"
+
+          )
+
+        )
 
       }
 
       if(followUpTable$occurrenceRemarks[species_i]==""){
 
         cat(paste("occurrenceRemarks VAZIO:", followUpTable$NameFB_semAutor[species_i]), "\n")
+        output <- rbind(
+
+          output,
+          data.frame(
+
+            species = SPECIES,
+            field_empty = "occurrenceRemarks"
+
+          )
+
+        )
 
       }
 
       if(followUpTable$location[species_i]==""){
 
         cat(paste("location VAZIO:", followUpTable$NameFB_semAutor[species_i]), "\n")
+        output <- rbind(
+
+          output,
+          data.frame(
+
+            species = SPECIES,
+            field_empty = "location"
+
+          )
+
+        )
 
       }
 
       if(followUpTable$lifeForm[species_i]==""){
 
         cat(paste("lifeForm VAZIO:", followUpTable$NameFB_semAutor[species_i]), "\n")
+        output <- rbind(
+
+          output,
+          data.frame(
+
+            species = SPECIES,
+            field_empty = "lifeForm"
+
+          )
+
+        )
 
       }
 
       if(followUpTable$vegetationType[species_i]==""){
 
         cat(paste("vegetationType VAZIO:", followUpTable$NameFB_semAutor[species_i]), "\n")
+        output <- rbind(
+
+          output,
+          data.frame(
+
+            species = SPECIES,
+            field_empty = "vegetationType"
+
+          )
+
+        )
 
       }
 
       if(followUpTable$habitat[species_i]==""){
 
         cat(paste("habitat VAZIO:", followUpTable$NameFB_semAutor[species_i]), "\n")
+        output <- rbind(
+
+          output,
+          data.frame(
+
+            species = SPECIES,
+            field_empty = "habitat"
+
+          )
+
+        )
 
       }
 
@@ -222,6 +317,19 @@ get_species_from_followUpTable <- function(){
 
   }
 
+  if(all(output[1,] == "", TRUE)){
+
+    output <- output[-1, ]
+
+  }
+
+  if(nrow(output) > 0){
+
+    rownames(output) <- 1:nrow(output)
+
+  }
+
+  followUpTable
 
   write.csv2(
 
@@ -231,9 +339,12 @@ get_species_from_followUpTable <- function(){
       sub("Packages/CNCFloraR", "", getwd()),
       "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
 
-      ),
-    row.names = FALSE
+    ),
+    row.names = FALSE,
+    fileEncoding = "UTF-8"
 
   )
+
+  return(output)
 
 }

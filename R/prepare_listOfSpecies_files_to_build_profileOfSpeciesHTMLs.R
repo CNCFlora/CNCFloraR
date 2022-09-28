@@ -111,7 +111,7 @@ prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs <- function(onlyNonEx
   # Load follow-up table from GoogleSheets ####
 
   ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
-  followUpTable <- read_sheet(ss, sheet = 6)
+  followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
 
   listOfSpecies_PNTs <- followUpTable %>% filter(`PA/PNA` == "PNA") %>% select(Espécie)
 

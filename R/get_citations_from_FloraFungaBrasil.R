@@ -1,4 +1,4 @@
-get_citations_from_FloraFungaBrasil <- function(){
+get_citations_from_FloraFungaBrasil <- function(list = "", ask_to_open_file = T){
 
   library(googledrive)
   library(RSelenium)
@@ -8,35 +8,51 @@ get_citations_from_FloraFungaBrasil <- function(){
 
   # Get list of species file (species_for_FloraFungaBrasil_citations.csv) ####
 
-  ## Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  message("Importing the list of species from the local computer...")
+    ## Get local path of the downloaded list of species file ####
 
-  listOfSpecies_localPath <- paste0(sub("Packages/CNCFloraR", "", getwd()), "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_FloraFungaBrasil_citations.csv")
+    message("Importing the list of species from the local computer...")
+
+    listOfSpecies_localPath <- paste0(sub("Packages/CNCFloraR", "", getwd()), "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_FloraFungaBrasil_citations.csv")
 
 
-  ## Ask to open the list of species file ####
+    ## Ask to open the list of species file ####
 
-  answer <- ""
+    if(ask_to_open_file == T){
 
-  while(answer != "Y" |
-        answer != "N" ){
+      answer <- ""
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+      while(answer != "Y" |
+            answer != "N" ){
 
-    if(answer == "Y"){
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      shell(listOfSpecies_localPath)
+        if(answer == "Y"){
 
-      answer2 <- ""
+          shell(listOfSpecies_localPath)
 
-      while(answer2 != "Y"){
+          answer2 <- ""
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          while(answer2 != "Y"){
 
-        if(answer2 == "Y"){
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -44,31 +60,31 @@ get_citations_from_FloraFungaBrasil <- function(){
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
+    ## Import the list of species file from local path ####
 
-      break
+    listOfSpecies <- fread(
 
-    }
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+    message("List of species imported.")
+
+  } else{
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
 
   }
 
-
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
-
-  message("List of species imported.")
 
 
   # Get follow-up table (follow-up_table.csv)
@@ -356,5 +372,7 @@ get_citations_from_FloraFungaBrasil <- function(){
     )
 
   )
+
+  return(citationsFinal)
 
 }

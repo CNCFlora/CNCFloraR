@@ -1,4 +1,4 @@
-prepare_listOfSpecies_from_followUpTable_sheet6 <- function(onlyNonExistentAssessment = F){
+prepare_listOfSpecies_from_followUpTable_sheet_List_for_HTML_assessment <- function(onlyNonExistentAssessment = F){
 
   library(stringr)
   library(googlesheets4)
@@ -7,10 +7,10 @@ prepare_listOfSpecies_from_followUpTable_sheet6 <- function(onlyNonExistentAsses
   # Load follow-up table from GoogleSheets ####
 
   followUpTable <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=674274536")
-  followUpTable_sheet6 <- read_sheet(followUpTable, sheet = 6)
+  followUpTable_sheet_List_for_HTML_assessment <- read_sheet(followUpTable, sheet = which(ss$sheets$name == "List_for_HTML_assessment"))
 
-  followUpTable_sheet6.filtered <-
-    followUpTable_sheet6 %>%
+  followUpTable_sheet_List_for_HTML_assessment.filtered <-
+    followUpTable_sheet_List_for_HTML_assessment %>%
     dplyr::filter(is.na(as.character(Espécie)) == F) %>%
     dplyr::filter(is.na(as.character(Feito)) == T) %>%
     unique()
@@ -19,7 +19,7 @@ prepare_listOfSpecies_from_followUpTable_sheet6 <- function(onlyNonExistentAsses
 
     output <- data.frame(
 
-      species = followUpTable_sheet6.filtered$Espécie
+      species = followUpTable_sheet_List_for_HTML_assessment.filtered$Espécie
 
     )
 
@@ -51,7 +51,7 @@ prepare_listOfSpecies_from_followUpTable_sheet6 <- function(onlyNonExistentAsses
 
     output <- data.frame(
 
-      species = listOfSpecies[listOfSpecies %in% followUpTable_sheet6.filtered$Espécie]
+      species = listOfSpecies[listOfSpecies %in% followUpTable_sheet_List_for_HTML_assessment.filtered$Espécie]
 
     )
 

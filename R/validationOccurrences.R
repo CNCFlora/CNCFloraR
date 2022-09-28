@@ -2,7 +2,7 @@
 #'
 #' Verifica se o arquivo corresponde ao nome da espécie e se há registros não validados
 
-validationOccurrences <- function() {
+validationOccurrences <- function(list = "") {
 
   # Load libraries ####
 
@@ -31,67 +31,88 @@ validationOccurrences <- function() {
     })
   })
 
-  # List of Species file (validationOccurrences.csv) ####
+  if(list[1] == ""){
 
-  ## Get local path of the downloaded list of species file ####
+    # List of Species file (validationOccurrences.csv) ####
 
-  listOfSpecies_localPath <- paste0(
+    ## Get local path of the downloaded list of species file ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/validationOccurrences.csv"
+    listOfSpecies_localPath <- paste0(
 
-  )
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/validationOccurrences.csv"
 
-  ## Ask to open the list of species file ####
+    )
 
-  answer <- ""
+    ## Ask to open the list of species file ####
 
-  while(answer != "Y" |
-        answer != "N" ){
+    answer <- ""
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+    while(answer != "Y" |
+          answer != "N" ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Open the list of species file? (y/n): "))
 
-      shell(listOfSpecies_localPath)
+      if(answer == "Y"){
 
-      answer2 <- ""
+        shell(listOfSpecies_localPath)
 
-      while(answer2 != "Y"){
+        answer2 <- ""
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+        while(answer2 != "Y"){
 
-        if(answer2 == "Y"){
+          answer2 <-
+            toupper(readline("List of species file ready? (y): "))
 
-          break
+          if(answer2 == "Y"){
+
+            break
+
+          }
 
         }
 
+        break
+
       }
 
-      break
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
-    if(answer == "N"){
+    ## Import the list of species file from local path ####
 
-      break
+    listOfSpecies <- fread(
 
-    }
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";"
+
+    )
+
+  } else {
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+    listOfSpecies <- List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(Espécie %in% list)
+
+    listOfSpecies <- data.frame(
+
+      V1 = listOfSpecies$Espécie,
+      V2 = listOfSpecies$`PA/PNA`,
+      V3 = listOfSpecies$Registros
+
+    )
 
   }
 
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";"
-
-  )
 
   # Create an empty output variable for loop ####
 
@@ -215,7 +236,7 @@ validationOccurrences <- function() {
 
   records_SIG_NOT_OK <- records_SIG_NOT_OK %>%
     group_by(Species) %>%
-    summarise(Species, SIG_NOT_OK = n())
+    summarise(Species, SIG_NOT_OK = dplyr::n())
 
   output <- left_join(are.species_the_same_in_file, records_n)
   output <- left_join(output, result_invalid_n)
@@ -243,5 +264,7 @@ validationOccurrences <- function() {
     output,
     theme="dark"
   )
+
+  invisible(return(output))
 
 }

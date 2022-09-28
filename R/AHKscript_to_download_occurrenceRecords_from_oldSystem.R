@@ -3,7 +3,7 @@
 #' AHK script para baixar os registros de ocorrências do antigo sistema
 
 
-AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(){
+AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(list = "", ask_to_open_file = T, ask_to_open_filePath = T){
 
   suppressMessages({
     suppressWarnings({
@@ -17,37 +17,53 @@ AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(){
 
   # List of Species file (get_occurrenceRecords.csv) ####
 
-  ## Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  listOfSpecies_localPath <- paste0(
+    ## Get local path of the downloaded list of species file ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_occurrenceRecords.csv"
+    listOfSpecies_localPath <- paste0(
+
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_occurrenceRecords.csv"
 
     )
 
-  ## Ask to open the list of species file ####
+    ## Ask to open the list of species file ####
 
-  answer <- ""
+    if(ask_to_open_file == T){
 
-  while(answer != "Y" |
-        answer != "N" ){
+      answer <- ""
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+      while(answer != "Y" |
+            answer != "N" ){
 
-    if(answer == "Y"){
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      shell(listOfSpecies_localPath)
+        if(answer == "Y"){
 
-      answer2 <- ""
+          shell(listOfSpecies_localPath)
 
-      while(answer2 != "Y"){
+          answer2 <- ""
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          while(answer2 != "Y"){
 
-        if(answer2 == "Y"){
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -55,28 +71,41 @@ AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(){
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
 
-      break
+    ## Import the list of species file from local path ####
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+  } else {
+
+    listOfSpecies <- list
+
+    # Load follow-up table from GoogleSheets ####
+
+    ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
+    followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
+
+    followUpTable.filtered <- followUpTable %>% dplyr::filter(Espécie %in% listOfSpecies)
+
+    listOfSpecies <- data.frame(
+
+      V1 = followUpTable.filtered$`PA/PNA`,
+      V2 = followUpTable.filtered$Recorte,
+      V3 = followUpTable.filtered$Espécie
+
+    )
 
   }
 
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
 
 
 
@@ -145,55 +174,59 @@ AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(){
 
   message("Script done!")
 
-  answer <- ""
+  if(ask_to_open_filePath == T){
 
-  while(answer != "Y" |
-        answer != "N" ){
+    answer <- ""
 
-    answer <-
-      toupper(readline("Open the file path? (y/n)"))
+    while(answer != "Y" |
+          answer != "N" ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Open the file path? (y/n)"))
 
-      suppressWarnings(
-        shell(
+      if(answer == "Y"){
 
-          paste0(
+        suppressWarnings(
+          shell(
 
-            "explorer.exe ",
-            gsub(
+            paste0(
 
-              "/", "\\\\",
+              "explorer.exe ",
+              gsub(
 
-              paste0(
+                "/", "\\\\",
 
-                sub(
+                paste0(
 
-                  "Packages/CNCFloraR",
-                  "",
-                  getwd()
+                  sub(
 
-                ),
-                "/CNCFlora_data/outputs/AHK_scripts"
+                    "Packages/CNCFloraR",
+                    "",
+                    getwd()
+
+                  ),
+                  "/CNCFlora_data/outputs/AHK_scripts"
+
+                )
 
               )
 
-            )
+            ),
+            intern = TRUE
 
-          ),
-          intern = TRUE
+          )
 
         )
 
-      )
+        break
 
-      break
+      }
 
-    }
+      if(answer == "N"){
 
-    if(answer == "N"){
+        break
 
-      break
+      }
 
     }
 
