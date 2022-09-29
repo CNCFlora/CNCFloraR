@@ -6,7 +6,7 @@ prepare_listOfSpecies_from_followUpTable_sheet_List_for_HTML_assessment <- funct
 
   # Load follow-up table from GoogleSheets ####
 
-  followUpTable <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=674274536")
+  followUpTable <- gs4_get(ss_followUpTable_URL)
   followUpTable_sheet_List_for_HTML_assessment <- read_sheet(followUpTable, sheet = which(ss$sheets$name == "List_for_HTML_assessment"))
 
   followUpTable_sheet_List_for_HTML_assessment.filtered <-

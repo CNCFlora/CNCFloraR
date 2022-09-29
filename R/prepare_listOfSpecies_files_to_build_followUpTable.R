@@ -176,7 +176,9 @@ prepare_listOfSpecies_files_to_build_followUpTable <- function(){
         ),
         col.names = F,
         row.names = F,
-        sep = ";"
+        sep = ";",
+        fileEncoding = "UTF-8"
+
 
       )
 

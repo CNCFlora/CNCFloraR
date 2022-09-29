@@ -199,7 +199,7 @@ validationOccurrences <- function(list = "") {
   ## Verify if the name of species in HTML is the same of the file ####
 
   are.species_the_same_in_file <- registros %>%
-    select(Species, is.species_the_same_in_file) %>% unique()
+    dplyr::select(Species, is.species_the_same_in_file) %>% unique()
   colnames(are.species_the_same_in_file) <- c(
 
     "Species",

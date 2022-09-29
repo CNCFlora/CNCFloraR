@@ -1,25 +1,50 @@
 conduct_all_processes_loop <- function(){
 
-  # Define ####
+  # Deleting files ####
 
-  `%notin%` <- Negate(`%in%`)
+  if(exists(paste0(getwd(),"/out1_empty_fields.html"))){
 
-  LETTERS_for_colNum <- LETTERS
-  for(i in LETTERS[1:10]){
-
-    LETTERS_for_colNum_ <- paste0(i, LETTERS)
-    LETTERS_for_colNum <- c(LETTERS_for_colNum, LETTERS_for_colNum_)
+    file.remove(paste0(getwd(),"/out1_empty_fields.html"))
+    file.remove(paste0(getwd(),"/out1_empty_fields.html.rawhtml"))
 
   }
 
-  # Define URLs ####
+  if(exists(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))){
 
-  ## URL of the follow-up table ####
-  ss_followUpTable_URL <- "https://docs.google.com/spreadsheets/d/1DwBS0VD79wMO0UNztfSbUR5mTYdlv3rX9Se1bZhV4Jg"
+    file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))
+    file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html.rawhtml"))
 
-  ## URL of the infoSpecies table ####
-  ss_infoSpeciesTable_URL <- "https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY"
+  }
 
+  if(exists(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))){
+
+    file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))
+    file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html.rawhtml"))
+
+  }
+
+  if(exists(paste0(getwd(),"/out4_get_occurrenceRecords.html"))){
+
+    file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html"))
+    file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html.rawhtml"))
+
+  }
+
+  if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
+
+    file.remove(paste0(getwd(),"/out5_validationOccurrences.html"))
+    file.remove(paste0(getwd(),"/out5_validationOccurrences.html.rawhtml"))
+
+  }
+
+  if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
+
+    file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html"))
+    file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html.rawhtml"))
+
+  }
+
+  `%notin%` <- Negate(`%in%`)
 
   # Load packages ####
 
@@ -32,79 +57,18 @@ conduct_all_processes_loop <- function(){
         library(googlesheets4)
         library(R3port)
         library(cli)
+        library(dplyr)
 
       })
     })
   })
-
-  # Functions ####
-
-  ## Get follow-up table from local computer ####
-
-  get_followUpTable_from_localComputer <- function(){
-
-    followUpTable_localPath <- paste0(
-
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
-
-    )
-
-    followUpTable <- fread(
-
-      followUpTable_localPath,
-      header = T,
-      sep = ";",
-      encoding = "UTF-8"
-
-    )
-
-    return(followUpTable)
-
-  }
-
-
-  ## Get sheet List_for_HTML_profile from follow-up table in GoogleSheets ####
-
-  get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud <- function(){
-
-    ss_followUpTable <- gs4_get(ss_followUpTable_URL)
-    List_for_HTML_profile_followUpTable <- read_sheet(ss_followUpTable, sheet = which(ss_followUpTable$sheets$name == "List_for_HTML_profile"))
-
-    return(List_for_HTML_profile_followUpTable)
-
-  }
-
-
-  ## Get sheet Acomp_spp from follow-up table in GoogleSheets ####
-
-  get_sheet_Acomp_spp_from_followUpTable_in_cloud <- function(){
-
-    ss_followUpTable <- gs4_get(ss_followUpTable_URL)
-    Acomp_spp_followUpTable <- read_sheet(ss_followUpTable, sheet = which(ss_followUpTable$sheets$name == "Acomp_spp"))
-
-    return(Acomp_spp_followUpTable)
-
-  }
-
-
-  ## Get sheet Acomp_spp from infoSpeciesTable in GoogleSheets ####
-
-  get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud <- function(){
-
-    ss_infoSpeciesTable <- gs4_get(ss_infoSpeciesTable_URL)
-    Acomp_spp_infoSpeciesTable <- read_sheet(ss_infoSpeciesTable, sheet = which(ss_infoSpeciesTable$sheets$name == "Acomp_spp"))
-
-    return(Acomp_spp_infoSpeciesTable)
-
-  }
 
 
   # Start loop ####
 
   while(0 == 0){
 
-    # Hello loop ####
+    # Hello loop
 
     cat("\014")
     print(boxx(
@@ -127,7 +91,7 @@ conduct_all_processes_loop <- function(){
 
     ## Check all files of species from the file `check_all_files_of_species.csv` ####
 
-    cli_h2("Checking and getting data from follow-up table in local computer...")
+    cli_h2("Checking and getting data from follow-up table in local computer")
 
     df <- check_all_files_of_species(ask_to_open_file = F)
 
@@ -156,6 +120,8 @@ conduct_all_processes_loop <- function(){
       all(List_for_HTML_profile_followUpTable$Espécie %in% colnames(df) == T) == F
 
     if(have_species_to_include_in_the_flow == T){
+
+      ### Yes ####
 
       cli_alert_success("Have species to include in the flow!")
 
@@ -240,6 +206,8 @@ conduct_all_processes_loop <- function(){
 
     ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
 
+    cli_h2("Reading sheet List_for_HTML_profile from followUpTable")
+
     List_for_HTML_profile_followUpTable <-
       get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
 
@@ -268,8 +236,6 @@ conduct_all_processes_loop <- function(){
     )
 
     for(species in Acomp_spp_infoSpeciesTable.filtered$NameFB_semAutor){
-
-      ### Fields ####
 
       fields <- c(
 
@@ -315,8 +281,6 @@ conduct_all_processes_loop <- function(){
     }
 
 
-    ## Table: Empty fields ####
-
     if(output_empty_fields[1, 1] == ""){
 
       output_empty_fields <- output_empty_fields[-1, ]
@@ -326,23 +290,33 @@ conduct_all_processes_loop <- function(){
     output_empty_fields$Species[duplicated(output_empty_fields$Species)] <-
       ""
 
-    empty_fields_table <- data.frame(
 
-      i = 1:nrow(output_empty_fields),
-      Species = output_empty_fields$Species,
-      empty_field = output_empty_fields$empty_field
+    if(nrow(output_empty_fields) > 0){
 
-    )
+      ### Yes ####
 
-    html_list(
+      empty_fields_table <- data.frame(
 
-      empty_fields_table,
-      vars = names(empty_fields_table),
-      title = "Empty fields in the infoSpecies table to correct",
-      out = "out1_empty_fields.html",
-      show = F
+        i = 1:nrow(output_empty_fields),
+        Species = output_empty_fields$Species,
+        empty_field = output_empty_fields$empty_field
 
-    )
+      )
+
+
+      #### Table: Empty fields ####
+
+      html_list(
+
+        empty_fields_table,
+        vars = names(empty_fields_table),
+        title = "Empty fields in the infoSpecies table to correct",
+        out = "out1_empty_fields.html",
+        show = F
+
+      )
+
+    }
 
 
     # Step 3: Get data of species from the infoSpecies table in GoogleSheets ####
@@ -368,26 +342,180 @@ conduct_all_processes_loop <- function(){
     # Step 4: Species without Flora e Funga do Brasil citation in the followUpTable in local computer ####
 
     cli_h1("Step 4: Species without Flora e Funga do Brasil citation")
-    cli_h2("Checking and getting species without Flora e Funga do Brasil citation in the followUpTable in local computer")
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Reading sheet List_for_HTML_profile from followUpTable")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+    species_in_List_for_HTML_profile_followUpTable <-
+      List_for_HTML_profile_followUpTable$Espécie[is.na(List_for_HTML_profile_followUpTable$Espécie) == F]
+
+
+    ## Get sheet Acomp_spp from the infoSpecies table in GoogleSheets ####
+
+    cli_h2("Checking and getting species without Flora e Funga do Brasil citation in the followUpTable in cloud")
+
+    Acomp_spp_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
+
+    Acomp_spp_infoSpeciesTable$FFB_citation_short[is.na(Acomp_spp_infoSpeciesTable$FFB_citation_short) == T] <-
+      ""
+
+    ## Have species without Flora e Funga do Brasil citation in the followUpTable in cloud? ####
+
+    have_species_without_FFBcitation_in_followUpTable_in_cloud <-
+      nrow(
+
+        Acomp_spp_infoSpeciesTable %>%
+          dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+          dplyr::filter(is.na(FFB_citation_short) == T) %>%
+          dplyr::select(NameFB_semAutor)
+
+      ) > 0
+
+    if(have_species_without_FFBcitation_in_followUpTable_in_cloud == T){
+
+      ### Yes ####
+
+      species_without_FFBcitation_in_followUpTable_in_cloud <-
+        Acomp_spp_infoSpeciesTable %>%
+        dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+        dplyr::filter(is.na(FFB_citation_short) == T) %>%
+        dplyr::select(NameFB_semAutor)
+
+      species_without_FFBcitation_in_followUpTable_in_cloud <-
+        species_without_FFBcitation_in_followUpTable_in_cloud$NameFB_semAutor
+
+    }
+
+
+    ## Get follow-up table from local computer ####
+
+    cli_h2("Get followUpTable in local computer")
 
     followUpTable <- get_followUpTable_from_localComputer()
 
-    followUpTable$zcitationFB2020[is.na(followUpTable$zcitationFB2020) == T] <-
-      ""
 
-    ## Have species without Flora e Funga do Brasil citation in the followUpTable in local computer ####
+    ## Update follow-up table in local computer from cloud ####
 
-    have_species_without_FFBcitation <-
+    df_Acomp_spp_infoSpeciesTable <- Acomp_spp_infoSpeciesTable %>%
+      dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+      dplyr::select(NameFB_semAutor, FFB_citation_short, FFB_citation_long)
+
+    colnames(df_Acomp_spp_infoSpeciesTable) <- c("NameFB_semAutor", "FFB_citation_short_cloud", "FFB_citation_long_cloud")
+
+    df_followUpTable <- followUpTable %>%
+      dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+      dplyr::select(NameFB_semAutor, zcitationFB2020_short, zcitationFB2020)
+
+    colnames(df_followUpTable) <- c("NameFB_semAutor", "FFB_citation_short_local_computer", "FFB_citation_long_local_computer")
+
+    df_check <- left_join(df_Acomp_spp_infoSpeciesTable, df_followUpTable, by = "NameFB_semAutor")
+
+    if(
+
+      all(
+
+        df_check$FFB_citation_short_local_computer == "" &
+        df_check$FFB_citation_short_cloud != "" &
+        df_check$FFB_citation_short_cloud != "coletar"
+
+      ) == T
+
+    ){
+
+      species_in_df_check <- df_check$NameFB_semAutor[
+
+        df_check$FFB_citation_short_local_computer == "" &
+          df_check$FFB_citation_short_cloud != "" &
+          df_check$FFB_citation_short_cloud != "coletar"
+
+      ]
+
+      followUpTable$zcitationFB2020_short[
+
+        followUpTable$NameFB_semAutor %in% species_in_df_check
+
+      ] <- df_check$FFB_citation_short_cloud[
+
+        df_check$NameFB_semAutor %in% species_in_df_check
+
+      ]
+
+      followUpTable$zcitationFB2020[
+
+        followUpTable$NameFB_semAutor %in% species_in_df_check
+
+      ] <- df_check$FFB_citation_long_cloud[
+
+        df_check$NameFB_semAutor %in% species_in_df_check
+
+      ]
+
+      write.csv2(
+
+        followUpTable,
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
+
+        ),
+        row.names = FALSE,
+        fileEncoding = "UTF-8"
+
+      )
+
+    }
+
+
+    ## Have species without Flora e Funga do Brasil citation in the followUpTable in local computer? ####
+
+    have_species_without_FFBcitation_in_followUpTable_in_localComputer <-
       !all(followUpTable$zcitationFB2020 == "", F)
 
-    if(have_species_without_FFBcitation == T){
 
-      species_without_FFBcitation <-
-        followUpTable$NameFB_semAutor[followUpTable$zcitationFB2020 == ""]
+    if(have_species_without_FFBcitation_in_followUpTable_in_localComputer == T){
+
+      ### Yes ####
+
+      species_without_FFBcitation_in_followUpTable_in_localComputer <-
+        followUpTable$NameFB_semAutor[
+
+          followUpTable$zcitationFB2020 == "" |
+            is.na(followUpTable$zcitationFB2020) == T
+
+        ]
+
+      #### Include species without Flora e Funga do Brasil citation in the followUpTable in cloud ####
+
+      if(exists("species_without_FFBcitation_in_followUpTable_in_cloud") == T){
+
+        species_without_FFBcitation_in_followUpTable_in_localComputer <- c(
+
+          species_without_FFBcitation_in_followUpTable_in_cloud,
+          species_without_FFBcitation_in_followUpTable_in_localComputer
+
+        )
+
+      }
+
+      species_without_FFBcitation_in_followUpTable_in_localComputer <-
+        species_without_FFBcitation_in_followUpTable_in_localComputer[
+
+          duplicated(species_without_FFBcitation_in_followUpTable_in_localComputer) == F
+
+        ]
+
+      #### Get Flora e Funga do Brasil citation by scraping ####
+
+      cli_h2("Get Flora e Funga do Brasil citation by scraping")
 
       FFBcitations <- get_citations_from_FloraFungaBrasil(
 
-        list = species_without_FFBcitation,
+        list = species_without_FFBcitation_in_followUpTable_in_localComputer,
         ask_to_open_file = F
 
       )
@@ -403,6 +531,25 @@ conduct_all_processes_loop <- function(){
 
         )
 
+
+        ### Discover the cell in infoSpecies_table ####
+
+        species_not_found_in_FFBcitations_table$Species <- paste0(
+
+          '<a href="',
+          ss_infoSpeciesTable_URL_URL,
+          '&range=',
+          LETTERS_for_colNum[grep("FFB_citation_short", colnames(Acomp_spp_infoSpeciesTable))],
+          which(Acomp_spp_infoSpeciesTable$NameFB_semAutor %in% species_not_found_in_FFBcitations_table$Species)+1,
+          '">',
+          species_not_found_in_FFBcitations_table$Species,
+          '</a>'
+
+        )
+
+
+        ### Table: Species not found ####
+
         html_list(
 
           species_not_found_in_FFBcitations_table,
@@ -415,14 +562,6 @@ conduct_all_processes_loop <- function(){
 
       }
 
-
-
-      FFBcitations <- FFBcitations %>%
-        dplyr::filter(
-
-          species %notin% species_not_found_in_FFBcitations_table$Species
-
-        )
 
       ## Fill the follow-up table in local computer ####
 
@@ -440,12 +579,11 @@ conduct_all_processes_loop <- function(){
         ### get infoSpecies Table ####
 
         ss_infoSpeciesTable <- gs4_get(ss_infoSpeciesTable_URL)
-        Acomp_spp_infoSpeciesTable <- read_sheet(
 
-          ss_infoSpeciesTable,
-          sheet = which(ss_infoSpeciesTable$sheets$name == "Acomp_spp")
+        Acomp_spp_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
 
-        )
+        FFBcitations[FFBcitations$zcitationFB_short == "",]$zcitationFB_short <-
+          "coletar"
 
         ### fill infoSpecies Table ####
 
@@ -464,7 +602,7 @@ conduct_all_processes_loop <- function(){
               paste0(
 
                 LETTERS_for_colNum[grep("FFB_citation_short", colnames(Acomp_spp_infoSpeciesTable))],
-                grep(FFBcitation_species, Acomp_spp_infoSpeciesTable$NameFB_semAutor)
+                grep(FFBcitation_species, Acomp_spp_infoSpeciesTable$NameFB_semAutor) + 1
 
               )
 
@@ -474,6 +612,9 @@ conduct_all_processes_loop <- function(){
             col_names = F
 
           )
+
+          Sys.sleep(1)
+
           range_write(
 
             data = as.data.frame(FFBcitation_long),
@@ -482,7 +623,7 @@ conduct_all_processes_loop <- function(){
               paste0(
 
                 LETTERS_for_colNum[grep("FFB_citation_long", colnames(Acomp_spp_infoSpeciesTable))],
-                grep(FFBcitation_species, Acomp_spp_infoSpeciesTable$NameFB_semAutor)
+                grep(FFBcitation_species, Acomp_spp_infoSpeciesTable$NameFB_semAutor) + 1
 
               )
 
@@ -492,6 +633,8 @@ conduct_all_processes_loop <- function(){
             col_names = F
 
           )
+
+          Sys.sleep(1)
 
         }
 
@@ -531,19 +674,19 @@ conduct_all_processes_loop <- function(){
       out = "out3_species_without_obraPrinceps.html",
       show = F,
       footnote = '
-      <button type="button" onclick="run_R_script()">Execute R function: get_obraPrinceps_from_Tropicos_IPNI()</button>
-      <script>
-        function run_R_script() {
-          var ExePath = "C:/Program Files/RStudio/bin/rstudio.exe";
-          var scriptToExecute = "C:/R/R-4.1.1/working/Packages/CNCFloraR/R/get_obraPrinceps_from_Tropicos_IPNI.R";
-          new ActiveXObject("Shell.Application").ShellExecute(ExePath, scriptToExecute);
-          var WshShell = new ActiveXObject("WScript.Shell");
-          WshShell.SendKeys("1");
+        <button type="button" onclick="run_R_script()">Execute R function: get_obraPrinceps_from_Tropicos_IPNI()</button>
+        <script>
+          function run_R_script() {
+            var ExePath = "C:/Program Files/RStudio/bin/rstudio.exe";
+            var scriptToExecute = "C:/R/R-4.1.1/working/Packages/CNCFloraR/R/get_obraPrinceps_from_Tropicos_IPNI.R";
+            new ActiveXObject("Shell.Application").ShellExecute(ExePath, scriptToExecute);
+            var WshShell = new ActiveXObject("WScript.Shell");
+            WshShell.SendKeys("1");
 
-        }
-      </script>
+          }
+        </script>
 
-      '
+        '
 
     )
 
@@ -609,7 +752,7 @@ conduct_all_processes_loop <- function(){
 
     if(length(listOfSpecies_getOccurrences) > 0){
 
-      cli_alert_info("Including species...")
+      cli_alert_info("Including species")
 
       species_to_get_occurrenceRecords <- prepare_listOfSpecies_files_to_getOccurrences(
 
@@ -644,16 +787,16 @@ conduct_all_processes_loop <- function(){
         out = "out4_get_occurrenceRecords.html",
         show = F,
         footnote = '
-      <button type="button" onclick="runAhkScript()">Executar AHK script! Pressione F4 para disparar.</button>
-      <script>
-        function runAhkScript() {
-          var ahkExePath = "C:/Program Files/AutoHotkey/AutoHotkey.exe";
-          var scriptToExecute = "C:/R/R-4.1.1/working/CNCFlora_data/outputs/AHK_scripts/get_occurrences.ahk";
-          new ActiveXObject("Shell.Application").ShellExecute(ahkExePath, scriptToExecute);
-        }
-      </script>
+        <button type="button" onclick="runAhkScript()">Executar AHK script! Pressione F4 para disparar.</button>
+        <script>
+          function runAhkScript() {
+            var ahkExePath = "C:/Program Files/AutoHotkey/AutoHotkey.exe";
+            var scriptToExecute = "C:/R/R-4.1.1/working/CNCFlora_data/outputs/AHK_scripts/get_occurrences.ahk";
+            new ActiveXObject("Shell.Application").ShellExecute(ahkExePath, scriptToExecute);
+          }
+        </script>
 
-      '
+        '
 
       )
 
@@ -732,7 +875,7 @@ conduct_all_processes_loop <- function(){
 
     cli_h2("Checking species in the flow")
 
-    listOfSpecies_checkValidation <- colnames(
+    listOfSpecies_checkValidationCoords <- colnames(
 
       df[
 
@@ -764,6 +907,14 @@ conduct_all_processes_loop <- function(){
 
     )
 
+    validationCoordinates_table$Validade <- sub(
+
+      "álido",
+      "alid",
+      validationCoordinates_table$Validade
+
+    )
+
     html_list(
 
       validationCoordinates_table,
@@ -789,22 +940,63 @@ conduct_all_processes_loop <- function(){
 
     # Deleting files ####
 
-    file.remove(paste0(getwd(),"/out1_empty_fields.html"))
-    file.remove(paste0(getwd(),"/out1_empty_fields.html.rawhtml"))
+    if(exists(paste0(getwd(),"/out1_empty_fields.html"))){
 
-    file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))
-    file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html.rawhtml"))
+      file.remove(paste0(getwd(),"/out1_empty_fields.html"))
+      file.remove(paste0(getwd(),"/out1_empty_fields.html.rawhtml"))
 
-    file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))
-    file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html.rawhtml"))
+    }
 
-    file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html"))
-    file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html.rawhtml"))
+    if(exists(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))){
 
-    file.remove(paste0(getwd(),"/out5_validationOccurrences.html"))
-    file.remove(paste0(getwd(),"/out5_validationOccurrences.html.rawhtml"))
+      file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))
+      file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html.rawhtml"))
+
+    }
+
+    if(exists(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))){
+
+      file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))
+      file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html.rawhtml"))
+
+    }
+
+    if(exists(paste0(getwd(),"/out4_get_occurrenceRecords.html"))){
+
+      file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html"))
+      file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html.rawhtml"))
+
+    }
+
+    if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
+
+      file.remove(paste0(getwd(),"/out5_validationOccurrences.html"))
+      file.remove(paste0(getwd(),"/out5_validationOccurrences.html.rawhtml"))
+
+    }
+
+    if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
+
+      file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html"))
+      file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html.rawhtml"))
+
+    }
 
 
+    rm(
+
+      list = setdiff(
+
+        ls(),
+        c(
+
+          "`%notin%`"
+
+        )
+
+      )
+
+    )
 
     # End of loop ####
 

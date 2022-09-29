@@ -95,6 +95,14 @@ validationCoordinates <- function(list = "", ask_to_open_file = F) {
 
     )
 
+  } else {
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
+
   }
 
 
@@ -110,9 +118,7 @@ validationCoordinates <- function(list = "", ask_to_open_file = F) {
 
   for(i in listOfSpecies_n){
 
-    rm(list = setdiff(ls(), c("i", "listOfSpecies", "listOfSpecies_n", "output")))
-
-    Species <- listOfSpecies[i,]
+    Species <- listOfSpecies$V1[i]
 
     # Obtain data of occurrence records from old System ####
 
@@ -225,7 +231,7 @@ validationCoordinates <- function(list = "", ask_to_open_file = F) {
 
   print(
 
-    lat_errors %>% select(Species, URNs, Validade, lon, lat, precision, protocol)
+    lat_errors %>% dplyr::select(Species, URNs, Validade, lon, lat, precision, protocol)
 
   )
 

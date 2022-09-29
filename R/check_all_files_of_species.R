@@ -96,13 +96,13 @@ check_all_files_of_species <- function(list = "", ask_to_open_file = T){
 
 
 
-  ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
+  ss_followUpTable <- gs4_get("https://docs.google.com/spreadsheets/d/1DwBS0VD79wMO0UNztfSbUR5mTYdlv3rX9Se1bZhV4Jg/edit#gid=1874291321")
 
-  followUpTable <- read_sheet(ss, sheet = 1)
+  Acomp_spp_followUpTable <- read_sheet(ss_followUpTable, sheet = 1)
 
-  followUpTable <- followUpTable %>% filter(NameFB_semAutor %in% listOfSpecies$V1)
+  Acomp_spp_followUpTable <- Acomp_spp_followUpTable %>% filter(NameFB_semAutor %in% listOfSpecies$V1)
 
-  followUpTable <- followUpTable %>%
+  Acomp_spp_followUpTable <- Acomp_spp_followUpTable %>%
     summarise(
 
       V1 = NameFB_semAutor,
@@ -110,7 +110,7 @@ check_all_files_of_species <- function(list = "", ask_to_open_file = T){
 
     )
 
-  listOfSpecies <- left_join(listOfSpecies, followUpTable)
+  listOfSpecies <- left_join(listOfSpecies, Acomp_spp_followUpTable)
 
   listOfSpecies$flow[is.na(listOfSpecies$flow) == T] <- "NotDefined"
 
@@ -123,7 +123,7 @@ check_all_files_of_species <- function(list = "", ask_to_open_file = T){
 
     df_ <- data.frame(
 
-      is_in_local_followUpTable = if(
+      is_in_local_Acomp_spp_followUpTable = if(
 
         species %in% fread(
 
