@@ -113,9 +113,9 @@ prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs <- function(onlyNonEx
   ss <- gs4_get(ss_followUpTable_URL)
   followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
 
-  listOfSpecies_PNTs <- followUpTable %>% filter(`PA/PNA` == "PNA") %>% select(Espécie)
+  listOfSpecies_PNTs <- followUpTable %>% dplyr::filter(`PA/PNA` == "PNA") %>% dplyr::select(Espécie)
 
-  listOfSpecies_PNTs <- listOfSpecies_PNTs %>% filter(Espécie %in% listOfSpecies_PNTs_)
+  listOfSpecies_PNTs <- listOfSpecies_PNTs %>% dplyr::filter(Espécie %in% listOfSpecies_PNTs_)
 
 
   listOfSpecies <- c(listOfSpecies_PTs, listOfSpecies_PNTs$Espécie) |> unique()

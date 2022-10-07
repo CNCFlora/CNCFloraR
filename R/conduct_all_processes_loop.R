@@ -1,46 +1,73 @@
 conduct_all_processes_loop <- function(){
 
-  # Deleting files ####
+  # Deleting files of previous report ####
 
-  if(exists(paste0(getwd(),"/out1_empty_fields.html"))){
+  if(file.exists(paste0(getwd(),"/out1_empty_fields.html"))){
 
     file.remove(paste0(getwd(),"/out1_empty_fields.html"))
     file.remove(paste0(getwd(),"/out1_empty_fields.html.rawhtml"))
 
   }
 
-  if(exists(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))){
+  if(file.exists(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))){
 
     file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))
     file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html.rawhtml"))
 
   }
 
-  if(exists(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))){
+  if(file.exists(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))){
 
     file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))
     file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html.rawhtml"))
 
   }
 
-  if(exists(paste0(getwd(),"/out4_get_occurrenceRecords.html"))){
+  if(file.exists(paste0(getwd(),"/out4_get_occurrenceRecords.html"))){
 
     file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html"))
     file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html.rawhtml"))
 
   }
 
-  if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
+  if(file.exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
 
     file.remove(paste0(getwd(),"/out5_validationOccurrences.html"))
     file.remove(paste0(getwd(),"/out5_validationOccurrences.html.rawhtml"))
 
   }
 
-  if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
+  if(file.exists(paste0(getwd(),"/out6_errors_in_coordinates.html"))){
 
     file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html"))
     file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html.rawhtml"))
+
+  }
+
+  if(file.exists(paste0(getwd(),"/out7_overlay_analyses_errors.html"))){
+
+    file.remove(paste0(getwd(),"/out7_overlay_analyses_errors.html"))
+    file.remove(paste0(getwd(),"/out7_overlay_analyses_errors.html.rawhtml"))
+
+  }
+
+  if(file.exists(paste0(getwd(),"/out8_intersect_analyses_errors.html"))){
+
+    file.remove(paste0(getwd(),"/out8_intersect_analyses_errors.html"))
+    file.remove(paste0(getwd(),"/out8_intersect_analyses_errors.html.rawhtml"))
+
+  }
+
+  if(file.exists(paste0(getwd(),"/out9_overlay_analyses_fire_errors.html"))){
+
+    file.remove(paste0(getwd(),"/out9_overlay_analyses_fire_errors.html"))
+    file.remove(paste0(getwd(),"/out9_overlay_analyses_fire_errors.html.rawhtml"))
+
+  }
+
+  if(file.exists(paste0(getwd(),"/report.hta"))){
+
+    file.remove(paste0(getwd(),"/report.hta"))
 
   }
 
@@ -69,6 +96,25 @@ conduct_all_processes_loop <- function(){
   while(0 == 0){
 
     # Hello loop
+
+    ## Clear workspace ####
+
+    rm(
+
+      list = setdiff(
+
+        ls(),
+        c(
+
+          "%notin%"
+
+        )
+
+      )
+
+    )
+
+    # Console print Hello! ####
 
     cat("\014")
     print(boxx(
@@ -248,7 +294,7 @@ conduct_all_processes_loop <- function(){
 
       )
 
-      for(field in fields){
+      for(field_ in fields){
 
         if(
 
@@ -256,7 +302,7 @@ conduct_all_processes_loop <- function(){
 
             Acomp_spp_infoSpeciesTable.filtered %>%
             dplyr::filter(NameFB_semAutor == Acomp_spp_infoSpeciesTable.filtered$NameFB_semAutor[Acomp_spp_infoSpeciesTable.filtered$NameFB_semAutor == species]) %>%
-            dplyr::select(field)
+            dplyr::select(field_)
 
           ) == T
 
@@ -268,7 +314,7 @@ conduct_all_processes_loop <- function(){
             data.frame(
 
               Species = species,
-              empty_field = field
+              empty_field = field_
 
             )
 
@@ -281,7 +327,12 @@ conduct_all_processes_loop <- function(){
     }
 
 
-    if(output_empty_fields[1, 1] == ""){
+    if(
+
+      output_empty_fields[1, 1] == "" |
+      is.na(output_empty_fields[1, 1]) == T
+
+    ){
 
       output_empty_fields <- output_empty_fields[-1, ]
 
@@ -324,19 +375,24 @@ conduct_all_processes_loop <- function(){
     cli_h1("Step 3: Get data of species from the infoSpecies table in GoogleSheets")
     cli_h2("Checking and getting data of species")
 
-    species_to_get_from_infoSpecies <- setdiff(
 
-      Acomp_spp_infoSpeciesTable.filtered$NameFB_semAutor,
-      unique(empty_fields_table$Species)[unique(empty_fields_table$Species) != ""]
+    if(nrow(output_empty_fields) > 0){
 
-    )
+      species_to_get_from_infoSpecies <- setdiff(
 
-    get_species_from_followUpTable(
+        Acomp_spp_infoSpeciesTable.filtered$NameFB_semAutor,
+        unique(empty_fields_table$Species)[unique(empty_fields_table$Species) != ""]
 
-      list = species_to_get_from_infoSpecies,
-      ask_to_open_file = F
+      )
 
-    )
+      get_species_from_followUpTable(
+
+        list = species_to_get_from_infoSpecies,
+        ask_to_open_file = F
+
+      )
+
+    }
 
 
     # Step 4: Species without Flora e Funga do Brasil citation in the followUpTable in local computer ####
@@ -537,7 +593,7 @@ conduct_all_processes_loop <- function(){
         species_not_found_in_FFBcitations_table$Species <- paste0(
 
           '<a href="',
-          ss_infoSpeciesTable_URL_URL,
+          ss_infoSpeciesTable_URL,
           '&range=',
           LETTERS_for_colNum[grep("FFB_citation_short", colnames(Acomp_spp_infoSpeciesTable))],
           which(Acomp_spp_infoSpeciesTable$NameFB_semAutor %in% species_not_found_in_FFBcitations_table$Species)+1,
@@ -645,35 +701,275 @@ conduct_all_processes_loop <- function(){
 
     # Step 5: Species without obra princeps in the followUpTable in local computer ####
 
-    cli_h1("Step 5: Species without obra princeps in the followUpTable")
-    cli_h2("Checking and getting data of species without obra princeps in the followUpTable in local computer")
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Reading sheet List_for_HTML_profile from followUpTable in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+    species_in_List_for_HTML_profile_followUpTable <-
+      List_for_HTML_profile_followUpTable$Espécie[is.na(List_for_HTML_profile_followUpTable$Espécie) == F]
+
+
+    ## Get sheet Acomp_spp from the infoSpecies table in GoogleSheets ####
+
+    cli_h2("Checking and getting species without obra princeps in the followUpTable in cloud")
+
+    Acomp_spp_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
+
+    Acomp_spp_infoSpeciesTable$obraPrinceps[is.na(Acomp_spp_infoSpeciesTable$obraPrinceps) == T] <-
+      ""
+
+    ## Have species without obra princeps in the followUpTable in cloud? ####
+
+    have_species_without_obraPrinceps_in_followUpTable_in_cloud <-
+      nrow(
+
+        Acomp_spp_infoSpeciesTable %>%
+          dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+          dplyr::filter(obraPrinceps == "") %>%
+          dplyr::select(NameFB_semAutor)
+
+      ) > 0
+
+    if(have_species_without_obraPrinceps_in_followUpTable_in_cloud == T){
+
+      ### Yes ####
+
+      species_without_obraPrinceps_in_followUpTable_in_cloud <-
+        Acomp_spp_infoSpeciesTable %>%
+        dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+        dplyr::filter(obraPrinceps == "") %>%
+        dplyr::select(NameFB_semAutor)
+
+      species_without_obraPrinceps_in_followUpTable_in_cloud <-
+        species_without_obraPrinceps_in_followUpTable_in_cloud$NameFB_semAutor
+
+    }
+
+
+    ## Get follow-up table from local computer ####
+
+    cli_h2("Get followUpTable in local computer")
 
     followUpTable <- get_followUpTable_from_localComputer()
 
 
-    ## Have species without obra princeps in the followUpTable in local computer ####
+    ## Update follow-up table in local computer from cloud ####
 
-    have_species_without_obraPrinceps <-
+    df_Acomp_spp_infoSpeciesTable <- Acomp_spp_infoSpeciesTable %>%
+      dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+      dplyr::select(NameFB_semAutor, obraPrinceps)
+
+    colnames(df_Acomp_spp_infoSpeciesTable) <- c("NameFB_semAutor", "obraPrinceps_cloud")
+
+    df_followUpTable <- followUpTable %>%
+      dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
+      dplyr::select(NameFB_semAutor, zobra)
+
+    colnames(df_followUpTable) <- c("NameFB_semAutor", "obraPrinceps_local_computer")
+
+    df_check <- left_join(df_Acomp_spp_infoSpeciesTable, df_followUpTable, by = "NameFB_semAutor")
+
+    if(
+
+      all(
+
+        df_check$obraPrinceps_local_computer == "" &
+        df_check$obraPrinceps_cloud != "" &
+        df_check$obraPrinceps_cloud != "revisar"
+
+      ) == T
+
+    ){
+
+      species_in_df_check <- df_check$NameFB_semAutor[
+
+        df_check$obraPrinceps_local_computer == "" &
+          df_check$obraPrinceps_cloud != "" &
+          df_check$obraPrinceps_cloud != "coletar"
+
+      ]
+
+      followUpTable$zobra[
+
+        followUpTable$NameFB_semAutor %in% species_in_df_check
+
+      ] <- df_check$obraPrinceps_cloud[
+
+        df_check$NameFB_semAutor %in% species_in_df_check
+
+      ]
+
+      followUpTable$zobra[
+
+        followUpTable$NameFB_semAutor %in% species_in_df_check
+
+      ] <- df_check$FFB_citation_long_cloud[
+
+        df_check$NameFB_semAutor %in% species_in_df_check
+
+      ]
+
+      write.csv2(
+
+        followUpTable,
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
+
+        ),
+        row.names = FALSE,
+        fileEncoding = "UTF-8"
+
+      )
+
+    }
+
+
+    ## Have species without obra princeps in the followUpTable in local computer? ####
+
+    have_species_without_obraPrinceps_in_followUpTable_in_localComputer <-
       !all(followUpTable$zobra == "", F)
 
-    species_without_obraPrinceps <-
-      followUpTable$NameFB_semAutor[followUpTable$zobra == ""]
 
-    species_without_obraPrinceps_table <- data.frame(
+    if(have_species_without_obraPrinceps_in_followUpTable_in_localComputer == T){
 
-      i = 1:length(species_without_obraPrinceps),
-      Species = species_without_obraPrinceps
+      ### Yes ####
 
-    )
+      species_without_obraPrinceps_in_followUpTable_in_localComputer <-
+        followUpTable$NameFB_semAutor[
 
-    html_list(
+          followUpTable$zobra == ""
 
-      species_without_obraPrinceps_table,
-      vars = names(species_without_obraPrinceps_table),
-      title = "Species to get obra princeps",
-      out = "out3_species_without_obraPrinceps.html",
-      show = F,
-      footnote = '
+        ]
+
+      #### Include species without obra princeps in the followUpTable in cloud ####
+
+      if(exists("species_without_obraPrinceps_in_followUpTable_in_cloud") == T){
+
+        species_without_obraPrinceps_in_followUpTable_in_localComputer <- c(
+
+          species_without_obraPrinceps_in_followUpTable_in_cloud,
+          species_without_obraPrinceps_in_followUpTable_in_localComputer
+
+        )
+
+      }
+
+      if(exists("species_without_obraPrinceps_in_followUpTable_in_cloud") == T){
+
+        species_without_obraPrinceps_in_followUpTable_in_localComputer <-
+          species_without_obraPrinceps_in_followUpTable_in_localComputer[
+
+            duplicated(species_without_obraPrinceps_in_followUpTable_in_localComputer) == F
+
+          ]
+
+        species_without_obraPrinceps_in_followUpTable_in_localComputer <-
+          Acomp_spp_infoSpeciesTable %>%
+          dplyr::filter(NameFB_semAutor %in% species_without_obraPrinceps_in_followUpTable_in_localComputer) %>%
+          dplyr::summarise(NameFB_semAutor, Author)
+
+        colnames(species_without_obraPrinceps_in_followUpTable_in_localComputer) <-
+          c("V1", "V2")
+
+      }
+
+      ## Get obra princeps in Tropicos and IPNI ####
+
+      if(exists("species_without_obraPrinceps_in_followUpTable_in_cloud") == T){
+
+        cli_h2("Get obra princeps in Tropicos and IPNI")
+
+        obraPrinceps <- get_obraPrinceps_from_Tropicos_IPNI(
+
+          list = species_without_obraPrinceps_in_followUpTable_in_localComputer,
+          ask_to_open_file = F,
+          ask_to_open_spreadsheet_editor = F
+
+        )
+
+      }
+
+      ## Fill the follow-up table in cloud ####
+
+      if(exists("species_without_obraPrinceps_in_followUpTable_in_cloud") == T){
+
+        ### get infoSpecies Table ####
+
+        ss_infoSpeciesTable <- gs4_get(ss_infoSpeciesTable_URL)
+
+        obraPrinceps_infoSpeciesTable <- get_sheet_obraPrinceps_from_infoSpeciesTable_in_cloud()
+
+        obraPrinceps <- obraPrinceps[
+
+          unique(obraPrinceps$Taxon) %notin% obraPrinceps_infoSpeciesTable$Taxon,
+
+        ]
+
+        obraPrinceps <- data.frame(
+
+          Taxon = obraPrinceps$Taxon,
+          Author = obraPrinceps$Author,
+          Author_Tropicos = obraPrinceps$TaxonAuthor_Tropicos,
+          Status_Tropicos = obraPrinceps$Status_Tropicos,
+          Author_IPNI = obraPrinceps$Author_IPNI,
+          Status_IPNI = obraPrinceps$Status_IPNI,
+          ObraPrinceps_Tropicos = obraPrinceps$ObraPrinceps_Tropicos,
+          ObraPrinceps_IPNI = obraPrinceps$ObraPrinceps_IPNI,
+          Status = obraPrinceps$Status
+
+        )
+
+        obraPrinceps <- obraPrinceps[-1, ]
+
+        ### Discover last filled cell ####
+
+        lastFilledCell <- nrow(obraPrinceps_infoSpeciesTable)
+
+        ### fill infoSpecies Table ####
+
+        range_write(
+
+          data = as.data.frame(obraPrinceps),
+          range = as.character(
+
+            paste0(
+
+              "A",
+              lastFilledCell + 2
+
+            )
+
+          ),
+          ss = ss_infoSpeciesTable,
+          sheet = which(ss_infoSpeciesTable$sheets$name == "obrasPrinceps"),
+          col_names = F
+
+        )
+
+      }
+
+      if(exists("species_without_obraPrinceps_in_followUpTable_in_cloud") == T){
+
+        species_without_obraPrinceps_in_followUpTable_in_cloud_table <- data.frame(
+
+          i = 1:length(species_without_obraPrinceps_in_followUpTable_in_cloud),
+          Species = species_without_obraPrinceps_in_followUpTable_in_cloud
+
+        )
+
+        html_list(
+
+          species_without_obraPrinceps_in_followUpTable_in_cloud_table,
+          vars = names(species_without_obraPrinceps_in_followUpTable_in_cloud_table),
+          title = "Species to get obra princeps",
+          out = "out3_species_without_obraPrinceps.html",
+          show = F,
+          footnote = '
         <button type="button" onclick="run_R_script()">Execute R function: get_obraPrinceps_from_Tropicos_IPNI()</button>
         <script>
           function run_R_script() {
@@ -688,47 +984,40 @@ conduct_all_processes_loop <- function(){
 
         '
 
-    )
+        )
 
-    Acomp_spp_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
+      } else {
 
-    Acomp_spp_infoSpeciesTable.filtered <-
-      Acomp_spp_infoSpeciesTable %>%
-      dplyr::filter(NameFB_semAutor %in% species_without_obraPrinceps_table) %>%
-      dplyr::select(NameFB_semAutor, FB2020_AcceptedNameUsage)
+        revise_Species <- Acomp_spp_infoSpeciesTable$NameFB_semAutor[Acomp_spp_infoSpeciesTable$obraPrinceps == "revisar"]
 
-    if(TRUE %in% duplicated(Acomp_spp_infoSpeciesTable$NameFB_semAutor)){
+        if(
 
-      Acomp_spp_infoSpeciesTable.filtered <- Acomp_spp_infoSpeciesTable.filtered[-duplicated(Acomp_spp_infoSpeciesTable.filtered$NameFB_semAutor),]
+          length(revise_Species) > 0
+
+        ){
+
+          species_without_obraPrinceps_in_followUpTable_in_cloud_table <- data.frame(
+
+            i = 1:length(revise_Species),
+            Species = revise_Species
+
+          )
+
+          html_list(
+
+            species_without_obraPrinceps_in_followUpTable_in_cloud_table,
+            vars = names(species_without_obraPrinceps_in_followUpTable_in_cloud_table),
+            title = "Species to revise obra princeps",
+            out = "out3_species_without_obraPrinceps.html",
+            show = F
+
+          )
+
+        }
+
+      }
 
     }
-
-    output_obraPrinceps <- Acomp_spp_infoSpeciesTable.filtered
-
-    output_obraPrinceps$FB2020_AcceptedNameUsage <- sub("\\w+\\s", "", output_obraPrinceps$FB2020_AcceptedNameUsage)
-    output_obraPrinceps$FB2020_AcceptedNameUsage <- sub("\\w+\\s", "", output_obraPrinceps$FB2020_AcceptedNameUsage)
-
-    colnames(output_obraPrinceps) <- c("species", "author")
-
-    write.table(
-
-      data.frame(
-
-        species = output_obraPrinceps$species,
-        author = output_obraPrinceps$author
-
-      ),
-      paste0(
-
-        sub("Packages/CNCFloraR", "", getwd()),
-        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_for_obraPrinceps.csv"
-
-      ),
-      col.names = F,
-      row.names = F,
-      sep = ";"
-
-    )
 
 
     # Step 6: Get occurrence records from old system ####
@@ -819,10 +1108,7 @@ conduct_all_processes_loop <- function(){
 
         which(
 
-          df["intersectPANs",] == F &
-            df["intersectTERs",] == F &
-            df["intersectUCs",] == F &
-            df["overlayMapBiomasTodosOsAnos",] == F
+          df["occurrenceRecords",] == T
 
         )
 
@@ -881,10 +1167,7 @@ conduct_all_processes_loop <- function(){
 
         which(
 
-          df["intersectPANs",] == F &
-            df["intersectTERs",] == F &
-            df["intersectUCs",] == F &
-            df["overlayMapBiomasTodosOsAnos",] == F
+          df["occurrenceRecords",] == T
 
         )
 
@@ -926,6 +1209,598 @@ conduct_all_processes_loop <- function(){
     )
 
 
+    # Step 9: Intersect PANS, TERs and UCs ####
+
+    cli_h1("Step 9: Intersect PANS, TERs and UCs")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_intersect_PANs_TERs_UCs <- colnames(
+
+      df[
+
+        which(
+
+          df["occurrenceRecords",] == T &
+            df["intersectPANs",] == F &
+            df["intersectTERs",] == F &
+            df["intersectUCs",] == F
+
+        )
+
+      ]
+
+    )
+
+
+    ## Remove species on development or error ####
+
+    listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error <-
+      listOfSpecies_intersect_PANs_TERs_UCs
+
+    listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error_ <- NULL
+    for(species in listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error){
+
+      listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error.this <-
+        data.frame(
+
+          Species = species,
+          exists = if(
+
+            file.exists(
+
+              paste0(
+
+                sub("Packages/CNCFloraR", "", getwd()),
+                "/CNCFlora_data/outputs/intersect_PANs_TERs_UCs logs/",
+                species,
+                ".csv"
+
+              )
+
+            )
+
+          ){T} else {F}
+
+        )
+
+      listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error_ <-
+        rbind(
+
+          listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error_,
+          listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error.this
+
+        )
+
+    }
+
+    listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error <-
+      listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error_$Species[
+
+        listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error_$exists == T
+
+      ]
+
+    intersect_PANs_TERs_UCs_on_development_or_error <- NULL
+    for(species in listOfSpecies_intersect_PANs_TERs_UCs_on_development_or_error){
+
+      intersect_PANs_TERs_UCs_on_development_or_error_ <- fread(
+
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/intersect_PANs_TERs_UCs logs/",
+          species,
+          ".csv"
+
+        )
+
+      )
+
+      intersect_PANs_TERs_UCs_on_development_or_error <-
+        rbind (intersect_PANs_TERs_UCs_on_development_or_error, intersect_PANs_TERs_UCs_on_development_or_error_)
+
+    }
+
+
+    if(is.null(intersect_PANs_TERs_UCs_on_development_or_error) == T){
+
+      intersect_PANs_TERs_UCs_on_development <- ""
+      intersect_PANs_TERs_UCs_on_error <- ""
+
+    } else {
+
+      intersect_PANs_TERs_UCs_on_development <-
+        intersect_PANs_TERs_UCs_on_development_or_error$species[
+
+          is.na(intersect_PANs_TERs_UCs_on_development_or_error$end) == T
+
+        ]
+
+      intersect_PANs_TERs_UCs_on_error <-
+        intersect_PANs_TERs_UCs_on_development_or_error %>%
+        dplyr::filter(end == "error") %>%
+        dplyr::select(species)
+
+      intersect_PANs_TERs_UCs_on_error <- intersect_PANs_TERs_UCs_on_error$species
+
+    }
+
+
+    ## listOfSpecies to proceed ####
+
+    listOfSpecies_intersect_PANs_TERs_UCs <-
+      setdiff(listOfSpecies_intersect_PANs_TERs_UCs, intersect_PANs_TERs_UCs_on_development)
+
+    listOfSpecies_intersect_PANs_TERs_UCs <-
+      setdiff(listOfSpecies_intersect_PANs_TERs_UCs, intersect_PANs_TERs_UCs_on_error)
+
+
+    ## Start analysis ####
+
+    if(length(listOfSpecies_intersect_PANs_TERs_UCs) > 0){
+
+      cli_h2("Conduct analysis for a list of species")
+
+      intersect_PANs_TERs_UCs_create_scripts(
+
+        list = listOfSpecies_intersect_PANs_TERs_UCs,
+        ask_to_open_file = F
+
+      )
+
+      cli_h2("")
+
+      intersect_PANs_TERs_UCs_execute_scripts(
+
+        list = listOfSpecies_intersect_PANs_TERs_UCs
+
+      )
+
+      print(listOfSpecies_intersect_PANs_TERs_UCs)
+
+    } else {
+
+      cli_alert_success("No species to analyze")
+
+    }
+
+    ## Have analysis with errors? ####
+
+    if(
+
+      length(intersect_PANs_TERs_UCs_on_error) > 0 &
+      intersect_PANs_TERs_UCs_on_error[1] != ""
+
+    ){
+
+      ### Yes ####
+
+      intersect_PANs_TERs_UCs_on_error_table <- data.frame(
+
+        i = 1:length(intersect_PANs_TERs_UCs_on_error),
+        Species = intersect_PANs_TERs_UCs_on_error
+
+      )
+
+
+      #### Table: Intersect analysis (PANs_TERs_UCs) with errors ####
+
+      html_list(
+
+        intersect_PANs_TERs_UCs_on_error_table,
+        vars = names(intersect_PANs_TERs_UCs_on_error_table),
+        title = "Errors in intersect analysis - PANs_TERs_UCs",
+        out = "out8_intersect_analyses_errors.html",
+        show = F
+
+      )
+
+    }
+
+
+    # Step 10: Overlay analysis between occurrence records and MapBiomas Land Cover 1985-2020 ####
+
+    cli_h1("Step 10: Overlay analysis between occurrence records and MapBiomas Land Cover 1985-2020")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_overlayAnalysis <- colnames(
+
+      df[
+
+        which(
+
+          df["occurrenceRecords",] == T &
+            df["overlayMapBiomasTodosOsAnos",] == F
+
+        )
+
+      ]
+
+    )
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+    ## Remove PNA species ####
+
+    List_for_HTML_profile_followUpTable_PNA <- List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(`PA/PNA` == "PNA") %>%
+      dplyr::select(Espécie)
+
+    listOfSpecies_overlayAnalysis <-
+      setdiff(
+
+        listOfSpecies_overlayAnalysis,
+        List_for_HTML_profile_followUpTable_PNA$Espécie
+
+      )
+
+    ## Remove species on development or error ####
+
+    listOfSpecies_overlayAnalysis_on_development_or_error <-
+      listOfSpecies_overlayAnalysis
+
+    listOfSpecies_overlayAnalysis_on_development_or_error_ <- NULL
+    for(species in listOfSpecies_overlayAnalysis_on_development_or_error){
+
+      listOfSpecies_overlayAnalysis_on_development_or_error.this <-
+        data.frame(
+
+          Species = species,
+          exists = if(
+
+            file.exists(
+
+              paste0(
+
+                sub("Packages/CNCFloraR", "", getwd()),
+                "/CNCFlora_data/outputs/overlayAnalysis logs/",
+                species,
+                ".csv"
+
+              )
+
+            )
+
+          ){T} else {F}
+
+        )
+
+      listOfSpecies_overlayAnalysis_on_development_or_error_ <-
+        rbind(
+
+          listOfSpecies_overlayAnalysis_on_development_or_error_,
+          listOfSpecies_overlayAnalysis_on_development_or_error.this
+
+        )
+
+    }
+
+    listOfSpecies_overlayAnalysis_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_on_development_or_error_$Species[
+
+        listOfSpecies_overlayAnalysis_on_development_or_error_$exists == T
+
+      ]
+
+    overlayAnalysis_on_development_or_error <- NULL
+    for(species in listOfSpecies_overlayAnalysis_on_development_or_error){
+
+      overlayAnalysis_on_development_or_error_ <- fread(
+
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/overlayAnalysis logs/",
+          species,
+          ".csv"
+
+        )
+
+      )
+
+      overlayAnalysis_on_development_or_error <-
+        rbind (overlayAnalysis_on_development_or_error, overlayAnalysis_on_development_or_error_)
+
+    }
+
+    if(is.null(overlayAnalysis_on_development_or_error) == T){
+
+      overlayAnalysis_on_development <- ""
+      overlayAnalysis_on_error <- ""
+
+    } else {
+
+      overlayAnalysis_on_development <-
+        overlayAnalysis_on_development_or_error$species[
+
+          is.na(overlayAnalysis_on_development_or_error$end) == T
+
+        ]
+
+      overlayAnalysis_on_error <-
+        overlayAnalysis_on_development_or_error %>%
+        dplyr::filter(end == "error") %>%
+        dplyr::select(species)
+
+      overlayAnalysis_on_error <- overlayAnalysis_on_error$species
+
+    }
+
+
+    ## listOfSpecies to proceed ####
+
+    listOfSpecies_overlayAnalysis <-
+      setdiff(listOfSpecies_overlayAnalysis, overlayAnalysis_on_development)
+
+    listOfSpecies_overlayAnalysis <-
+      setdiff(listOfSpecies_overlayAnalysis, overlayAnalysis_on_error)
+
+
+    ## Start analysis ####
+
+    if(length(listOfSpecies_overlayAnalysis) > 0){
+
+      cli_h2("Conduct analysis for a list of species")
+
+      overlayAnalysis_create_scripts(
+
+        list = listOfSpecies_overlayAnalysis,
+        ask_to_open_file = F
+
+      )
+
+      overlayAnalysis_execute_scripts(
+
+        list = listOfSpecies_overlayAnalysis
+
+      )
+
+      print(listOfSpecies_overlayAnalysis)
+
+    } else {
+
+      cli_alert_success("No species to analyze")
+
+    }
+
+
+    ## Have analysis with errors? ####
+
+    if(length(overlayAnalysis_on_error) > 0){
+
+      ### Yes ####
+
+      overlayAnalysis_on_error_table <- data.frame(
+
+        i = 1:length(overlayAnalysis_on_error),
+        Species = overlayAnalysis_on_error
+
+      )
+
+
+      #### Table: Overlay analysis with errors ####
+
+      html_list(
+
+        overlayAnalysis_on_error_table,
+        vars = names(overlayAnalysis_on_error_table),
+        title = "Errors in overlay analysis",
+        out = "out7_overlay_analyses_errors.html",
+        show = F
+
+      )
+
+    }
+
+
+    # Step 11: Overlay analysis between occurrence records and MapBiomas Fire Land Cover 2020 ####
+
+    cli_h1("Step 11: Overlay analysis between occurrence records and MapBiomas Fire Land Cover 2020")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_overlayAnalysis_Fire <- colnames(
+
+      df[
+
+        which(
+
+          df["occurrenceRecords",] == T &
+            df["overlayMapBiomasFire",] == F
+
+        )
+
+      ]
+
+    )
+
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+
+    ### Remove PNA species
+
+    List_for_HTML_profile_followUpTable_PNA <- List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(`PA/PNA` == "PNA") %>%
+      dplyr::select(Espécie)
+
+    listOfSpecies_overlayAnalysis_Fire <-
+      setdiff(
+
+        listOfSpecies_overlayAnalysis_Fire,
+        List_for_HTML_profile_followUpTable_PNA$Espécie
+
+      )
+
+
+    ## Remove species on development or error ####
+
+    listOfSpecies_overlayAnalysis_Fire_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_Fire
+
+    listOfSpecies_overlayAnalysis_Fire_on_development_or_error_ <- NULL
+    for(species in listOfSpecies_overlayAnalysis_Fire_on_development_or_error){
+
+      listOfSpecies_overlayAnalysis_Fire_on_development_or_error.this <-
+        data.frame(
+
+          Species = species,
+          exists = if(
+
+            file.exists(
+
+              paste0(
+
+                sub("Packages/CNCFloraR", "", getwd()),
+                "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+                species,
+                ".csv"
+
+              )
+
+            )
+
+          ){T} else {F}
+
+        )
+
+      listOfSpecies_overlayAnalysis_Fire_on_development_or_error_ <-
+        rbind(
+
+          listOfSpecies_overlayAnalysis_Fire_on_development_or_error_,
+          listOfSpecies_overlayAnalysis_Fire_on_development_or_error.this
+
+        )
+
+    }
+
+    listOfSpecies_overlayAnalysis_Fire_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_Fire_on_development_or_error_$Species[
+
+        listOfSpecies_overlayAnalysis_Fire_on_development_or_error_$exists == T
+
+      ]
+
+    overlayAnalysis_Fire_on_development_or_error <- NULL
+    for(species in listOfSpecies_overlayAnalysis_Fire_on_development_or_error){
+
+      overlayAnalysis_Fire_on_development_or_error_ <- fread(
+
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+          species,
+          ".csv"
+
+        )
+
+      )
+
+      overlayAnalysis_Fire_on_development_or_error <-
+        rbind (overlayAnalysis_Fire_on_development_or_error, overlayAnalysis_Fire_on_development_or_error_)
+
+    }
+
+    if(is.null(overlayAnalysis_Fire_on_development_or_error) == T){
+
+      overlayAnalysis_Fire_on_development <- ""
+      overlayAnalysis_Fire_on_error <- ""
+
+    } else {
+
+      overlayAnalysis_Fire_on_development <-
+        overlayAnalysis_Fire_on_development_or_error$species[is.na(overlayAnalysis_Fire_on_development_or_error$end) == T]
+
+      overlayAnalysis_Fire_on_error <-
+        overlayAnalysis_Fire_on_development_or_error %>%
+        dplyr::filter(end == "error") %>%
+        dplyr::select(species)
+
+      overlayAnalysis_Fire_on_error <- overlayAnalysis_Fire_on_error$species
+
+    }
+
+
+    ## listOfSpecies to proceed ####
+
+    listOfSpecies_overlayAnalysis_Fire <-
+      setdiff(listOfSpecies_overlayAnalysis_Fire, overlayAnalysis_Fire_on_development)
+
+    listOfSpecies_overlayAnalysis_Fire <-
+      setdiff(listOfSpecies_overlayAnalysis_Fire, overlayAnalysis_Fire_on_error)
+
+
+    ## Start analysis ####
+
+    if(length(listOfSpecies_overlayAnalysis_Fire) > 0){
+
+      cli_h2("Conduct analysis for a list of species")
+
+      overlayAnalysis_Fire_create_scripts(
+
+        list = listOfSpecies_overlayAnalysis_Fire,
+        ask_to_open_file = F
+
+      )
+
+      cli_h2("")
+
+      overlayAnalysis_Fire_execute_scripts(
+
+        list = listOfSpecies_overlayAnalysis_Fire
+
+      )
+
+      print(listOfSpecies_overlayAnalysis_Fire)
+
+    } else {
+
+      cli_alert_success("No species to analyze")
+
+    }
+
+    ## Have analysis with errors? ####
+
+    if(length(overlayAnalysis_Fire_on_error) > 0){
+
+      ### Yes ####
+
+      overlayAnalysis_Fire_on_error_table <- data.frame(
+
+        i = 1:length(overlayAnalysis_Fire_on_error),
+        Species = overlayAnalysis_Fire_on_error
+
+      )
+
+
+      #### Table: Overlay analysis (MapBiomas Fire 2020) with errors ####
+
+      html_list(
+
+        overlayAnalysis_Fire_on_error_table,
+        vars = names(overlayAnalysis_Fire_on_error_table),
+        title = "Errors in overlay analysis - MapBiomas Fire 2020",
+        out = "out9_overlay_analyses_fire_errors.html",
+        show = F
+
+      )
+
+    }
+
+
     # Generate final report (report.html) ####
 
     html_combine(
@@ -937,66 +1812,7 @@ conduct_all_processes_loop <- function(){
 
     )
 
-
-    # Deleting files ####
-
-    if(exists(paste0(getwd(),"/out1_empty_fields.html"))){
-
-      file.remove(paste0(getwd(),"/out1_empty_fields.html"))
-      file.remove(paste0(getwd(),"/out1_empty_fields.html.rawhtml"))
-
-    }
-
-    if(exists(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))){
-
-      file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html"))
-      file.remove(paste0(getwd(),"/out2_species_not_found_in_FFB.html.rawhtml"))
-
-    }
-
-    if(exists(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))){
-
-      file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html"))
-      file.remove(paste0(getwd(),"/out3_species_without_obraPrinceps.html.rawhtml"))
-
-    }
-
-    if(exists(paste0(getwd(),"/out4_get_occurrenceRecords.html"))){
-
-      file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html"))
-      file.remove(paste0(getwd(),"/out4_get_occurrenceRecords.html.rawhtml"))
-
-    }
-
-    if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
-
-      file.remove(paste0(getwd(),"/out5_validationOccurrences.html"))
-      file.remove(paste0(getwd(),"/out5_validationOccurrences.html.rawhtml"))
-
-    }
-
-    if(exists(paste0(getwd(),"/out5_validationOccurrences.html"))){
-
-      file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html"))
-      file.remove(paste0(getwd(),"/out6_errors_in_coordinates.html.rawhtml"))
-
-    }
-
-
-    rm(
-
-      list = setdiff(
-
-        ls(),
-        c(
-
-          "`%notin%`"
-
-        )
-
-      )
-
-    )
+    beepr::beep(2)
 
     # End of loop ####
 

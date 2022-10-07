@@ -10,10 +10,8 @@ validationOccurrences <- function(list = "") {
     suppressWarnings({
       suppressPackageStartupMessages({
 
-        library(foreach)
         library(readtext)
         library(data.table)
-        library(tidyverse)
         library(stringi)
         library(stringr)
         library(tibble)
@@ -215,7 +213,7 @@ validationOccurrences <- function(list = "") {
   result_invalid_n <- NULL
   for(i in speciesWithInvalidOccurrences){
     invalid_n <-
-      count(invalid %>%
+      dplyr::count(invalid %>%
               dplyr::filter(Species == i & registros_validos == "Inválido"))
     invalid_n <-
       data.frame(
@@ -235,8 +233,8 @@ validationOccurrences <- function(list = "") {
   records_SIG_NOT_OK <- registros %>% dplyr::filter(SIG_valid == "SIG NOT OK")
 
   records_SIG_NOT_OK <- records_SIG_NOT_OK %>%
-    group_by(Species) %>%
-    summarise(Species, SIG_NOT_OK = dplyr::n())
+    dplyr::group_by(Species) %>%
+    dplyr::summarise(Species, SIG_NOT_OK = dplyr::n())
 
   output <- left_join(are.species_the_same_in_file, records_n)
   output <- left_join(output, result_invalid_n)
@@ -257,7 +255,6 @@ validationOccurrences <- function(list = "") {
 
   # Print results ####
 
-  cat("\014")
   options(colorDF_n = Inf)
 
   colorDF(

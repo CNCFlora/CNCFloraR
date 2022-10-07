@@ -116,9 +116,9 @@ validationCoordinates <- function(list = "", ask_to_open_file = F) {
 
   # Start loop ####
 
-  for(i in listOfSpecies_n){
+  for(species_i in listOfSpecies_n){
 
-    Species <- listOfSpecies$V1[i]
+    Species <- listOfSpecies$V1[species_i]
 
     # Obtain data of occurrence records from old System ####
 
@@ -175,36 +175,44 @@ validationCoordinates <- function(list = "", ask_to_open_file = F) {
     coords_df_valid$UTMzone[EMPTY_row]<-""
     coords_df_valid$Degree_zone[EMPTY_row]<-""
 
+    if(
 
-    # Verificação da Zona UTM ####
+      dplyr::count(coords_df_valid) > 0 &
+      all(coords_df_valid$lon == "") == F
 
-    coords_df_valid_n_row <- as.numeric(1:(length(coords_df_valid$Degree_zone)))
+    ){
 
+      # Verificação da Zona UTM ####
 
-    for(i in coords_df_valid_n_row){
-
-      coords_df_valid$UTMzone[i]<-paste(ceiling((-as.numeric(coords_df_valid$Degree_zone[i])+180)/6),coords_df_valid$UTMzone[i], sep = "")
-
-    }
-    coords_df_valid$UTMzone<-sub("NA","",coords_df_valid$UTMzone)
+      coords_df_valid_n_row <- as.numeric(1:(length(coords_df_valid$Degree_zone)))
 
 
-    # Apagamento das coordenadas vazias ####
+      for(coords_df_valid_i in coords_df_valid_n_row){
 
-    coords_df_valid <- coords_df_valid %>% mutate_all(na_if,"")
-    for(i in coords_df_valid_n_row){
+        coords_df_valid$UTMzone[coords_df_valid_i]<-paste(ceiling((-as.numeric(coords_df_valid$Degree_zone[coords_df_valid_i])+180)/6),coords_df_valid$UTMzone[coords_df_valid_i], sep = "")
 
-      if(is.na(coords_df_valid$precision[i])){
+      }
+      coords_df_valid$UTMzone<-sub("NA","",coords_df_valid$UTMzone)
 
-        coords_df_valid <- coords_df_valid[-i,]
+
+      # Apagamento das coordenadas vazias ####
+
+      coords_df_valid <- coords_df_valid %>% mutate_all(na_if,"")
+      for(i in coords_df_valid_n_row){
+
+        if(is.na(coords_df_valid$precision[i])){
+
+          coords_df_valid <- coords_df_valid[-i,]
+
+        }
 
       }
 
+      output_ <- data.frame(Species = Species, coords_df_valid)
+
+      output <- rbind(output, output_)
+
     }
-
-    output_ <- data.frame(Species = Species, coords_df_valid)
-
-    output <- rbind(output, output_)
 
   }
 
@@ -240,6 +248,6 @@ validationCoordinates <- function(list = "", ask_to_open_file = F) {
     "lon_errors" = lon_errors,
     "lat_errors" = lat_errors
 
-    )))
+  )))
 
 }

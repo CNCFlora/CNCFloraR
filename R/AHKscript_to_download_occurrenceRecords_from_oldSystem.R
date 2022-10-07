@@ -91,7 +91,7 @@ AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(list = "", as
 
     # Load follow-up table from GoogleSheets ####
 
-    ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
+    ss <- gs4_get(ss_followUpTable_URL)
     followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
 
     followUpTable.filtered <- followUpTable %>% dplyr::filter(Espécie %in% listOfSpecies)
@@ -155,7 +155,7 @@ AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(list = "", as
     cat("\n")
     cat("Sleep 2000\n")
     cat("Send {Tab}\n")
-    cat("Send {Down 2}\n")
+    cat("Send {Down 3}\n")
     cat("Send +{Tab}\n")
     cat("Sleep 1000\n")
     cat("Send {End}\n")

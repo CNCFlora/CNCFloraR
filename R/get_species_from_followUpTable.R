@@ -129,7 +129,7 @@ get_species_from_followUpTable <- function(list = "", ask_to_open_file = F){
   # Number of species vector ####
 
   colnames(listOfSpecies) <- "NameFB_semAutor"
-  species_n <- 1:as.numeric(count(listOfSpecies))
+  species_n <- 1:as.numeric(dplyr::count(listOfSpecies))
 
 
   # Load follow-up table from GoogleSheets ####
@@ -308,7 +308,6 @@ get_species_from_followUpTable <- function(list = "", ask_to_open_file = F){
 
     if(length(followUpTable$NameFB_semAutor[species_i]) > 1){
 
-      cat(paste("DUPLICADA:", followUpTable$NameFB_semAutor[species_i][1]), "\n")
       delete_species_from_followUpTable <-
         grep(SPECIES, followUpTable$NameFB_semAutor)[2]
       followUpTable <- followUpTable[-delete_species_from_followUpTable,]
@@ -329,7 +328,50 @@ get_species_from_followUpTable <- function(list = "", ask_to_open_file = F){
 
   }
 
-  followUpTable
+  followUpTable$IUCN_assessment_presence <-
+    gsub(
+
+      '"""+',
+      '""',
+      followUpTable$IUCN_assessment_presence
+
+    )
+
+  followUpTable$IUCN_assessment_presence <-
+    gsub(
+
+      '\\=""https',
+      '="https',
+      followUpTable$IUCN_assessment_presence
+
+    )
+
+  followUpTable$IUCN_assessment_presence <-
+    gsub(
+
+      '""\\starget',
+      '" target',
+      followUpTable$IUCN_assessment_presence
+
+    )
+
+  followUpTable$IUCN_assessment_presence <-
+    gsub(
+
+      'target=""\\_',
+      'target="_',
+      followUpTable$IUCN_assessment_presence
+
+    )
+
+  followUpTable$IUCN_assessment_presence <-
+    gsub(
+
+      'blank"">',
+      'blank">',
+      followUpTable$IUCN_assessment_presence
+
+    )
 
   write.csv2(
 

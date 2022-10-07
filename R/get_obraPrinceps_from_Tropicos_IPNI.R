@@ -1,4 +1,4 @@
-get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = T){
+get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = T, ask_to_open_spreadsheet_editor = T){
 
   suppressMessages({
     suppressWarnings({
@@ -21,7 +21,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
   # Get list of species file (species_for_obraPrinceps.csv) ####
 
-  if(list == ""){
+  if(list[1, 1] == ""){
 
     ## Get local path of the downloaded list of species file ####
 
@@ -92,9 +92,21 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
   } else {
 
-    listOfSpecies <- data.frame(
+    listOfSpecies <- rbind(
 
-      V1 = list
+      data.frame(
+
+        V1 = "Genero especie var. variedade",
+        V2 = "Author"
+
+      ),
+
+      data.frame(
+
+        V1 = list[, 1],
+        V2 = list[, 2]
+
+      )
 
     )
 
@@ -119,7 +131,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
   data0 <- as.data.frame(str_split(listOfSpecies$V1, " ", simplify = TRUE))
 
   data1 <- data.frame(data0, listOfSpecies)
-  data1_n <- 1:as.numeric(count(data1))
+  data1_n <- 1:as.numeric(nrow(data1))
 
   data2 <- NULL
   for(i in data1_n){
@@ -249,7 +261,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
   data_for_IPNI <- as.data.frame(data_for_IPNI)
 
   data <- data.frame(data, data_for_Tropicos,DATASEARCH_for_Tropicos, data_for_IPNI)
-  data_n <- 1:as.numeric(count(data))
+  data_n <- 1:as.numeric(dplyr::count(data))
 
   Output <-
     data.frame(
@@ -318,7 +330,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       if(
 
-        count(
+        dplyr::count(
 
           usefull_data_Tropicos %>%
           dplyr::filter(ScientificName == DATA_for_Tropicos & Author == Author_data)
@@ -337,7 +349,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       if(
 
-        count(
+        dplyr::count(
 
           usefull_data_Tropicos %>%
           dplyr::filter(ScientificName == DATA_for_Tropicos & Author == Author_data)
@@ -347,14 +359,14 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
       ){
 
         Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos & Author == Author_data);Tropicos_result <- data.frame(Tropicos_result,Status_Tropicos="Authors matched")} else{
-          if(count(usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos & Author == Author_data))==0){
-            if(count(Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos))>0){Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos);Tropicos_result <- data.frame(Tropicos_result,Status_Tropicos="Authors not matched")} else {
-              if(as.numeric(count(Tropicos_result))==0){
+          if(dplyr::count(usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos & Author == Author_data))==0){
+            if(dplyr::count(Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos))>0){Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == DATA_for_Tropicos);Tropicos_result <- data.frame(Tropicos_result,Status_Tropicos="Authors not matched")} else {
+              if(as.numeric(dplyr::count(Tropicos_result))==0){
                 if(agrep(DATA_for_Tropicos, usefull_data_Tropicos$ScientificName, 0.01)>0){
                   agrep_name_index <- agrep(DATA_for_Tropicos, usefull_data_Tropicos$ScientificName, 0.01)
-                  if(count(usefull_data_Tropicos %>% filter(ScientificName == usefull_data_Tropicos$ScientificName[agrep_name_index] & Author == Author_data))>0){
+                  if(dplyr::count(usefull_data_Tropicos %>% filter(ScientificName == usefull_data_Tropicos$ScientificName[agrep_name_index] & Author == Author_data))>0){
                     Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == usefull_data_Tropicos$ScientificName[agrep_name_index] & Author == Author_data);Tropicos_result <- data.frame(Tropicos_result,Status_Tropicos="Name not matched")} else{
-                      if(count(usefull_data_Tropicos %>% filter(ScientificName == usefull_data_Tropicos$ScientificName[agrep_name_index]))>0){
+                      if(dplyr::count(usefull_data_Tropicos %>% filter(ScientificName == usefull_data_Tropicos$ScientificName[agrep_name_index]))>0){
                         Tropicos_result <- usefull_data_Tropicos %>% filter(ScientificName == usefull_data_Tropicos$ScientificName[agrep_name_index]);Tropicos_result <- data.frame(Tropicos_result,Status_Tropicos="Name and Authors not matched")}
                     }
                 }
@@ -470,7 +482,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       if(
 
-        count(
+        dplyr::count(
 
           usefull_data_IPNI %>%
           dplyr::filter(Species == DATA_for_IPNI & authors == Author_data)
@@ -486,7 +498,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       if(
 
-        count(
+        dplyr::count(
 
           usefull_data_IPNI %>% filter(Species == DATA_for_IPNI & authors == Author_data)
 
@@ -504,7 +516,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
         if(
 
-          count(
+          dplyr::count(
 
             usefull_data_IPNI %>% filter(Species == DATA_for_IPNI & authors == Author_data)
 
@@ -515,7 +527,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
           if(
 
-            count(
+            dplyr::count(
 
               usefull_data_IPNI %>% filter(Species == DATA_for_IPNI)
 
@@ -665,7 +677,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
     # Output
 
-    Output_Tropicos_n <- as.numeric(count(Tropicos_result))
+    Output_Tropicos_n <- as.numeric(dplyr::count(Tropicos_result))
     Output_Tropicos_blank <-
       data.frame(
 
@@ -678,7 +690,7 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       )
 
-    Output_IPNI_n <- as.numeric(count(IPNI_result))
+    Output_IPNI_n <- as.numeric(dplyr::count(IPNI_result))
     Output_IPNI_blank <-
       data.frame(
 
@@ -741,13 +753,13 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       )
 
-    if(count(Output_end) > 1){
+    if(dplyr::count(Output_end) > 1){
 
       Output_end <- data.frame(Output_end, Status = "Verificar")
 
     } else{
 
-      if(count(Output_end) == 1){
+      if(dplyr::count(Output_end) == 1){
 
         Output_end <- data.frame(Output_end, Status = "OK")
 
@@ -789,25 +801,31 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
   )
 
-  selection <- toupper(readline("Open the file in spreadsheet editor? (y/n)"))
+  if(ask_to_open_spreadsheet_editor == T){
 
-  if(selection == "Y"){
+    selection <- toupper(readline("Open the file in spreadsheet editor? (y/n)"))
 
-    message("Resolve lines marked with 'Verificar'.\nYou need to keep one line per species.\nUse column 'Revision' to select the correct form to citation.")
+    if(selection == "Y"){
 
-    invisible(readline(prompt = "Press ENTER to continue."))
+      message("Resolve lines marked with 'Verificar'.\nYou need to keep one line per species.\nUse column 'Revision' to select the correct form to citation.")
 
-    shell(
+      invisible(readline(prompt = "Press ENTER to continue."))
 
-      paste0(
+      shell(
 
-        "start scalc ",
-        paste0(sub("Packages/CNCFloraR", "", getwd()), "/CNCFlora_data/outputs/obrasPrinceps/obrasPrinceps.csv")
+        paste0(
+
+          "start scalc ",
+          paste0(sub("Packages/CNCFloraR", "", getwd()), "/CNCFlora_data/outputs/obrasPrinceps/obrasPrinceps.csv")
+
+        )
 
       )
 
-    )
+    }
 
   }
+
+  invisible(return(Output))
 
 }

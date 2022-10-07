@@ -1,30 +1,43 @@
-overlayAnalysis_Fire_execute_scripts <- function(){
+overlayAnalysis_Fire_execute_scripts <- function(list = ""){
 
   library(data.table)
 
-  # Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  listOfSpecies_localPath <-
-    paste0(
+    # Get local path of the downloaded list of species file ####
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomasFire.csv"
+    listOfSpecies_localPath <-
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomasFire.csv"
+
+      )
+
+
+    # Import the list of species file from local path ####
+
+    message("Importing the list of species file...")
+
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
 
     )
 
+  } else {
 
-  # Import the list of species file from local path ####
+    listOfSpecies <- data.frame(
 
-  message("Importing the list of species file...")
+      V1 = list
 
-  listOfSpecies <- fread(
+    )
 
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
+  }
 
-  )
 
   message("List of species file imported.")
 
