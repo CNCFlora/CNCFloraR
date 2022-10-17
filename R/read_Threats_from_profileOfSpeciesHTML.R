@@ -3,7 +3,7 @@
 #' Ler as ameaças do perfil das espécies
 
 
-read_threats_from_profileOfSpeciesHTML <- function(){
+read_threats_from_profileOfSpeciesHTML <- function(ask_to_open_file = T){
 
   library(XML)
   library(data.table)
@@ -22,42 +22,47 @@ read_threats_from_profileOfSpeciesHTML <- function(){
 
   )
 
-  ## Ask to open the list of species file ####
 
-  answer <- ""
+  if(ask_to_open_file == T){
 
-  while(answer != "Y" |
-        answer != "N" ){
+    ## Ask to open the list of species file ####
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+    answer <- ""
 
-    if(answer == "Y"){
+    while(answer != "Y" |
+          answer != "N" ){
 
-      shell(listOfSpecies_localPath)
+      answer <-
+        toupper(readline("Open the list of species file? (y/n): "))
 
-      answer2 <- ""
+      if(answer == "Y"){
 
-      while(answer2 != "Y"){
+        shell(listOfSpecies_localPath)
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+        answer2 <- ""
 
-        if(answer2 == "Y"){
+        while(answer2 != "Y"){
 
-          break
+          answer2 <-
+            toupper(readline("List of species file ready? (y): "))
+
+          if(answer2 == "Y"){
+
+            break
+
+          }
 
         }
 
+        break
+
       }
 
-      break
+      if(answer == "N"){
 
-    }
+        break
 
-    if(answer == "N"){
-
-      break
+      }
 
     }
 
@@ -73,6 +78,9 @@ read_threats_from_profileOfSpeciesHTML <- function(){
     encoding = "UTF-8"
 
   )
+
+  listOfSpecies <- listOfSpecies %>%
+    dplyr::filter(V3 == "PA")
 
   htmls <- listOfSpecies
 

@@ -5088,7 +5088,7 @@ tryCatch(
       statusCOEMA54<-sub("EN", "Em Perigo (EN)", statusCOEMA54)
       statusCOEMA54<-sub("CR", "Criticamente em Perigo (CR)", statusCOEMA54)
       TextoCOEMA54<-capture.output(cat("A espécie foi avaliada como", statusCOEMA54, "na lista oficial das espécies ameaçadas de extinção no Estado do Pará (COEMA, 2007)."))
-      COEMA54table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCOEMA54, Referencia=capture.output(cat("COEMA - Conselho Estadual de Meio Ambiente, 2007. Lista de Espécies Ameaçadas de Extinção no Espírito Santo. Resolução nº 54, de 24 de outubro de 2007. URL https://iema.es.gov.br/especiesClassedas. (acesso em ", DATA,").", sep="")))
+      COEMA54table<-data.frame(Acao="5.1.3 Sub-national level", Situacao="on going", Texto=TextoCOEMA54, Referencia=capture.output(cat("COEMA - Conselho Estadual de Meio Ambiente, 2007. Lista de Espécies Ameaçadas de Extinção no Espírito Santo. Resolução nº 54, de 24 de outubro de 2007. URL https://iema.es.gov.br/especies-ameacadas (acesso em ", DATA,").", sep="")))
       
     }
     

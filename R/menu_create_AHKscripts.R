@@ -17,11 +17,11 @@ menu_create_AHKscripts <- function(){
         "Get the profile IDs of the species in old system",
         "Store the profile IDs of the species in old system",
         "Read basic informations from the profile of species HTML",
-        "Read Actions from the profile of species HTML",
+        "Read conservation actions from the profile of species HTML",
         "Read Threats from the profile of species HTML",
         "Fill basic informations within old system",
-        "Fill Actions within old system",
-        "Fill Threats within old system",
+        "Fill conservation actions within old system",
+        "Fill threats within old system",
         "Get the filled profile of species from old system"
 
       )
@@ -34,11 +34,11 @@ menu_create_AHKscripts <- function(){
     get_profileIDs_from_oldSystem(),
     store_profileIDs(),
     read_infoBasic_from_profileOfSpeciesHTML(),
-    read_Actions_from_profileOfSpeciesHTML(),
-    read_Threats_from_profileOfSpeciesHTML(),
+    read_actions_from_profileOfSpeciesHTML(),
+    read_threats_from_profileOfSpeciesHTML(),
     fill_infoBasic(),
-    fill_threats(),
     fill_actions(),
+    fill_threats(),
     cat("Por enquanto, nada.\n")
 
   )
