@@ -10,7 +10,7 @@ check_all_files_of_species <- function(list = "", ask_to_open_file = T){
   library(lubridate)
   library(googlesheets4)
 
-  if(list != ""){
+  if(list[1] != ""){
 
     listOfSpecies <- data.frame(
 
@@ -103,9 +103,9 @@ check_all_files_of_species <- function(list = "", ask_to_open_file = T){
   Acomp_spp_followUpTable <- Acomp_spp_followUpTable %>% filter(NameFB_semAutor %in% listOfSpecies$V1)
 
   Acomp_spp_followUpTable <- Acomp_spp_followUpTable %>%
-    summarise(
+    dplyr::summarise(
 
-      V1 = NameFB_semAutor,
+      V1 = `NameFB_semAutor(textPlane)`,
       flow = `PA/PNA`
 
     )

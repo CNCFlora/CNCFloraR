@@ -1,48 +1,66 @@
-get_profileIDs_from_oldSystem <- function(){
+get_profileIDs_from_oldSystem <- function(list = "", ask_to_open_file = T){
 
   suppressMessages({
     suppressWarnings({
       suppressPackageStartupMessages({
 
         library(data.table)
+        library(googlesheets4)
 
       })
     })
   })
 
-  # List of Species file (get_occurrenceRecords.csv) ####
 
-  ## Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  listOfSpecies_localPath <- paste0(
+    # List of Species file (get_occurrenceRecords.csv) ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/fill_profiles_in_oldSystem.csv"
+    ## Get local path of the downloaded list of species file ####
 
-  )
+    listOfSpecies_localPath <- paste0(
 
-  ## Ask to open the list of species file ####
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/fill_profiles_in_oldSystem.csv"
 
-  answer <- ""
+    )
 
-  while(answer != "Y" |
-        answer != "N" ){
+    if(ask_to_open_file == T){
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+      ## Ask to open the list of species file ####
 
-    if(answer == "Y"){
+      answer <- ""
 
-      shell(listOfSpecies_localPath)
+      while(answer != "Y" |
+            answer != "N" ){
 
-      answer2 <- ""
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      while(answer2 != "Y"){
+        if(answer == "Y"){
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          shell(listOfSpecies_localPath)
 
-        if(answer2 == "Y"){
+          answer2 <- ""
+
+          while(answer2 != "Y"){
+
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -50,28 +68,42 @@ get_profileIDs_from_oldSystem <- function(){
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
 
-      break
+    ## Import the list of species file from local path ####
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+  } else {
+
+    Acomp_spp_from_followUpTable <- get_sheet_Acomp_spp_from_followUpTable_in_cloud()
+
+    Acomp_spp_from_followUpTable.filtered <-
+      Acomp_spp_from_followUpTable %>%
+      dplyr::filter(
+
+        `NameFB_semAutor(textPlane)` %in% list
+
+      ) %>%
+      dplyr::select(Recorte, `NameFB_semAutor(textPlane)`)
+
+    listOfSpecies <- data.frame(
+
+      V1 = Acomp_spp_from_followUpTable.filtered$Recorte,
+      V2 = Acomp_spp_from_followUpTable.filtered$`NameFB_semAutor(textPlane)`
+
+    )
 
   }
 
-  ## Import the list of species file from local path ####
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
 
   listOfSpecies_n <- 1:nrow(listOfSpecies)
 

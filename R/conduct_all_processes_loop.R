@@ -65,6 +65,14 @@ conduct_all_processes_loop <- function(){
 
   }
 
+  if(file.exists(paste0(getwd(),"/out10_profileOfSpeciesHTML.html"))){
+
+    file.remove(paste0(getwd(),"/out10_profileOfSpeciesHTML.html"))
+    file.remove(paste0(getwd(),"/out10_profileOfSpeciesHTML.html.rawhtml"))
+
+  }
+
+
   if(file.exists(paste0(getwd(),"/report.hta"))){
 
     file.remove(paste0(getwd(),"/report.hta"))
@@ -131,22 +139,9 @@ conduct_all_processes_loop <- function(){
     ))
 
 
-    # Step 1: Inclusion of species in the flow ####
+    # Step 1: Get species in the flow ####
 
-    cli_h1("Step 1: Inclusion of species in the flow")
-
-    ## Check all files of species from the file `check_all_files_of_species.csv` ####
-
-    cli_h2("Checking and getting data from follow-up table in local computer")
-
-    df <- check_all_files_of_species(ask_to_open_file = F)
-
-    for(i in 1:length(df)){
-
-      df[,i] <- str_detect(df[,i], "TRUE")
-
-    }
-
+    cli_h1("Step 1: Get species in the flow")
 
     ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
 
@@ -155,95 +150,94 @@ conduct_all_processes_loop <- function(){
     List_for_HTML_profile_followUpTable <-
       get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
 
+    List_for_HTML_assessment_followUpTable <-
+      get_sheet_List_for_HTML_assessment_from_followUpTable_in_cloud()
 
-    ## Have species to include in the flow? ####
+    species_in_the_flow_profile <- List_for_HTML_profile_followUpTable$Espécie[
 
-    ### Remove NAs
-    List_for_HTML_profile_followUpTable <-
-      List_for_HTML_profile_followUpTable[is.na(List_for_HTML_profile_followUpTable$Espécie) == F, ]
+      is.na(List_for_HTML_profile_followUpTable$Espécie) == F
 
-    have_species_to_include_in_the_flow <-
-      all(List_for_HTML_profile_followUpTable$Espécie %in% colnames(df) == T) == F
+    ]
 
-    if(have_species_to_include_in_the_flow == T){
+    species_in_the_flow_assessment <- List_for_HTML_assessment_followUpTable$Espécie[
 
-      ### Yes ####
+      is.na(List_for_HTML_assessment_followUpTable$Espécie) == F
 
-      cli_alert_success("Have species to include in the flow!")
+    ]
 
-      species_to_include_in_the_flow <- List_for_HTML_profile_followUpTable$Espécie[List_for_HTML_profile_followUpTable$Espécie %in% colnames(df) == F]
+    species_in_the_flow <- c(species_in_the_flow_profile, species_in_the_flow_assessment)
 
+    ## Check all files of species in the flow ####
 
-      ### Get the local path of the downloaded list of species file ####
+    cli_h2("Check all files of species in the flow")
 
-      listOfSpecies_localPath_check_all_files <-
-        paste0(
+    df <- check_all_files_of_species(
 
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/check_all_files_of_species.csv"
+      list = species_in_the_flow,
+      ask_to_open_file = F
 
-        )
+    )
 
+    for(i in 1:length(df)){
 
-      ### Import the list of species file from local path ####
-
-      listOfSpecies_check_all_files <- fread(
-
-        listOfSpecies_localPath_check_all_files,
-        header = F,
-        sep = ";",
-        encoding = "UTF-8"
-
-      )
-
-
-      ### Get data (flow ; validation of records) of species to include in the flow from follow-up table in GoogleSheets ####
-
-      data_of_species_to_include_in_the_flow <-
-        List_for_HTML_profile_followUpTable %>%
-        filter(Espécie %in% species_to_include_in_the_flow)
-
-      species_to_include_in_the_flow <- data.frame(
-
-        V1 = data_of_species_to_include_in_the_flow$Espécie,
-        V2 = data_of_species_to_include_in_the_flow$`PA/PNA`,
-        V3 = data_of_species_to_include_in_the_flow$Registros
-
-      )
-
-      listOfSpecies_check_all_files <- rbind (
-
-        listOfSpecies_check_all_files,
-        species_to_include_in_the_flow
-
-      )
-
-
-      ### Write check_all_files_of_species.csv ####
-
-      write.table(
-
-        listOfSpecies_check_all_files,
-        paste0(
-
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/check_all_files_of_species.csv"
-
-        ),
-        sep = ";",
-        col.names = F,
-        row.names = F
-
-      )
-
-      cli_alert_success("Species included in the flow:")
-      print(species_to_include_in_the_flow)
-
-    } else {
-
-      cli_alert_success("No species to include in the flow!")
+      df[,i] <- str_detect(df[,i], "TRUE")
 
     }
+
+
+    ### Get data (flow ; validation of records) of species to include in the profile of species flow from follow-up table in GoogleSheets ####
+
+    #### Profile of species ####
+    data_of_species_to_include_in_the_flow_profile <-
+      List_for_HTML_profile_followUpTable %>%
+      filter(Espécie %in% species_in_the_flow)
+
+    species_in_the_flow_profile <- data.frame(
+
+      V1 = data_of_species_to_include_in_the_flow_profile$Espécie,
+      V2 = data_of_species_to_include_in_the_flow_profile$`PA/PNA`,
+      V3 = data_of_species_to_include_in_the_flow_profile$Registros
+
+    )
+
+    #### Assessment ####
+
+    data_of_species_to_include_in_the_flow_assessment <-
+      List_for_HTML_assessment_followUpTable %>%
+      filter(Espécie %in% species_in_the_flow)
+
+    species_in_the_flow_assessment <- data.frame(
+
+      V1 = data_of_species_to_include_in_the_flow_assessment$Espécie,
+      V2 = data_of_species_to_include_in_the_flow_assessment$`PA/PNA`,
+      V3 = ""
+
+    )
+
+
+    listOfSpecies_check_all_files <- rbind(
+
+      species_in_the_flow_profile,
+      species_in_the_flow_assessment
+
+    )
+
+    ### Write check_all_files_of_species.csv ####
+
+    write.table(
+
+      listOfSpecies_check_all_files,
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/check_all_files_of_species.csv"
+
+      ),
+      sep = ";",
+      col.names = F,
+      row.names = F
+
+    )
 
 
     # Step 2: Checking for empty fields in the infoSpecies table in cloud ####
@@ -426,7 +420,7 @@ conduct_all_processes_loop <- function(){
 
         Acomp_spp_infoSpeciesTable %>%
           dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
-          dplyr::filter(is.na(FFB_citation_short) == T) %>%
+          dplyr::filter(FFB_citation_short == "") %>%
           dplyr::select(NameFB_semAutor)
 
       ) > 0
@@ -438,7 +432,7 @@ conduct_all_processes_loop <- function(){
       species_without_FFBcitation_in_followUpTable_in_cloud <-
         Acomp_spp_infoSpeciesTable %>%
         dplyr::filter(NameFB_semAutor %in% species_in_List_for_HTML_profile_followUpTable) %>%
-        dplyr::filter(is.na(FFB_citation_short) == T) %>%
+        dplyr::filter(FFB_citation_short == "") %>%
         dplyr::select(NameFB_semAutor)
 
       species_without_FFBcitation_in_followUpTable_in_cloud <-
@@ -576,9 +570,17 @@ conduct_all_processes_loop <- function(){
 
       )
 
-      species_not_found_in_FFBcitations <- FFBcitations$species[which(FFBcitations$zcitationFB == c("", ""), T)]
+      species_not_found_in_FFBcitations <- FFBcitations$species[which(FFBcitations$zcitationFB == "")]
 
-      if(length(species_not_found_in_FFBcitations) > 0){
+      species_not_found_in_FFBcitations <-
+        Acomp_spp_infoSpeciesTable %>%
+        dplyr::filter(NameFB_semAutor %in% species_not_found_in_FFBcitations) %>%
+        dplyr::filter(FFB_citation_short != "coletar") %>%
+        dplyr::select(NameFB_semAutor) |> as.character()
+
+
+      if(length(species_not_found_in_FFBcitations) > 0 &
+         species_not_found_in_FFBcitations != "character(0)"){
 
         species_not_found_in_FFBcitations_table <- data.frame(
 
@@ -619,13 +621,90 @@ conduct_all_processes_loop <- function(){
       }
 
 
+      ## Update data from cloud? ####
+
+      update_FFBcitations <- Acomp_spp_infoSpeciesTable %>%
+        dplyr::filter(NameFB_semAutor %in% FFBcitations$species) %>%
+        dplyr::filter(FFB_citation_short != "coletar" & FFB_citation_long != "")
+
+
+      ### Yes ####
+
+      if(nrow(update_FFBcitations) > 0){
+
+        for(update_species in update_FFBcitations$NameFB_semAutor){
+
+          update_species_i <- grep(update_species, FFBcitations$species)
+
+          FFBcitations$zcitationFB_short[update_species_i] <-
+            update_FFBcitations %>%
+            dplyr::filter(NameFB_semAutor == update_species) %>%
+            dplyr::select(FFB_citation_short) |> as.character()
+
+          FFBcitations$zcitationFB[update_species_i] <-
+            update_FFBcitations %>%
+            dplyr::filter(NameFB_semAutor == update_species) %>%
+            dplyr::select(FFB_citation_long) |> as.character()
+
+        }
+
+      }
+
       ## Fill the follow-up table in local computer ####
 
-      if(length(FFBcitations$species) > 0){
+      if(length(FFBcitations$species) > 0 &
+         nrow(update_FFBcitations) > 0){
+
+        update_followUpTable <- followUpTable %>%
+          dplyr::filter(NameFB_semAutor %in% FFBcitations$species) %>%
+          dplyr::select(NameFB_semAutor, zcitationFB2020, zcitationFB2020_short)
+
+        colnames(update_followUpTable) <- c(
+
+          "species",
+          "zcitationFB",
+          "zcitationFB_short"
+
+        )
+
+
+        if(identical(FFBcitations, update_followUpTable) == F){
+
+          update_followUpTable <- setdiff(FFBcitations, update_followUpTable)
+
+          for(update_species in update_followUpTable$species){
+
+            update_species_i <- grep(update_species, update_followUpTable)
+
+            followUpTable[followUpTable$NameFB_semAutor == update_species]$zcitationFB2020_short <-
+              update_followUpTable[update_followUpTable$species == update_species]$zcitationFB_short
+
+            followUpTable[followUpTable$NameFB_semAutor == update_species]$zcitationFB2020 <-
+              update_followUpTable[update_followUpTable$species == update_species]$zcitationFB
+
+          }
+
+
+          write.csv2(
+
+            update_followUpTable,
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/citationsFloraFungaBrasil/citationsFloraFungaBrasil.csv"
+
+            ),
+            row.names = F,
+            fileEncoding = "UTF-8"
+
+          )
+
+        }
+
 
         fill_followUpTable_with_citations_from_FloraFungaBrasil(
 
-          list = FFBcitations$species
+          list = update_followUpTable$species
 
         )
 
@@ -638,8 +717,12 @@ conduct_all_processes_loop <- function(){
 
         Acomp_spp_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
 
-        FFBcitations[FFBcitations$zcitationFB_short == "",]$zcitationFB_short <-
-          "coletar"
+        if(TRUE %in% FFBcitations$zcitationFB_short == ""){
+
+          FFBcitations[FFBcitations$zcitationFB_short == "",]$zcitationFB_short <-
+            "coletar"
+        }
+
 
         ### fill infoSpecies Table ####
 
@@ -700,6 +783,8 @@ conduct_all_processes_loop <- function(){
 
 
     # Step 5: Species without obra princeps in the followUpTable in local computer ####
+
+    cli_h1("Step 5: Species without obra princeps in the followUpTable in local computer")
 
     ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
 
@@ -968,21 +1053,7 @@ conduct_all_processes_loop <- function(){
           vars = names(species_without_obraPrinceps_in_followUpTable_in_cloud_table),
           title = "Species to get obra princeps",
           out = "out3_species_without_obraPrinceps.html",
-          show = F,
-          footnote = '
-        <button type="button" onclick="run_R_script()">Execute R function: get_obraPrinceps_from_Tropicos_IPNI()</button>
-        <script>
-          function run_R_script() {
-            var ExePath = "C:/Program Files/RStudio/bin/rstudio.exe";
-            var scriptToExecute = "C:/R/R-4.1.1/working/Packages/CNCFloraR/R/get_obraPrinceps_from_Tropicos_IPNI.R";
-            new ActiveXObject("Shell.Application").ShellExecute(ExePath, scriptToExecute);
-            var WshShell = new ActiveXObject("WScript.Shell");
-            WshShell.SendKeys("1");
-
-          }
-        </script>
-
-        '
+          show = F
 
         )
 
@@ -1630,7 +1701,7 @@ conduct_all_processes_loop <- function(){
       get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
 
 
-    ### Remove PNA species
+    ## Remove PNA species ####
 
     List_for_HTML_profile_followUpTable_PNA <- List_for_HTML_profile_followUpTable %>%
       dplyr::filter(`PA/PNA` == "PNA") %>%
@@ -1801,7 +1872,261 @@ conduct_all_processes_loop <- function(){
     }
 
 
-    # Generate final report (report.html) ####
+    # Step 12: Create the species profile HTML ####
+
+    cli_h1("Step 12: Create the species profile HTML")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_profileOfSpeciesHTML <- colnames(
+
+      df[
+
+        which(
+
+          df["occurrenceRecords",] == T &
+            df["intersectPANs",] == T &
+            df["intersectTERs",] == T &
+            df["intersectUCs",] == T &
+            df["overlayMapBiomasTodosOsAnos",] == T &
+            df["overlayMapBiomasFire",] == T
+
+
+        )
+
+      ]
+
+    )
+
+
+    ## Get sheet Acomp_spp from the infoSpeciesTable in GoogleSheets ####
+
+    cli_h2("Reading sheet Acomp_spp from infoSpeciesTable")
+
+    Acomp_spp_infoSpeciesTable <-
+      get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
+
+
+    ## Check obra princeps and FFB citation in Acomp_spp from the infoSpeciesTable in GoogleSheets ####
+
+    check_obraPrinceps_FFBcitation_of_listOfSpecies_profileOfSpeciesHTML <-
+      Acomp_spp_infoSpeciesTable %>%
+      dplyr::filter(NameFB_semAutor %in% listOfSpecies_profileOfSpeciesHTML) %>%
+      dplyr::select(NameFB_semAutor, obraPrinceps, FFB_citation_short, FFB_citation_long)
+
+
+    ## Remove species without obra princeps and/or FFB citation in Acomp_spp from the infoSpeciesTable in GoogleSheets ####
+
+    listOfSpecies_profileOfSpeciesHTML <-
+      check_obraPrinceps_FFBcitation_of_listOfSpecies_profileOfSpeciesHTML$NameFB_semAutor[
+
+        (
+
+          check_obraPrinceps_FFBcitation_of_listOfSpecies_profileOfSpeciesHTML$obraPrinceps == "revisar" |
+            is.na(check_obraPrinceps_FFBcitation_of_listOfSpecies_profileOfSpeciesHTML$FFB_citation_short) |
+            is.na(check_obraPrinceps_FFBcitation_of_listOfSpecies_profileOfSpeciesHTML$FFB_citation_long)
+
+        ) == F
+
+      ]
+
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+
+    ## Remove PNA species ####
+
+    List_for_HTML_profile_followUpTable_PNA <- List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(`PA/PNA` == "PNA") %>%
+      dplyr::select(Espécie)
+
+    listOfSpecies_profileOfSpeciesHTML <-
+      setdiff(
+
+        listOfSpecies_profileOfSpeciesHTML,
+        List_for_HTML_profile_followUpTable_PNA$Espécie
+
+      )
+
+
+    ## Remove species on development or error ####
+
+    listOfSpecies_profileOfSpeciesHTML_on_development_or_error <-
+      listOfSpecies_profileOfSpeciesHTML
+
+    listOfSpecies_profileOfSpeciesHTML_on_development_or_error_ <- NULL
+    for(species in listOfSpecies_profileOfSpeciesHTML_on_development_or_error){
+
+      listOfSpecies_profileOfSpeciesHTML_on_development_or_error.this <-
+        data.frame(
+
+          Species = species,
+          exists = if(
+
+            file.exists(
+
+              paste0(
+
+                sub("Packages/CNCFloraR", "", getwd()),
+                "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+                species,
+                ".csv"
+
+              )
+
+            )
+
+          ){T} else {F}
+
+        )
+
+      listOfSpecies_profileOfSpeciesHTML_on_development_or_error_ <-
+        rbind(
+
+          listOfSpecies_profileOfSpeciesHTML_on_development_or_error_,
+          listOfSpecies_profileOfSpeciesHTML_on_development_or_error.this
+
+        )
+
+    }
+
+    listOfSpecies_profileOfSpeciesHTML_on_development_or_error <-
+      listOfSpecies_profileOfSpeciesHTML_on_development_or_error_$Species[
+
+        listOfSpecies_profileOfSpeciesHTML_on_development_or_error_$exists == T
+
+      ]
+
+    profileOfSpeciesHTML_on_development_or_error <- NULL
+    for(species in listOfSpecies_profileOfSpeciesHTML_on_development_or_error){
+
+      profileOfSpeciesHTML_on_development_or_error_ <- fread(
+
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+          species,
+          ".csv"
+
+        )
+
+      )
+
+      profileOfSpeciesHTML_on_development_or_error <-
+        rbind (profileOfSpeciesHTML_on_development_or_error, profileOfSpeciesHTML_on_development_or_error_)
+
+    }
+
+    if(is.null(profileOfSpeciesHTML_on_development_or_error) == T){
+
+      profileOfSpeciesHTML_on_development <- ""
+      profileOfSpeciesHTML_on_error <- ""
+
+    } else {
+
+      profileOfSpeciesHTML_on_development <-
+        profileOfSpeciesHTML_on_development_or_error$species[is.na(profileOfSpeciesHTML_on_development_or_error$end) == T]
+
+      profileOfSpeciesHTML_on_error <-
+        profileOfSpeciesHTML_on_development_or_error %>%
+        dplyr::filter(end == "error") %>%
+        dplyr::select(species)
+
+      profileOfSpeciesHTML_on_error <- profileOfSpeciesHTML_on_error$species
+
+    }
+
+
+    ## listOfSpecies to proceed ####
+
+    listOfSpecies_profileOfSpeciesHTML <-
+      setdiff(listOfSpecies_profileOfSpeciesHTML, profileOfSpeciesHTML_on_development)
+
+    listOfSpecies_profileOfSpeciesHTML <-
+      setdiff(listOfSpecies_profileOfSpeciesHTML, profileOfSpeciesHTML_on_error)
+
+
+    ## Start creation ####
+
+    if(length(listOfSpecies_profileOfSpeciesHTML) > 0){
+
+      cli_h2("Conduct creation of profile of species HTML for a list of species")
+
+      create_profileOfSpeciesHTML_create_scripts(
+
+        list = listOfSpecies_profileOfSpeciesHTML,
+        ask_to_open_file = F,
+        flow = "PT"
+
+      )
+
+      create_profileOfSpeciesHTML_create_scripts(
+
+        list = listOfSpecies_profileOfSpeciesHTML,
+        ask_to_open_file = F,
+        flow = "PNT"
+
+      )
+
+      cli_h2("")
+
+      create_profileOfSpeciesHTML_execute_scripts(
+
+        list = listOfSpecies_profileOfSpeciesHTML,
+        flow = "PT"
+
+      )
+
+      create_profileOfSpeciesHTML_execute_scripts(
+
+        list = listOfSpecies_profileOfSpeciesHTML,
+        flow = "PNT"
+
+      )
+
+      print(listOfSpecies_profileOfSpeciesHTML)
+
+    } else {
+
+      cli_alert_success("No species to create")
+
+    }
+
+    ## Have creation with errors? ####
+
+    if(length(profileOfSpeciesHTML_on_error) > 0){
+
+      ### Yes ####
+
+      profileOfSpeciesHTML_on_error_table <- data.frame(
+
+        i = 1:length(profileOfSpeciesHTML_on_error),
+        Species = profileOfSpeciesHTML_on_error
+
+      )
+
+
+      #### Table: Profile of species HTMLs with errors ####
+
+      html_list(
+
+        profileOfSpeciesHTML_on_error_table,
+        vars = names(profileOfSpeciesHTML_on_error_table),
+        title = "Errors in creation of profile of species HTMLs",
+        out = "out10_profileOfSpeciesHTML.html",
+        show = F
+
+      )
+
+    }
+
+    # Final step: Generate final report (report.html) ####
 
     html_combine(
 
@@ -1812,7 +2137,6 @@ conduct_all_processes_loop <- function(){
 
     )
 
-    beepr::beep(2)
 
     # End of loop ####
 

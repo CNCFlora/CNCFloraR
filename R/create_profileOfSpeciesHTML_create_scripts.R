@@ -1,4 +1,4 @@
-create_profileOfSpeciesHTML_create_scripts <- function(flow = ""){
+create_profileOfSpeciesHTML_create_scripts <- function(list = "", ask_to_open_file = T, flow = ""){
 
   Flow = flow
 
@@ -6,39 +6,57 @@ create_profileOfSpeciesHTML_create_scripts <- function(flow = ""){
 
   library(data.table)
   library(readtext)
+  library(googlesheets4)
 
-  # Get local path of the downloaded list of species file ####
 
-  listOfSpecies_localPath <-
-    paste0(
+  if(list[1] == ""){
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
+    # Get local path of the downloaded list of species file ####
 
-    )
+    listOfSpecies_localPath <-
+      paste0(
 
-  ## Ask to open the list of species file ####
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
 
-  answer <- ""
+      )
 
-  while(answer != "Y" |
-        answer != "N" ){
+    ## Ask to open the list of species file ####
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+    if(ask_to_open_file == T){
 
-    if(answer == "Y"){
+      answer <- ""
 
-      shell(listOfSpecies_localPath)
+      while(answer != "Y" |
+            answer != "N" ){
 
-      answer2 <- ""
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      while(answer2 != "Y"){
+        if(answer == "Y"){
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          shell(listOfSpecies_localPath)
 
-        if(answer2 == "Y"){
+          answer2 <- ""
+
+          while(answer2 != "Y"){
+
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -46,30 +64,45 @@ create_profileOfSpeciesHTML_create_scripts <- function(flow = ""){
 
       }
 
-      break
+      # Import the list of species file from local path ####
+
+      message("Importing the list of species file...")
+
+      listOfSpecies <- fread(
+
+        listOfSpecies_localPath,
+        header = F,
+        sep = ";",
+        encoding = "UTF-8"
+
+      )
 
     }
 
-    if(answer == "N"){
+  } else {
 
-      break
+    listOfSpecies <- data.frame(
 
-    }
+      V1 = list
+
+    )
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+    listOfSpecies <-
+      List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(Espécie %in% listOfSpecies$V1) %>%
+      dplyr::mutate(V1 = Espécie, V2 = `PA/PNA`, V3 = Registros) %>%
+      dplyr::select(V1, V2, V3)
 
   }
 
-  # Import the list of species file from local path ####
 
-  message("Importing the list of species file...")
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
 
   if(Flow == "PNT"){
 

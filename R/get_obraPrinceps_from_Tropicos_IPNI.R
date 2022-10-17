@@ -19,9 +19,36 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
   })
 
 
+  if(is.vector(list)){
+
+    if(list[1] == ""){
+
+      list <- data.frame(
+
+        species = "",
+        author = ""
+
+      )
+
+    } else {
+
+      Acomp_spp_from_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
+
+      Acomp_spp_from_infoSpeciesTable.filtered <-
+        Acomp_spp_from_infoSpeciesTable %>%
+        dplyr::filter(NameFB_semAutor %in% list) %>%
+        dplyr::select(NameFB_semAutor, Author)
+
+      list <- Acomp_spp_from_infoSpeciesTable.filtered
+
+    }
+
+  }
+
+
   # Get list of species file (species_for_obraPrinceps.csv) ####
 
-  if(list[1, 1] == ""){
+  if(as.logical(list[1, 1] == "")){
 
     ## Get local path of the downloaded list of species file ####
 
@@ -103,8 +130,8 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       data.frame(
 
-        V1 = list[, 1],
-        V2 = list[, 2]
+        V1 = list$NameFB_semAutor,
+        V2 = list$Author
 
       )
 
@@ -379,10 +406,18 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
       ObraPrinceps_Tropicos <- paste(Tropicos_result$DisplayReference,". ", Tropicos_result$DisplayDate, sep="")
       TaxonAuthor_Tropicos <- as.data.frame(str_split(Tropicos_result$ScientificName, " ", simplify=TRUE))
+
+      if("V3" %in% colnames(TaxonAuthor_Tropicos) == F){
+
+        TaxonAuthor_Tropicos$V3 <- ""
+        TaxonAuthor_Tropicos$V4 <- ""
+
+      }
+
       TaxonAuthor_Tropicos <- data.frame(TaxonAuthor_Tropicos, Tropicos_result$Author)
 
       TaxonAuthor_Tropicos <-
-        if(is.empty(TaxonAuthor_Tropicos$V3)){
+        if(TaxonAuthor_Tropicos$V3[1] == ""){
 
           #Espécie (sem variedade)
           paste(TaxonAuthor_Tropicos$V1,TaxonAuthor_Tropicos$V2,TaxonAuthor_Tropicos$Tropicos_result.Author)
@@ -582,9 +617,16 @@ get_obraPrinceps_from_Tropicos_IPNI  <-  function(list = "", ask_to_open_file = 
 
         )
 
+      if("V3" %in% colnames(TaxonAuthor_IPNI) == F){
+
+        TaxonAuthor_IPNI$V3 <- ""
+        TaxonAuthor_IPNI$V4 <- ""
+
+      }
+
       TaxonAuthor_IPNI <- data.frame(TaxonAuthor_IPNI, IPNI_result$authors)
       TaxonAuthor_IPNI <-
-        if(is.empty(TaxonAuthor_IPNI$V3)){
+        if(TaxonAuthor_IPNI$V3[1] == ""){
 
           # Espécie (sem variedade)
 

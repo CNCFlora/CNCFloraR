@@ -1,5 +1,0 @@
-<h1>Empty fields in the infoSpecies table to correct</h1>
-<table class='sample'>
-</tr><td id='lh'> i </td><td id='lh'> Species </td><td id='lh'> empty_field </td></tr>
-<td> 1 </td><td> Rourea blanchetiana </td><td> vegetationType </td></tr>
-</table>

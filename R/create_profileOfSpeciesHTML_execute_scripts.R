@@ -1,4 +1,4 @@
-create_profileOfSpeciesHTML_execute_scripts <- function(flow = ""){
+create_profileOfSpeciesHTML_execute_scripts <- function(list = "", flow = ""){
 
   Flow = flow
 
@@ -6,29 +6,56 @@ create_profileOfSpeciesHTML_execute_scripts <- function(flow = ""){
 
   library(data.table)
 
-  # Get local path of the downloaded list of species file ####
 
-  listOfSpecies_localPath <-
-    paste0(
+  if(list == ""){
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
+    # Get local path of the downloaded list of species file ####
+
+    listOfSpecies_localPath <-
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
+
+      )
+
+
+    # Import the list of species file from local path ####
+
+    message("Importing the list of species file...")
+
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
 
     )
 
+  } else {
 
-  # Import the list of species file from local path ####
+    listOfSpecies <- data.frame(
 
-  message("Importing the list of species file...")
+      V1 = list
 
-  listOfSpecies <- fread(
+    )
 
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
 
-  )
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+    listOfSpecies <-
+      List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(Espécie %in% listOfSpecies$V1) %>%
+      dplyr::mutate(V1 = Espécie, V2 = `PA/PNA`, V3 = Registros) %>%
+      dplyr::select(V1, V2, V3)
+
+  }
+
 
 
   if(Flow == "PNT"){

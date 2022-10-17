@@ -1,80 +1,93 @@
-fill_followUpTable_with_completed_filling <- function(){
+fill_followUpTable_with_profileOfSpecies_completed_filling <- function(list = "", ask_to_open_file = T){
 
   library(googledrive)
   library(googlesheets4)
   library(stringr)
+  library(data.table)
 
 
-  # List of Species file (fill_profiles_in_oldSystem.csv) ####
+  if(list == ""){
 
-  ## Get local path of the downloaded list of species file ####
+    # List of Species file (fill_profiles_in_oldSystem.csv) ####
 
-  listOfSpecies_localPath <- paste0(
+    ## Get local path of the downloaded list of species file ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/listOfSpecies_for_processing/fill_profiles_in_oldSystem.csv"
+    listOfSpecies_localPath <- paste0(
 
-  )
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/inputs/listOfSpecies_for_processing/fill_profiles_in_oldSystem.csv"
 
-  ## Ask to open the list of species file ####
+    )
 
-  answer <- ""
+    ## Ask to open the list of species file ####
 
-  while(answer != "Y" |
-        answer != "N" ){
+    answer <- ""
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+    while(answer != "Y" |
+          answer != "N" ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Open the list of species file? (y/n): "))
 
-      shell(listOfSpecies_localPath)
+      if(answer == "Y"){
 
-      answer2 <- ""
+        shell(listOfSpecies_localPath)
 
-      while(answer2 != "Y"){
+        answer2 <- ""
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+        while(answer2 != "Y"){
 
-        if(answer2 == "Y"){
+          answer2 <-
+            toupper(readline("List of species file ready? (y): "))
 
-          break
+          if(answer2 == "Y"){
+
+            break
+
+          }
 
         }
 
+        break
+
       }
 
-      break
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
-    if(answer == "N"){
+    ## Import the list of species file from local path ####
 
-      break
+    listOfSpecies <- fread(
 
-    }
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+    listOfSpecies <- listOfSpecies$V2
+
+  } else {
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
 
   }
 
-  ## Import the list of species file from local path ####
 
-  listOfSpecies <- fread(
+  ss <- gs4_get(ss_followUpTable_URL)
+  read_sheet_Acomp_spp <- read_sheet(ss, sheet = "Acomp_spp")
 
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
-
-  listOfSpecies <- listOfSpecies$V2
-
-
-  ss <- gs4_get("https://docs.google.com/spreadsheets/d/1vdU2njQ-ZJl4FiDCPpmiX-VrL0637omEyS_hBXQtllY/edit#gid=1874291321")
-  read_ss_sheet1 <- read_sheet(ss, sheet = 1)
-
-  row_to_fill <- read_ss_sheet1 %>%
+  row_to_fill <- read_sheet_Acomp_spp %>%
     dplyr::filter(is.na(HTMLs) == F) %>%
     dplyr::filter(is.na(`Preenc. Autom.`) == T) %>%
     dplyr::select(NameFB_semAutor)
@@ -87,8 +100,8 @@ fill_followUpTable_with_completed_filling <- function(){
 
     for(i in 1:length(row_to_fill)){
 
-      celula_HTML <- which(read_ss_sheet1$NameFB_semAutor == row_to_fill[i])
-      celula_HTML <- paste("BB", celula_HTML + 1, sep="")
+      celula_HTML <- which(read_sheet_Acomp_spp$NameFB_semAutor == row_to_fill[i])
+      celula_HTML <- paste("M", celula_HTML + 1, sep="")
 
       range_write(
 

@@ -89,8 +89,12 @@ read_actions_from_profileOfSpeciesHTML <- function(){
   for(i in htmls_n){
 
     species <- as.character(htmls[i, 2])
+    flow <- htmls$V3[i]
     species_html <- readHTMLTable(as.character(htmls[i, 4]))
-    species_html <- species_html[[3]]
+
+    if(flow == "PA"){species_html <- species_html[[3]]}
+
+    if(flow == "PNA"){species_html <- species_html[[2]]}
 
     species_html <- data.frame(species = species, species_html)
 

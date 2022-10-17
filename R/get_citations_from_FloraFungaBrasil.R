@@ -6,6 +6,34 @@ get_citations_from_FloraFungaBrasil <- function(list = "", ask_to_open_file = T)
   library(stringr)
   library(data.table)
 
+
+  # Get follow-up table (follow-up_table.csv)
+
+  ## Get local path of the downloaded follow-up table file ####
+
+  message("Importing the follow-up table from the local computer...")
+
+  followUpTable_localPath <- paste0(
+
+    sub("Packages/CNCFloraR", "", getwd()),
+    "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
+
+  )
+
+
+  ## Import the list of species file from local path ####
+
+  followUpTable <- fread(
+
+    followUpTable_localPath,
+    header = T,
+    sep = ";"
+
+  )
+
+  message("Follow-up table imported.")
+
+
   # Get list of species file (species_for_FloraFungaBrasil_citations.csv) ####
 
   if(list[1] == ""){
@@ -83,35 +111,14 @@ get_citations_from_FloraFungaBrasil <- function(list = "", ask_to_open_file = T)
 
     )
 
+    Acomp_spp_from_infoSpeciesTable <- get_sheet_Acomp_spp_from_infoSpeciesTable_in_cloud()
+
+    followUpTable <- Acomp_spp_from_infoSpeciesTable %>%
+      dplyr::filter(NameFB_semAutor %in% listOfSpecies$V1)
+
   }
 
 
-
-  # Get follow-up table (follow-up_table.csv)
-
-  ## Get local path of the downloaded follow-up table file ####
-
-  message("Importing the follow-up table from the local computer...")
-
-  followUpTable_localPath <- paste0(
-
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/inputs/follow-up_table/follow-up_table.csv"
-
-  )
-
-
-  ## Import the list of species file from local path ####
-
-  followUpTable <- fread(
-
-    followUpTable_localPath,
-    header = T,
-    sep = ";"
-
-  )
-
-  message("Follow-up table imported.")
 
   # get ID of species in Flora e Funga do Brasil from followUpTable ####
 
