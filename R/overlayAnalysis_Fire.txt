@@ -41,7 +41,7 @@ ESPECIE <- "ESPECIEselect"
 
 if(
   
-  exists(
+  file.exists(
     
     paste0(
       
@@ -58,7 +58,7 @@ if(
   
   backgroundJobs_log <- data.frame(
     
-    job = "Overlay analysis",
+    job = "Overlay analysis - Fire",
     species = ESPECIE,
     start = format(Sys.Date(), "%d/%m/%Y"),
     end = ""
@@ -69,7 +69,7 @@ if(
     
     data.frame(
       
-      job = "Overlay analysis",
+      job = "Overlay analysis - Fire",
       species = ESPECIE,
       start = format(Sys.Date(), "%d/%m/%Y"),
       end = ""
@@ -84,6 +84,21 @@ if(
       
     ),
     row.names = F
+    
+  )
+  
+} else {
+  
+  backgroundJobs_log <- data.table::fread(
+    
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+      ESPECIE,
+      ".csv"
+      
+    )
     
   )
   
@@ -220,7 +235,14 @@ tryCatch(
       write.csv(
         
         final_output,
-        paste0(sub("Packages/CNCFloraR", "", getwd()), "/CNCFlora_data/outputs/overlayAnalysis results/TodosOsAnos/", ESPECIE, ".csv"),
+        paste0(
+          
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire results/",
+          ESPECIE,
+          ".csv"
+          
+        ),
         row.names = F
         
       )
@@ -236,7 +258,7 @@ tryCatch(
         paste0(
           
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/outputs/overlayAnalysis logs/",
+          "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
           ESPECIE,
           ".csv"
           
@@ -453,7 +475,7 @@ tryCatch(
         )
         
         ## Sobreposição EOO ####
-        if(area_EOO_km2 <= 40000){
+        if(as.numeric(area_EOO_km2) <= 40000){
           
           if(exists("area_km2_EOO_18N")){
             MapBiomas_Fogo_Brazil_EOO_18N <- MapBiomas_Fogo_Brazil

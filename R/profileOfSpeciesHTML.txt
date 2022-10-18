@@ -176,7 +176,7 @@ ESPECIE <- "ESPECIEselect"
 
 if(
   
-  exists(
+  file.exists(
     
     paste0(
       
@@ -219,6 +219,21 @@ if(
       
     ),
     row.names = F
+    
+  )
+  
+} else {
+  
+  backgroundJobs_log <- data.table::fread(
+    
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/profileOfSpeciesHTML logs/",
+      ESPECIE,
+      ".csv"
+      
+    )
     
   )
   

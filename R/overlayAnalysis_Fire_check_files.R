@@ -124,7 +124,7 @@ overlayAnalysis_Fire_check_files <- function(){
 
   options(colorDF_n = Inf)
 
-  colorDF(
+  colorDF::colorDF(
     df,
     theme = "dark"
   )

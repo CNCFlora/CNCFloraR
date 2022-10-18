@@ -1829,13 +1829,108 @@ conduct_all_processes_loop <- function(){
 
       cli_h2("")
 
-      overlayAnalysis_Fire_execute_scripts(
+      for(species_overlayAnalysis_Fire in listOfSpecies_overlayAnalysis_Fire){
 
-        list = listOfSpecies_overlayAnalysis_Fire
+        if(
 
-      )
+          file.exists(
 
-      print(listOfSpecies_overlayAnalysis_Fire)
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+              species_overlayAnalysis_Fire,
+              ".csv"
+
+            )
+
+          ) == T
+
+        ){
+
+          backgroundJobs_log <- data.table::fread(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+              species_overlayAnalysis_Fire,
+              ".csv"
+
+            )
+
+          )
+
+        } else {
+
+          backgroundJobs_log <- data.frame(
+
+            job = "Overlay analysis - Fire",
+            species = species_overlayAnalysis_Fire,
+            start = format(Sys.Date(), "%d/%m/%Y"),
+            end = ""
+
+          )
+
+          write.csv2(
+
+            backgroundJobs_log,
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+              species_overlayAnalysis_Fire,
+              ".csv"
+
+            ),
+            row.names = F
+
+          )
+
+        }
+
+        if(backgroundJobs_log$end == ""){
+
+          overlayAnalysis_Fire_execute_scripts(
+
+            list = species_overlayAnalysis_Fire
+
+          )
+
+        }
+
+        while(backgroundJobs_log$end == ""){
+
+          backgroundJobs_log <- data.table::fread(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis MapBiomasFire logs/",
+              species_overlayAnalysis_Fire,
+              ".csv"
+
+            )
+
+          )
+
+          Sys.sleep(3)
+
+          if(is.na(backgroundJobs_log$end) == T){
+
+            backgroundJobs_log$end <- ""
+
+          }
+
+          if(backgroundJobs_log$end != ""){
+
+            break
+
+          }
+
+        }
+
+      }
 
     } else {
 
@@ -1845,7 +1940,12 @@ conduct_all_processes_loop <- function(){
 
     ## Have analysis with errors? ####
 
-    if(length(overlayAnalysis_Fire_on_error) > 0){
+    if(
+
+      length(overlayAnalysis_Fire_on_error) > 0 &
+      overlayAnalysis_Fire_on_error != ""
+
+    ){
 
       ### Yes ####
 
