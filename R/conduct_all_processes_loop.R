@@ -959,7 +959,7 @@ conduct_all_processes_loop <- function(){
           dplyr::summarise(NameFB_semAutor, Author)
 
         colnames(species_without_obraPrinceps_in_followUpTable_in_localComputer) <-
-          c("V1", "V2")
+          c("NameFB_semAutor", "Author")
 
       }
 
