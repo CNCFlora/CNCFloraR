@@ -1,10 +1,10 @@
-prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentFile = F){
+prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentFile = F, ask_to_write_file = T){
 
   library(stringr)
   library(googlesheets4)
   library(colorDF)
 
-  df <- check_all_files_of_species()
+  df <- check_all_files_of_species(ask_to_open_file = F)
 
 
   for(i in 1:length(df)){
@@ -88,57 +88,79 @@ prepare_listOfSpecies_files_to_intersectPANsTERsUCs <- function(onlyNonExistentF
     colorDF(
 
       output,
-      theme="dark"
+      theme = "dark"
 
     )
 
   )
 
 
-  # Ask to write the `species_intersect_UCs_PANs_TERs.csv` file
+  if(ask_to_write_file == T){
 
-  answer <- ""
+    # Ask to write the `species_intersect_UCs_PANs_TERs.csv` file
 
-  while(
+    answer <- ""
 
-    answer != "Y" |
-    answer != "N"
+    while(
 
-  ){
+      answer != "Y" |
+      answer != "N"
 
-    answer <-
-      toupper(readline("Write the list of species file (species_intersect_UCs_PANs_TERs.csv)? (y/n): "))
+    ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Write the list of species file (species_intersect_UCs_PANs_TERs.csv)? (y/n): "))
 
-      write.table(
+      if(answer == "Y"){
 
-        output,
-        paste0(
+        write.table(
 
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_intersect_UCs_PANs_TERs.csv"
+          output,
+          paste0(
 
-        ),
-        col.names = F,
-        row.names = F,
-        sep = ";"
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_intersect_UCs_PANs_TERs.csv"
 
-      )
+          ),
+          col.names = F,
+          row.names = F,
+          sep = ";"
 
-      message("File created.")
+        )
 
-      break
+        message("File created.")
+
+        break
+
+      }
+
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
-    if(answer == "N"){
+  } else {
 
-      break
+    write.table(
 
-    }
+      output,
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_intersect_UCs_PANs_TERs.csv"
+
+      ),
+      col.names = F,
+      row.names = F,
+      sep = ";"
+
+    )
 
   }
+
 
   #Done
 

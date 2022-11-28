@@ -74,7 +74,7 @@ fill_actions <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/profileIDs_in_oldSystem/profileIDs.csv"
+      "/CNCFlora_data/inputs/profileIDs_in_oldSystem/profileIDs.txt"
 
     ),
     header = F

@@ -1579,11 +1579,21 @@ tryCatch(
     especie <- registros[especie]
     especie <- substr(especie,34,nchar(especie)-4)
     EOO <- grep("<td class='stats-eoo'>",registros)
+    if(length(EOO) == 0){
+      
+      EOO <- grep('<td class="stats-eoo">',registros)
+      
+    }
     EOO <- registros[EOO]
     EOO <- substr(EOO,33,nchar(EOO)-11)
     EOO <- gsub(",","",EOO)
     EOO <- as.numeric(EOO)
     AOO <- grep("<td class='stats-aoo'>",registros)
+    if(length(AOO) == 0){
+      
+      AOO <- grep('<td class="stats-aoo">',registros)
+      
+    }
     AOO <- registros[AOO]
     AOO <- substr(AOO,33,nchar(AOO)-11)
     AOO <- sub(",","",AOO)
@@ -2240,7 +2250,12 @@ tryCatch(
     
     # Threats ####
     
-    if(listOfSpecies$flow == "PA"){
+    if(
+      
+      listOfSpecies$flow == "PA" &
+      nrow(OCORRENCIAS) >= 1
+      
+    ){
       
       message("Making threats...")
       
@@ -2327,7 +2342,8 @@ tryCatch(
             
           ),
           sep = ",",
-          header = T
+          header = T,
+          encoding = "UTF-8"
           
         )
         
@@ -4703,7 +4719,7 @@ tryCatch(
       # MapBiomas Fogo
       message("Collecting data of MapBiomas Fire 2020...")
       
-      if(nrow(fogo) == 0){
+      if(fogo$Area_AOO_km2[1] == 0){
         rm(fogo)
       } else{
         if(fogo$Area_EOO_sites_km2_2020[1] == "Análise dispensada"){
@@ -4821,6 +4837,25 @@ tryCatch(
         column_spec(8, width_max = "6cm")
       
       message("Threats finished...")
+      
+    } else {
+      
+      q <- data.frame(
+        
+        Classe = '',
+        Bioma = '',
+        Vegetacao = '',
+        Estado = '',
+        Municipio = '',
+        UC = '',
+        Texto = '',
+        Referencia = ''
+        
+      )
+      
+      Classes <- q %>% 
+        kable("html") %>%
+        kable_styling()
       
     }
     

@@ -96,6 +96,21 @@ if(
     
   )
   
+} else {
+  
+  backgroundJobs_log <- data.table::fread(
+    
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/overlayAnalysis logs/",
+      ESPECIE,
+      ".csv"
+      
+    )
+    
+  )
+  
 }
 
 tryCatch(
@@ -400,7 +415,8 @@ tryCatch(
               "sites_AOO_grid_AOO",
               "sites",
               "sites_AOO",
-              "ESPECIE"
+              "ESPECIE",
+              "backgroundJobs_log"
               
             )
             

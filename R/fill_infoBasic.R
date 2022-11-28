@@ -74,7 +74,7 @@ fill_infoBasic <- function(){
     paste0(
 
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/profileIDs_in_oldSystem/profileIDs.csv"
+      "/CNCFlora_data/inputs/profileIDs_in_oldSystem/profileIDs.txt"
 
     ),
     header = F
@@ -166,7 +166,7 @@ fill_infoBasic <- function(){
     Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s1\\.5\\(predominantemente\\sarbórea\\)\\/3\\.5\\(predominantemente\\sarbustiva\\)\\/13\\.3\\(dunas\\)\\]", "", Especie_veget$info)
     Especie_veget$info<-gsub("\\s\\[3\\.7\\(arbustivo)\\/4\\.7\\(herbáceo\\)\\]", "", Especie_veget$info)
     Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s2\\.1\\]", "", Especie_veget$info)
-    Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s14\\.1\\(áreas\\saráveis\\)\\/14\\.2\\(pastagens\\)\\/14\\.3\\(plantações\\sem\\slarga\\sescala,\\smonoculturas\\)\\/14\\.4\\(agricultura\\sfamiliar,\\sou\\sem\\spequen\\sescala\\)\\/14\\.5\\(urbana,\\scomercial,\\sindustrial\\)\\/14\\.6\\(vegetação\\ssecundária\\sou\\sdegradada\\)\\]", "", Especie_veget$info)
+    Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s14\\.1\\(áreas\\saráveis\\)\\/14\\.2\\(pastagens\\)\\/14\\.3\\(plantações\\sem\\slarga\\sescala,\\smonoculturas\\)\\/14\\.4\\(agricultura\\sfamiliar,\\sou\\sem\\spequena\\sescala\\)\\/14\\.5\\(urbana,\\scomercial,\\sindustrial\\)\\/14\\.6\\(vegetação\\ssecundária\\sou\\sdegradada\\)\\]", "", Especie_veget$info)
     Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s3\\.7\\(arbustivo\\)\\/4\\.7\\(herbáceo\\)\\]", "", Especie_veget$info)
     Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s1\\.5\\(seco\\)\\/1\\.6\\(úmido\\se\\sabaixo\\sde\\s1200\\sm\\salt\\.\\)\\/1\\.9\\(úmido\\se\\sacima\\sde\\s1200\\sm\\salt\\.\\)\\]", "", Especie_veget$info)
     Especie_veget$info<-gsub("\\s\\[IUCN\\sHabitat:\\s3\\.5\\]", "", Especie_veget$info)

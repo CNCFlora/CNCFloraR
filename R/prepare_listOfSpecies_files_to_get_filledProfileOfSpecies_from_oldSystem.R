@@ -1,86 +1,16 @@
-prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- function(onlyNonExistentProfile = F){
+prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- function(onlyNonExistentProfile = F, ask_to_open_file = T, ask_to_write_file = T){
 
   library(stringr)
   library(googlesheets4)
   library(colorDF)
 
-  df <- check_all_files_of_species()
+  df <- check_all_files_of_species(ask_to_open_file = F)
 
   for(i in 1:length(df)){
 
     df[,i] <- str_detect(df[,i], "TRUE")
 
   }
-
-
-  # Get local path of the downloaded list of species file ####
-
-  listOfSpecies_localPath <-
-    paste0(
-
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_to_prepare_assessment.csv"
-
-    )
-
-  ## Ask to open the list of species file ####
-
-  answer <- ""
-
-  while(answer != "Y" |
-        answer != "N" ){
-
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
-
-    if(answer == "Y"){
-
-      shell(listOfSpecies_localPath)
-
-      answer2 <- ""
-
-      while(answer2 != "Y"){
-
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
-
-        if(answer2 == "Y"){
-
-          break
-
-        }
-
-      }
-
-      break
-
-    }
-
-    if(answer == "N"){
-
-      break
-
-    }
-
-  }
-
-  # Import the list of species file from local path ####
-
-  message("Importing the list of species file...")
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
-
-  message("List of species file imported.")
-
-  df <- df[colnames(df) %in% listOfSpecies$V1]
-
 
   if(onlyNonExistentProfile == F){
 
@@ -90,7 +20,20 @@ prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- func
 
     if(onlyNonExistentProfile == T){
 
-      listOfSpecies <- colnames(df[which(df["filledProfile_from_oldSystem",] == F)])
+      listOfSpecies <- colnames(
+
+        df[
+
+          which(
+
+            df["HTMLprofile",] == T &
+              df["filledProfile_from_oldSystem",] == F
+
+          )
+
+        ]
+
+      )
 
     }
 
@@ -99,23 +42,18 @@ prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- func
 
   # Load follow-up table from GoogleSheets ####
 
-  ss <- gs4_get(ss_followUpTable_URL)
-  followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
+  Acomp_spp_followUpTable <- get_sheet_Acomp_spp_from_followUpTable_in_cloud()
 
-  followUpTable.filtered <- followUpTable %>% dplyr::filter(Espécie %in% listOfSpecies)
+  Acomp_spp_followUpTable.filtered <- Acomp_spp_followUpTable %>%
+    dplyr::filter(`NameFB_semAutor(textPlane)` %in% listOfSpecies) %>%
+    dplyr::filter(`Perfil Completo` %in% "x")
 
   output <- data.frame(
 
-    recorte = followUpTable.filtered$Recorte,
-    species = followUpTable.filtered$Espécie
+    recorte = Acomp_spp_followUpTable.filtered$Recorte,
+    species = Acomp_spp_followUpTable.filtered$`NameFB_semAutor(textPlane)`
 
   )
-
-  if(T %in% duplicated(output)){
-
-    output <- output[-which(duplicated(output)),]
-
-  }
 
   # Print the results
 
@@ -135,48 +73,72 @@ prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- func
 
   # Ask to write the `get_filledProfileOfSpecies.csv` file
 
-  answer <- ""
+  if(ask_to_write_file == T){
 
-  while(
+    answer <- ""
 
-    answer != "Y" |
-    answer != "N"
+    while(
 
-  ){
+      answer != "Y" |
+      answer != "N"
 
-    answer <-
-      toupper(readline("Write the list of species file (get_filledProfileOfSpecies.csv)? (y/n): "))
+    ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Write the list of species file (get_filledProfileOfSpecies.csv)? (y/n): "))
 
-      write.table(
+      if(answer == "Y"){
 
-        output,
-        paste0(
+        write.table(
 
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_filledProfileOfSpecies.csv"
+          output,
+          paste0(
 
-        ),
-        col.names = F,
-        row.names = F,
-        sep = ";"
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_filledProfileOfSpecies.csv"
 
-      )
+          ),
+          col.names = F,
+          row.names = F,
+          sep = ";"
 
-      message("File created.")
+        )
 
-      break
+        message("File created.")
+
+        break
+
+      }
+
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
-    if(answer == "N"){
+  } else {
 
-      break
+    write.table(
 
-    }
+      output,
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/get_filledProfileOfSpecies.csv"
+
+      ),
+      col.names = F,
+      row.names = F,
+      sep = ";"
+
+    )
+
+    message("File created.")
 
   }
+
 
   #Done
 

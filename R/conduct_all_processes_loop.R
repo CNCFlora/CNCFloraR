@@ -523,9 +523,17 @@ conduct_all_processes_loop <- function(){
 
     ## Have species without Flora e Funga do Brasil citation in the followUpTable in local computer? ####
 
-    have_species_without_FFBcitation_in_followUpTable_in_localComputer <-
-      !all(followUpTable$zcitationFB2020 == "", F)
+    if(T %in% (followUpTable$zcitationFB2020 == "")){
 
+      have_species_without_FFBcitation_in_followUpTable_in_localComputer <-
+        T
+
+    } else {
+
+      have_species_without_FFBcitation_in_followUpTable_in_localComputer <-
+        F
+
+    }
 
     if(have_species_without_FFBcitation_in_followUpTable_in_localComputer == T){
 
@@ -887,15 +895,7 @@ conduct_all_processes_loop <- function(){
 
       ]
 
-      followUpTable$zobra[
 
-        followUpTable$NameFB_semAutor %in% species_in_df_check
-
-      ] <- df_check$FFB_citation_long_cloud[
-
-        df_check$NameFB_semAutor %in% species_in_df_check
-
-      ]
 
       write.csv2(
 
@@ -916,8 +916,17 @@ conduct_all_processes_loop <- function(){
 
     ## Have species without obra princeps in the followUpTable in local computer? ####
 
-    have_species_without_obraPrinceps_in_followUpTable_in_localComputer <-
-      !all(followUpTable$zobra == "", F)
+    if(T %in% (followUpTable$zobra == "")){
+
+      have_species_without_obraPrinceps_in_followUpTable_in_localComputer <-
+        T
+
+    } else {
+
+      have_species_without_obraPrinceps_in_followUpTable_in_localComputer <-
+        F
+
+    }
 
 
     if(have_species_without_obraPrinceps_in_followUpTable_in_localComputer == T){
@@ -947,9 +956,9 @@ conduct_all_processes_loop <- function(){
       if(exists("species_without_obraPrinceps_in_followUpTable_in_cloud") == T){
 
         species_without_obraPrinceps_in_followUpTable_in_localComputer <-
-          species_without_obraPrinceps_in_followUpTable_in_localComputer[
+          species_without_obraPrinceps_in_followUpTable_in_cloud[
 
-            duplicated(species_without_obraPrinceps_in_followUpTable_in_localComputer) == F
+            duplicated(species_without_obraPrinceps_in_followUpTable_in_cloud) == F
 
           ]
 
@@ -962,6 +971,7 @@ conduct_all_processes_loop <- function(){
           c("NameFB_semAutor", "Author")
 
       }
+
 
       ## Get obra princeps in Tropicos and IPNI ####
 
@@ -1300,6 +1310,16 @@ conduct_all_processes_loop <- function(){
         )
 
       ]
+
+    )
+
+
+    ## Prepare list of species file ####
+
+    prepare_listOfSpecies_files_to_intersectPANsTERsUCs(
+
+      onlyNonExistentFile = T,
+      ask_to_write_file = F
 
     )
 
@@ -1998,6 +2018,15 @@ conduct_all_processes_loop <- function(){
 
     )
 
+    ## Prepare list of species file ####
+
+    prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs(
+
+      onlyNonExistentProfile = T,
+      ask_to_write_file = F
+
+    )
+
 
     ## Get sheet Acomp_spp from the infoSpeciesTable in GoogleSheets ####
 
@@ -2236,6 +2265,83 @@ conduct_all_processes_loop <- function(){
       template = paste0(system.file(package = "R3port"), "/bootstrap_for_HTA.html")
 
     )
+
+
+    # Step 13: Get filled profiles of species from old system ####
+
+    cli_h1("Step 13: Get filled profiles of species from old system")
+    cli_h2("Checking and getting filled profiles of species")
+
+    listOfSpecies_filledProfile <- colnames(
+
+      df[
+
+        which(
+
+          df["HTMLprofile",] == T &
+            df["filledProfile_from_oldSystem",] == F
+
+        )
+
+      ]
+
+    )
+
+    if(length(listOfSpecies_getFilledProfile) > 0){
+
+      cli_alert_info("Including species")
+
+      species_to_get_filledProfiles <- prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem(
+
+        ask_to_open_file = F,
+        ask_to_write_file = F
+
+      )
+
+      AHKscript_to_download_filledProfileOfSpecies_from_oldSystem(
+
+        species_to_get_filledProfiles,
+        ask_to_open_file = F,
+        ask_to_open_filePath = F
+
+      )
+
+
+      ## Table: Get filled profiles of species ####
+
+      get_filledProfiles_table <- data.frame(
+
+        i = 1:length(species_to_get_filledProfiles),
+        Species = species_to_get_filledProfiles
+
+      )
+
+      html_list(
+
+        get_filledProfiles_table,
+        vars = names(get_filledProfiles_table),
+        title = "Species to get filled profiles of species",
+        out = "out4_get_filledProfiles.html",
+        show = F,
+        footnote = '
+        <button type="button" onclick="runAhkScript()">Executar AHK script! Pressione F4 para disparar.</button>
+        <script>
+          function runAhkScript() {
+            var ahkExePath = "C:/Program Files/AutoHotkey/AutoHotkey.exe";
+            var scriptToExecute = "C:/R/R-4.1.1/working/CNCFlora_data/outputs/AHK_scripts/get_filledProfileOfSpecies.ahk";
+            new ActiveXObject("Shell.Application").ShellExecute(ahkExePath, scriptToExecute);
+          }
+        </script>
+
+        '
+
+      )
+
+    } else {
+
+      cli_alert_success("No species to get filled profiles of species.")
+
+    }
 
 
     # End of loop ####

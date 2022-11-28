@@ -3,7 +3,13 @@
 #' AHK script para baixar os registros de ocorrências do antigo sistema
 
 
-AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(list = "", ask_to_open_file = T, ask_to_open_filePath = T){
+AHKscript_to_download_occurrenceRecords_from_oldSystem <- function(
+
+  list = "",
+  ask_to_open_file = T,
+  ask_to_open_filePath = T
+
+){
 
   suppressMessages({
     suppressWarnings({

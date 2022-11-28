@@ -1,10 +1,10 @@
-prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs <- function(onlyNonExistentProfile = F){
+prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs <- function(onlyNonExistentProfile = F, ask_to_write_file = T){
 
   library(stringr)
   library(googlesheets4)
   library(colorDF)
 
-  df <- check_all_files_of_species()
+  df <- check_all_files_of_species(ask_to_open_file = F)
 
 
   for(i in 1:length(df)){
@@ -156,48 +156,69 @@ prepare_listOfSpecies_files_to_build_profileOfSpeciesHTMLs <- function(onlyNonEx
   )
 
 
-  # Ask to write the `species_profileOfSpeciesHTML.csv` file
+  if(ask_to_write_file == T){
 
-  answer <- ""
+    # Ask to write the `species_profileOfSpeciesHTML.csv` file
 
-  while(
+    answer <- ""
 
-    answer != "Y" |
-    answer != "N"
+    while(
 
-  ){
+      answer != "Y" |
+      answer != "N"
 
-    answer <-
-      toupper(readline("Write the list of species file (species_profileOfSpeciesHTML.csv)? (y/n): "))
+    ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Write the list of species file (species_profileOfSpeciesHTML.csv)? (y/n): "))
 
-      write.table(
+      if(answer == "Y"){
 
-        output,
-        paste0(
+        write.table(
 
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
+          output,
+          paste0(
 
-        ),
-        col.names = F,
-        row.names = F,
-        sep = ";"
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
 
-      )
+          ),
+          col.names = F,
+          row.names = F,
+          sep = ";"
 
-      message("File created.")
+        )
 
-      break
+        message("File created.")
+
+        break
+
+      }
+
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 
-    if(answer == "N"){
+  } else {
 
-      break
+    write.table(
 
-    }
+      output,
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_profileOfSpeciesHTML.csv"
+
+      ),
+      col.names = F,
+      row.names = F,
+      sep = ";"
+
+    )
 
   }
 

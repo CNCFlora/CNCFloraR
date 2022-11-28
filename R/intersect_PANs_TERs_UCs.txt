@@ -196,7 +196,7 @@ if(
       
       sub("Packages/CNCFloraR", "", getwd()),
       "/CNCFlora_data/outputs/intersect_PANs_TERs_UCs logs/",
-      ESPECIE,
+      Species,
       ".csv"
       
     )
