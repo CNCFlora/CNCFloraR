@@ -72,6 +72,27 @@ conduct_all_processes_loop <- function(){
 
   }
 
+  if(file.exists(paste0(getwd(),"/out11_get_filledProfiles.html"))){
+
+    file.remove(paste0(getwd(),"/out11_get_filledProfiles.html"))
+    file.remove(paste0(getwd(),"/out11_get_filledProfiles.html.rawhtml"))
+
+  }
+
+  if(file.exists(paste0(getwd(),"/out12_overlay_analyses_QuadOfGrid_errors.html"))){
+
+    file.remove(paste0(getwd(),"/out12_overlay_analyses_QuadOfGrid_errors.html"))
+    file.remove(paste0(getwd(),"/out12_overlay_analyses_QuadOfGrid_errors.html.rawhtml"))
+
+  }
+
+  if(file.exists(paste0(getwd(),"/out13_overlay_analyses_AOOinEOObuffer_errors.html"))){
+
+    file.remove(paste0(getwd(),"/out13_overlay_analyses_AOOinEOObuffer_errors.html"))
+    file.remove(paste0(getwd(),"/out13_overlay_analyses_AOOinEOObuffer_errors.html.rawhtml"))
+
+  }
+
 
   if(file.exists(paste0(getwd(),"/report.hta"))){
 
@@ -1551,7 +1572,7 @@ conduct_all_processes_loop <- function(){
               paste0(
 
                 sub("Packages/CNCFloraR", "", getwd()),
-                "/CNCFlora_data/outputs/overlayAnalysis logs/",
+                "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
                 species,
                 ".csv"
 
@@ -1588,7 +1609,7 @@ conduct_all_processes_loop <- function(){
         paste0(
 
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/outputs/overlayAnalysis logs/",
+          "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
           species,
           ".csv"
 
@@ -2255,24 +2276,13 @@ conduct_all_processes_loop <- function(){
 
     }
 
-    # Final step: Generate final report (report.html) ####
-
-    html_combine(
-
-      out = "report.hta",
-      rtitle = paste0("Report: ", format(Sys.time(), "%d/%m/%Y - %H:%M:%S")),
-      toctheme = TRUE,
-      template = paste0(system.file(package = "R3port"), "/bootstrap_for_HTA.html")
-
-    )
-
 
     # Step 13: Get filled profiles of species from old system ####
 
     cli_h1("Step 13: Get filled profiles of species from old system")
     cli_h2("Checking and getting filled profiles of species")
 
-    listOfSpecies_filledProfile <- colnames(
+    listOfSpecies_getFilledProfile <- colnames(
 
       df[
 
@@ -2293,6 +2303,7 @@ conduct_all_processes_loop <- function(){
 
       species_to_get_filledProfiles <- prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem(
 
+        onlyNonExistentProfile = T,
         ask_to_open_file = F,
         ask_to_write_file = F
 
@@ -2300,7 +2311,7 @@ conduct_all_processes_loop <- function(){
 
       AHKscript_to_download_filledProfileOfSpecies_from_oldSystem(
 
-        species_to_get_filledProfiles,
+        species_to_get_filledProfiles$species,
         ask_to_open_file = F,
         ask_to_open_filePath = F
 
@@ -2311,8 +2322,8 @@ conduct_all_processes_loop <- function(){
 
       get_filledProfiles_table <- data.frame(
 
-        i = 1:length(species_to_get_filledProfiles),
-        Species = species_to_get_filledProfiles
+        i = 1:length(species_to_get_filledProfiles$species),
+        Species = species_to_get_filledProfiles$species
 
       )
 
@@ -2321,7 +2332,7 @@ conduct_all_processes_loop <- function(){
         get_filledProfiles_table,
         vars = names(get_filledProfiles_table),
         title = "Species to get filled profiles of species",
-        out = "out4_get_filledProfiles.html",
+        out = "out11_get_filledProfiles.html",
         show = F,
         footnote = '
         <button type="button" onclick="runAhkScript()">Executar AHK script! Pressione F4 para disparar.</button>
@@ -2342,6 +2353,624 @@ conduct_all_processes_loop <- function(){
       cli_alert_success("No species to get filled profiles of species.")
 
     }
+
+
+    # Step 14: Overlay analysis by QuadOfGrid between occurrence records and MapBiomas 1985-2020 ####
+
+    cli_h1("Step 14: Overlay analysis by QuadOfGrid between occurrence records and MapBiomas 1985-2020")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid <- colnames(
+
+      df[
+
+        which(
+
+          df["occurrenceRecords",] == T &
+            df["overlayMapBiomasQuadOfGrid",] == F
+
+        )
+
+      ]
+
+    )
+
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+
+    ## Remove PNA species ####
+
+    List_for_HTML_profile_followUpTable_PNA <- List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(`PA/PNA` == "PNA") %>%
+      dplyr::select(Espécie)
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid <-
+      setdiff(
+
+        listOfSpecies_overlayAnalysis_QuadOfGrid,
+        List_for_HTML_profile_followUpTable_PNA$Espécie
+
+      )
+
+
+    ## Remove species on development or error ####
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_QuadOfGrid
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error_ <- NULL
+    for(species in listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error){
+
+      listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error.this <-
+        data.frame(
+
+          Species = species,
+          exists = if(
+
+            file.exists(
+
+              paste0(
+
+                sub("Packages/CNCFloraR", "", getwd()),
+                "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+                species,
+                ".csv"
+
+              )
+
+            )
+
+          ){T} else {F}
+
+        )
+
+      listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error_ <-
+        rbind(
+
+          listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error_,
+          listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error.this
+
+        )
+
+    }
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error_$Species[
+
+        listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error_$exists == T
+
+      ]
+
+    overlayAnalysis_QuadOfGrid_on_development_or_error <- NULL
+    for(species in listOfSpecies_overlayAnalysis_QuadOfGrid_on_development_or_error){
+
+      overlayAnalysis_QuadOfGrid_on_development_or_error_ <- fread(
+
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+          species,
+          ".csv"
+
+        )
+
+      )
+
+      overlayAnalysis_QuadOfGrid_on_development_or_error <-
+        rbind (overlayAnalysis_QuadOfGrid_on_development_or_error, overlayAnalysis_QuadOfGrid_on_development_or_error_)
+
+    }
+
+    if(is.null(overlayAnalysis_QuadOfGrid_on_development_or_error) == T){
+
+      overlayAnalysis_QuadOfGrid_on_development <- ""
+      overlayAnalysis_QuadOfGrid_on_error <- ""
+
+    } else {
+
+      overlayAnalysis_QuadOfGrid_on_development <-
+        overlayAnalysis_QuadOfGrid_on_development_or_error$species[is.na(overlayAnalysis_QuadOfGrid_on_development_or_error$end) == T]
+
+      overlayAnalysis_QuadOfGrid_on_error <-
+        overlayAnalysis_QuadOfGrid_on_development_or_error %>%
+        dplyr::filter(end == "error") %>%
+        dplyr::select(species)
+
+      overlayAnalysis_QuadOfGrid_on_error <- overlayAnalysis_QuadOfGrid_on_error$species
+
+    }
+
+
+    ## listOfSpecies to proceed ####
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid <-
+      setdiff(listOfSpecies_overlayAnalysis_QuadOfGrid, overlayAnalysis_QuadOfGrid_on_development)
+
+    listOfSpecies_overlayAnalysis_QuadOfGrid <-
+      setdiff(listOfSpecies_overlayAnalysis_QuadOfGrid, overlayAnalysis_QuadOfGrid_on_error)
+
+
+    ## Start analysis ####
+
+    if(length(listOfSpecies_overlayAnalysis_QuadOfGrid) > 0){
+
+      cli_h2("Conduct analysis for a list of species")
+
+      overlayAnalysis_QuadOfGrid_create_scripts(
+
+        list = listOfSpecies_overlayAnalysis_QuadOfGrid,
+        ask_to_open_file = F
+
+      )
+
+      cli_h2("")
+
+      for(species_overlayAnalysis_QuadOfGrid in listOfSpecies_overlayAnalysis_QuadOfGrid){
+
+        if(
+
+          file.exists(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+              species_overlayAnalysis_QuadOfGrid,
+              ".csv"
+
+            )
+
+          ) == T
+
+        ){
+
+          backgroundJobs_log <- data.table::fread(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+              species_overlayAnalysis_QuadOfGrid,
+              ".csv"
+
+            )
+
+          )
+
+          if(is.na(backgroundJobs_log$end) == T){backgroundJobs_log$end <- ""}
+
+        } else {
+
+          backgroundJobs_log <- data.frame(
+
+            job = "Overlay analysis - QuadOfGrid",
+            species = species_overlayAnalysis_QuadOfGrid,
+            start = format(Sys.Date(), "%d/%m/%Y"),
+            end = ""
+
+          )
+
+          write.csv2(
+
+            backgroundJobs_log,
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+              species_overlayAnalysis_QuadOfGrid,
+              ".csv"
+
+            ),
+            row.names = F
+
+          )
+
+        }
+
+        if(backgroundJobs_log$end == ""){
+
+          overlayAnalysis_QuadOfGrid_execute_scripts(
+
+            list = species_overlayAnalysis_QuadOfGrid
+
+          )
+
+        }
+
+        while(backgroundJobs_log$end == ""){
+
+          backgroundJobs_log <- data.table::fread(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+              species_overlayAnalysis_QuadOfGrid,
+              ".csv"
+
+            )
+
+          )
+
+          Sys.sleep(3)
+
+          if(is.na(backgroundJobs_log$end) == T){
+
+            backgroundJobs_log$end <- ""
+
+          }
+
+          if(backgroundJobs_log$end != ""){
+
+            break
+
+          }
+
+        }
+
+      }
+
+    } else {
+
+      cli_alert_success("No species to analyze")
+
+    }
+
+    ## Have analysis with errors? ####
+
+    if(
+
+      length(overlayAnalysis_QuadOfGrid_on_error) > 0 &
+      overlayAnalysis_QuadOfGrid_on_error != ""
+
+    ){
+
+      ### Yes ####
+
+      overlayAnalysis_QuadOfGrid_on_error_table <- data.frame(
+
+        i = 1:length(overlayAnalysis_QuadOfGrid_on_error),
+        Species = overlayAnalysis_QuadOfGrid_on_error
+
+      )
+
+
+      #### Table: Overlay analysis by QuadOfGrid (MapBiomas 1985-2020) with errors ####
+
+      html_list(
+
+        overlayAnalysis_QuadOfGrid_on_error_table,
+        vars = names(overlayAnalysis_QuadOfGrid_on_error_table),
+        title = "Errors in overlay analysis by QuadOfGrid - MapBiomas 1985-2020",
+        out = "out12_overlay_analyses_QuadOfGrid_errors.html",
+        show = F
+
+      )
+
+    }
+
+
+    # Step 15: Overlay analysis by AOOinEOObuffer between occurrence records and MapBiomas 1985-2020 ####
+
+    cli_h1("Step 15: Overlay analysis by AOOinEOObuffer between occurrence records and MapBiomas 1985-2020")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer <- colnames(
+
+      df[
+
+        which(
+
+          df["occurrenceRecords",] == T &
+            df["overlayMapBiomasAOOinEOObuffer",] == F
+
+        )
+
+      ]
+
+    )
+
+
+    ## Get sheet List_for_HTML_profile from the follow-up table in GoogleSheets ####
+
+    cli_h2("Checking and getting data from follow-up table in cloud")
+
+    List_for_HTML_profile_followUpTable <-
+      get_sheet_List_for_HTML_profile_from_followUpTable_in_cloud()
+
+
+    ## Remove PNA species ####
+
+    List_for_HTML_profile_followUpTable_PNA <- List_for_HTML_profile_followUpTable %>%
+      dplyr::filter(`PA/PNA` == "PNA") %>%
+      dplyr::select(Espécie)
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer <-
+      setdiff(
+
+        listOfSpecies_overlayAnalysis_AOOinEOObuffer,
+        List_for_HTML_profile_followUpTable_PNA$Espécie
+
+      )
+
+
+    ## Remove species on development or error ####
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_AOOinEOObuffer
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error_ <- NULL
+    for(species in listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error){
+
+      listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error.this <-
+        data.frame(
+
+          Species = species,
+          exists = if(
+
+            file.exists(
+
+              paste0(
+
+                sub("Packages/CNCFloraR", "", getwd()),
+                "/CNCFlora_data/outputs/overlayAnalysis logs/AOOinEOObuffer/",
+                species,
+                ".csv"
+
+              )
+
+            )
+
+          ){T} else {F}
+
+        )
+
+      listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error_ <-
+        rbind(
+
+          listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error_,
+          listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error.this
+
+        )
+
+    }
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error <-
+      listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error_$Species[
+
+        listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error_$exists == T
+
+      ]
+
+    overlayAnalysis_AOOinEOObuffer_on_development_or_error <- NULL
+    for(species in listOfSpecies_overlayAnalysis_AOOinEOObuffer_on_development_or_error){
+
+      overlayAnalysis_AOOinEOObuffer_on_development_or_error_ <- fread(
+
+        paste0(
+
+          sub("Packages/CNCFloraR", "", getwd()),
+          "/CNCFlora_data/outputs/overlayAnalysis logs/AOOinEOObuffer/",
+          species,
+          ".csv"
+
+        )
+
+      )
+
+      overlayAnalysis_AOOinEOObuffer_on_development_or_error <-
+        rbind (overlayAnalysis_AOOinEOObuffer_on_development_or_error, overlayAnalysis_AOOinEOObuffer_on_development_or_error_)
+
+    }
+
+    if(is.null(overlayAnalysis_AOOinEOObuffer_on_development_or_error) == T){
+
+      overlayAnalysis_AOOinEOObuffer_on_development <- ""
+      overlayAnalysis_AOOinEOObuffer_on_error <- ""
+
+    } else {
+
+      overlayAnalysis_AOOinEOObuffer_on_development <-
+        overlayAnalysis_AOOinEOObuffer_on_development_or_error$species[is.na(overlayAnalysis_AOOinEOObuffer_on_development_or_error$end) == T]
+
+      overlayAnalysis_AOOinEOObuffer_on_error <-
+        overlayAnalysis_AOOinEOObuffer_on_development_or_error %>%
+        dplyr::filter(end == "error") %>%
+        dplyr::select(species)
+
+      overlayAnalysis_AOOinEOObuffer_on_error <- overlayAnalysis_AOOinEOObuffer_on_error$species
+
+    }
+
+
+    ## listOfSpecies to proceed ####
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer <-
+      setdiff(listOfSpecies_overlayAnalysis_AOOinEOObuffer, overlayAnalysis_AOOinEOObuffer_on_development)
+
+    listOfSpecies_overlayAnalysis_AOOinEOObuffer <-
+      setdiff(listOfSpecies_overlayAnalysis_AOOinEOObuffer, overlayAnalysis_AOOinEOObuffer_on_error)
+
+
+    ## Start analysis ####
+
+    if(length(listOfSpecies_overlayAnalysis_AOOinEOObuffer) > 0){
+
+      cli_h2("Conduct analysis for a list of species")
+
+      overlayAnalysis_AOOinEOObuffer_create_scripts(
+
+        list = listOfSpecies_overlayAnalysis_AOOinEOObuffer,
+        ask_to_open_file = F
+
+      )
+
+      cli_h2("")
+
+      for(species_overlayAnalysis_AOOinEOObuffer in listOfSpecies_overlayAnalysis_AOOinEOObuffer){
+
+        if(
+
+          file.exists(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/AOOinEOObuffer/",
+              species_overlayAnalysis_AOOinEOObuffer,
+              ".csv"
+
+            )
+
+          ) == T
+
+        ){
+
+          backgroundJobs_log <- data.table::fread(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/AOOinEOObuffer/",
+              species_overlayAnalysis_AOOinEOObuffer,
+              ".csv"
+
+            )
+
+          )
+
+          if(is.na(backgroundJobs_log$end) == T){backgroundJobs_log$end <- ""}
+
+        } else {
+
+          backgroundJobs_log <- data.frame(
+
+            job = "Overlay analysis - AOOinEOObuffer",
+            species = species_overlayAnalysis_AOOinEOObuffer,
+            start = format(Sys.Date(), "%d/%m/%Y"),
+            end = ""
+
+          )
+
+          write.csv2(
+
+            backgroundJobs_log,
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/AOOinEOObuffer/",
+              species_overlayAnalysis_AOOinEOObuffer,
+              ".csv"
+
+            ),
+            row.names = F
+
+          )
+
+        }
+
+        if(backgroundJobs_log$end == ""){
+
+          overlayAnalysis_AOOinEOObuffer_execute_scripts(
+
+            list = species_overlayAnalysis_AOOinEOObuffer
+
+          )
+
+        }
+
+        while(backgroundJobs_log$end == ""){
+
+          backgroundJobs_log <- data.table::fread(
+
+            paste0(
+
+              sub("Packages/CNCFloraR", "", getwd()),
+              "/CNCFlora_data/outputs/overlayAnalysis logs/AOOinEOObuffer/",
+              species_overlayAnalysis_AOOinEOObuffer,
+              ".csv"
+
+            )
+
+          )
+
+          Sys.sleep(3)
+
+          if(is.na(backgroundJobs_log$end) == T){
+
+            backgroundJobs_log$end <- ""
+
+          }
+
+          if(backgroundJobs_log$end != ""){
+
+            break
+
+          }
+
+        }
+
+      }
+
+    } else {
+
+      cli_alert_success("No species to analyze")
+
+    }
+
+    ## Have analysis with errors? ####
+
+    if(
+
+      length(overlayAnalysis_AOOinEOObuffer_on_error) > 0 &
+      overlayAnalysis_AOOinEOObuffer_on_error != ""
+
+    ){
+
+      ### Yes ####
+
+      overlayAnalysis_AOOinEOObuffer_on_error_table <- data.frame(
+
+        i = 1:length(overlayAnalysis_AOOinEOObuffer_on_error),
+        Species = overlayAnalysis_AOOinEOObuffer_on_error
+
+      )
+
+
+      #### Table: Overlay analysis by AOOinEOObuffer (MapBiomas 1985-2020) with errors ####
+
+      html_list(
+
+        overlayAnalysis_AOOinEOObuffer_on_error_table,
+        vars = names(overlayAnalysis_AOOinEOObuffer_on_error_table),
+        title = "Errors in overlay analysis by AOOinEOObuffer - MapBiomas 1985-2020",
+        out = "out13_overlay_analyses_AOOinEOObuffer_errors.html",
+        show = F
+
+      )
+
+    }
+
+
+    # Final step: Generate final report (report.html) ####
+
+    html_combine(
+
+      out = "report.hta",
+      rtitle = paste0("Report: ", format(Sys.time(), "%d/%m/%Y - %H:%M:%S")),
+      toctheme = TRUE,
+      template = paste0(system.file(package = "R3port"), "/bootstrap_for_HTA.html")
+
+    )
 
 
     # End of loop ####

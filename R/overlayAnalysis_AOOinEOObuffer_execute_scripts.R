@@ -1,32 +1,45 @@
-overlayAnalysis_AOOinEOObuffer_execute_scripts <- function(){
+overlayAnalysis_AOOinEOObuffer_execute_scripts <- function(list = ""){
 
   library(data.table)
 
-  # Get local path of the downloaded list of species file ####
+  if(list[1] == ""){
 
-  listOfSpecies_localPath <-
-    paste0(
+    # Get local path of the downloaded list of species file ####
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas_by_AOOinEOObuffer.csv"
+    listOfSpecies_localPath <-
+      paste0(
+
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas_by_AOOinEOObuffer.csv"
+
+      )
+
+
+    # Import the list of species file from local path ####
+
+    message("Importing the list of species file...")
+
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
 
     )
 
+    message("List of species file imported.")
 
-  # Import the list of species file from local path ####
+  } else {
 
-  message("Importing the list of species file...")
+    listOfSpecies <- data.frame(
 
-  listOfSpecies <- fread(
+      V1 = list
 
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
+    )
 
-  )
+  }
 
-  message("List of species file imported.")
 
   for(element in listOfSpecies$V1){
 

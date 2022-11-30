@@ -1,40 +1,57 @@
-overlayAnalysis_AOOinEOObuffer_create_scripts <- function(){
+overlayAnalysis_AOOinEOObuffer_create_scripts <- function(list = "", ask_to_open_file = T){
 
   library(data.table)
   library(readtext)
 
-  # Get local path of the downloaded list of species file ####
 
-  listOfSpecies_localPath <-
-    paste0(
+  if(list[1] == ""){
 
-      sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas_by_AOOinEOObuffer.csv"
+    # Get local path of the downloaded list of species file ####
 
-    )
+    listOfSpecies_localPath <-
+      paste0(
 
-  # Ask to open the list of species file ####
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_landCover-MapBiomas_by_AOOinEOObuffer.csv"
 
-  answer <- ""
+      )
 
-  while(answer != "Y" |
-        answer != "N" ){
+    # Ask to open the list of species file ####
 
-    answer <-
-      toupper(readline("Open the list of species file? (y/n): "))
+    if(ask_to_open_file == T){
 
-    if(answer == "Y"){
+      answer <- ""
 
-      shell(listOfSpecies_localPath)
+      while(answer != "Y" |
+            answer != "N" ){
 
-      answer2 <- ""
+        answer <-
+          toupper(readline("Open the list of species file? (y/n): "))
 
-      while(answer2 != "Y"){
+        if(answer == "Y"){
 
-        answer2 <-
-          toupper(readline("List of species file ready? (y): "))
+          shell(listOfSpecies_localPath)
 
-        if(answer2 == "Y"){
+          answer2 <- ""
+
+          while(answer2 != "Y"){
+
+            answer2 <-
+              toupper(readline("List of species file ready? (y): "))
+
+            if(answer2 == "Y"){
+
+              break
+
+            }
+
+          }
+
+          break
+
+        }
+
+        if(answer == "N"){
 
           break
 
@@ -42,32 +59,32 @@ overlayAnalysis_AOOinEOObuffer_create_scripts <- function(){
 
       }
 
-      break
-
     }
 
-    if(answer == "N"){
+    # Import the list of species file from local path ####
 
-      break
+    message("Importing the list of species file...")
 
-    }
+    listOfSpecies <- fread(
+
+      listOfSpecies_localPath,
+      header = F,
+      sep = ";",
+      encoding = "UTF-8"
+
+    )
+
+    message("List of species file imported.")
+
+  } else {
+
+    listOfSpecies <- data.frame(
+
+      V1 = list
+
+    )
 
   }
-
-  # Import the list of species file from local path ####
-
-  message("Importing the list of species file...")
-
-  listOfSpecies <- fread(
-
-    listOfSpecies_localPath,
-    header = F,
-    sep = ";",
-    encoding = "UTF-8"
-
-  )
-
-  message("List of species file imported.")
 
   suppressWarnings(
 

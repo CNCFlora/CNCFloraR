@@ -97,7 +97,7 @@ AHKscript_to_download_filledProfileOfSpecies_from_oldSystem <- function(
     # Load follow-up table from GoogleSheets ####
 
     ss <- gs4_get(ss_followUpTable_URL)
-    followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_profile"))
+    followUpTable <- read_sheet(ss, sheet = which(ss$sheets$name == "List_for_HTML_assessment"))
 
     followUpTable.filtered <- followUpTable %>% dplyr::filter(Espécie %in% listOfSpecies)
 
@@ -133,8 +133,8 @@ AHKscript_to_download_filledProfileOfSpecies_from_oldSystem <- function(
 
   for(i in listOfSpecies_n){
 
-    especie <- listOfSpecies$V2[i]
-    recorte <- listOfSpecies$V1[i]
+    especie <- listOfSpecies$V3[i]
+    recorte <- listOfSpecies$V2[i]
     i_URL <- especie
     i_URL<-sub("\\s","\\`\\%20", i_URL)
 

@@ -55,7 +55,7 @@ if(
     paste0(
       
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/overlayAnalysis logs/",
+      "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
       ESPECIE,
       ".csv"
       
@@ -87,7 +87,7 @@ if(
     paste0(
       
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/overlayAnalysis logs/",
+      "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
       ESPECIE,
       ".csv"
       
@@ -103,7 +103,7 @@ if(
     paste0(
       
       sub("Packages/CNCFloraR", "", getwd()),
-      "/CNCFlora_data/outputs/overlayAnalysis logs/",
+      "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
       ESPECIE,
       ".csv"
       
@@ -262,7 +262,7 @@ tryCatch(
         paste0(
           
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/outputs/overlayAnalysis logs/",
+          "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
           ESPECIE,
           ".csv"
           
@@ -2988,7 +2988,7 @@ tryCatch(
         paste0(
           
           sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/outputs/overlayAnalysis logs/",
+          "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
           ESPECIE,
           ".csv"
           
@@ -3012,7 +3012,7 @@ tryCatch(
       paste0(
         
         sub("Packages/CNCFloraR", "", getwd()),
-        "/CNCFlora_data/outputs/overlayAnalysis logs/",
+        "/CNCFlora_data/outputs/overlayAnalysis logs/TodosOsAnos/",
         ESPECIE,
         ".csv"
         

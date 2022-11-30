@@ -55,6 +55,8 @@ prepare_listOfSpecies_files_to_get_filledProfileOfSpecies_from_oldSystem <- func
 
   )
 
+  return(output)
+
   # Print the results
 
   options(colorDF_n = Inf)
