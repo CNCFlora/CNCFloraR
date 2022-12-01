@@ -1,10 +1,10 @@
-prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid <- function(onlyNonExistentAnalysis = F){
+prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid <- function(onlyNonExistentAnalysis = F, ask_to_write_file = T){
 
   library(stringr)
   library(googlesheets4)
   library(colorDF)
 
-  df <- check_all_files_of_species()
+  df <- check_all_files_of_species(ask_to_open_file = F)
 
 
   for(i in 1:length(df)){
@@ -35,17 +35,13 @@ prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid <- function(onlyNonE
     if(onlyNonExistentAnalysis == F){
 
       listOfSpecies <- colnames(
-
         df[
-
           which(
 
             df["overlayMapBiomasQuadOfGrid",] == T
 
           )
-
         ]
-
       )
 
     }
@@ -64,57 +60,59 @@ prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid <- function(onlyNonE
   options(colorDF_n = Inf)
 
   print(
-
     colorDF(
 
       output,
       theme = "dark"
 
     )
-
   )
 
 
   # Ask to write the `species_trendAnalysis_QuadOfGrid.csv` file
 
-  answer <- ""
+  if(ask_to_write_file == T){
 
-  while(
+    answer <- ""
 
-    answer != "Y" |
-    answer != "N"
+    while(
 
-  ){
+      answer != "Y" |
+      answer != "N"
 
-    answer <-
-      toupper(readline("Write the list of species file (species_trendAnalysis_QuadOfGrid.csv)? (y/n): "))
+    ){
 
-    if(answer == "Y"){
+      answer <-
+        toupper(readline("Write the list of species file (species_trendAnalysis_QuadOfGrid.csv)? (y/n): "))
 
-      write.table(
+      if(answer == "Y"){
 
-        output,
-        paste0(
+        write.table(
 
-          sub("Packages/CNCFloraR", "", getwd()),
-          "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_trendAnalysis_QuadOfGrid.csv"
+          output,
+          paste0(
 
-        ),
-        col.names = F,
-        row.names = F,
-        sep = ";"
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/inputs/listOfSpecies_for_processing/species_trendAnalysis_QuadOfGrid.csv"
 
-      )
+          ),
+          col.names = F,
+          row.names = F,
+          sep = ";"
 
-      message("File created.")
+        )
 
-      break
+        message("File created.")
 
-    }
+        break
 
-    if(answer == "N"){
+      }
 
-      break
+      if(answer == "N"){
+
+        break
+
+      }
 
     }
 

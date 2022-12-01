@@ -2961,6 +2961,199 @@ conduct_all_processes_loop <- function(){
     }
 
 
+    # Step 16: Trend analysis of MapBiomas Land Cover 1985-2020 by AOO QuadOfGrid ####
+
+    cli_h1("Step 16: Trend analysis of MapBiomas Land Cover 1985-2020 by AOO QuadOfGrid")
+
+    cli_h2("Checking species in the flow")
+
+    listOfSpecies_trendAnalysis_AOO_QuadOfGrid <- colnames(
+
+      df[
+
+        which(
+
+          df["overlayMapBiomasQuadOfGrid",] == T &
+            df["trendQuadOfGrid",] == F
+
+        )
+
+      ]
+
+    )
+
+    if(length(listOfSpecies_trendAnalysis_AOO_QuadOfGrid) > 0){
+
+      ## Prepare list of species file ####
+
+      prepare_listOfSpecies_files_to_trendAnalysis_AOO_QuadOfGrid(
+
+        onlyNonExistentAnalysis = T,
+        ask_to_write_file = F
+
+      )
+
+
+      ## Remove species on development or error ####
+
+      listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error <-
+        listOfSpecies_trendAnalysis_AOO_QuadOfGrid
+
+      listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error_ <- NULL
+      for(species in listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error){
+
+        listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error.this <-
+          data.frame(
+
+            Species = species,
+            exists = if(
+
+              file.exists(
+
+                paste0(
+
+                  sub("Packages/CNCFloraR", "", getwd()),
+                  "/CNCFlora_data/outputs/trendAnalysis results/QuadOfGrid/",
+                  species,
+                  ".csv"
+
+                )
+
+              )
+
+            ){T} else {F}
+
+          )
+
+        listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error_ <-
+          rbind(
+
+            listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error_,
+            listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error.this
+
+          )
+
+      }
+
+      listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error <-
+        listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error_$Species[
+
+          listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error_$exists == T
+
+        ]
+
+      trendAnalysis_AOO_QuadOfGrid_on_development_or_error <- NULL
+      for(species in listOfSpecies_trendAnalysis_AOO_QuadOfGrid_on_development_or_error){
+
+        trendAnalysis_AOO_QuadOfGrid_on_development_or_error_ <- fread(
+
+          paste0(
+
+            sub("Packages/CNCFloraR", "", getwd()),
+            "/CNCFlora_data/outputs/trendAnalysis results/QuadOfGrid/",
+            species,
+            ".csv"
+
+          )
+
+        )
+
+        trendAnalysis_AOO_QuadOfGrid_on_development_or_error <-
+          rbind (trendAnalysis_AOO_QuadOfGrid_on_development_or_error, trendAnalysis_AOO_QuadOfGrid_on_development_or_error_)
+
+      }
+
+      if(is.null(trendAnalysis_AOO_QuadOfGrid_on_development_or_error) == T){
+
+        trendAnalysis_AOO_QuadOfGrid_on_development <- ""
+        trendAnalysis_AOO_QuadOfGrid_on_error <- ""
+
+      } else {
+
+        trendAnalysis_AOO_QuadOfGrid_on_development <-
+          trendAnalysis_AOO_QuadOfGrid_on_development_or_error$species[is.na(trendAnalysis_AOO_QuadOfGrid_on_development_or_error$end) == T]
+
+        trendAnalysis_AOO_QuadOfGrid_on_error <-
+          trendAnalysis_AOO_QuadOfGrid_on_development_or_error %>%
+          dplyr::filter(end == "error") %>%
+          dplyr::select(species)
+
+        trendAnalysis_AOO_QuadOfGrid_on_error <- trendAnalysis_AOO_QuadOfGrid_on_error$species
+
+      }
+
+
+      ## listOfSpecies to proceed ####
+
+      listOfSpecies_trendAnalysis_AOO_QuadOfGrid <-
+        setdiff(listOfSpecies_trendAnalysis_AOO_QuadOfGrid, trendAnalysis_AOO_QuadOfGrid_on_development)
+
+      listOfSpecies_trendAnalysis_AOO_QuadOfGrid <-
+        setdiff(listOfSpecies_trendAnalysis_AOO_QuadOfGrid, trendAnalysis_AOO_QuadOfGrid_on_error)
+
+
+      ## Start creation ####
+
+      if(length(listOfSpecies_trendAnalysis_AOO_QuadOfGrid) > 0){
+
+        cli_h2("Conduct creation of profile of species HTML for a list of species")
+
+        trendAnalysis_QuadOfGrid_create_scripts(
+
+          list = listOfSpecies_trendAnalysis_AOO_QuadOfGrid,
+          ask_to_open_file = F
+
+        )
+
+        trendAnalysis_QuadOfGrid_execute_scripts(
+
+          list = listOfSpecies_trendAnalysis_AOO_QuadOfGrid
+
+        )
+
+        print(listOfSpecies_trendAnalysis_AOO_QuadOfGrid)
+
+      } else {
+
+        cli_alert_success("No species to create")
+
+      }
+
+      ## Have creation with errors? ####
+
+      if(length(trendAnalysis_AOO_QuadOfGrid_on_error) > 0){
+
+        ### Yes ####
+
+        trendAnalysis_AOO_QuadOfGrid_on_error_table <- data.frame(
+
+          i = 1:length(trendAnalysis_AOO_QuadOfGrid_on_error),
+          Species = trendAnalysis_AOO_QuadOfGrid_on_error
+
+        )
+
+
+        #### Table: Trend analysis by AOO QuadOfGrid with errors ####
+
+        html_list(
+
+          trendAnalysis_AOO_QuadOfGrid_on_error_table,
+          vars = names(trendAnalysis_AOO_QuadOfGrid_on_error_table),
+          title = "Errors in creation of profile of species HTMLs",
+          out = "out14_trendAnalysis_AOO_QuadOfGrid.html",
+          show = F
+
+        )
+
+      }
+
+    } else {
+
+      cli_alert_success("No species to analyse trends.")
+
+    }
+
+
     # Final step: Generate final report (report.html) ####
 
     html_combine(

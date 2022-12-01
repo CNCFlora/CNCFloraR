@@ -7,88 +7,207 @@ library(data.table)
 
 ESPECIE <- "ESPECIEselect"
 
-input <- fread(
 
-  paste0(
+# Initial background log ####
 
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/outputs/overlayAnalysis results/QuadOfGrid/",
-    ESPECIE,
-    ".csv"
-
+if(
+  
+  file.exists(
+    
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+      ESPECIE,
+      ".csv"
+      
+    )
+    
+  ) == F
+  
+){
+  
+  backgroundJobs_log <- data.frame(
+    
+    job = "Overlay analysis - QuadOfGrid",
+    species = ESPECIE,
+    start = format(Sys.Date(), "%d/%m/%Y"),
+    end = ""
+    
   )
-
+  
+  write.csv2(
+    
+    data.frame(
+      
+      job = "Overlay analysis - QuadOfGrid",
+      species = ESPECIE,
+      start = format(Sys.Date(), "%d/%m/%Y"),
+      end = ""
+      
+    ),
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+      ESPECIE,
+      ".csv"
+      
+    ),
+    row.names = F
+    
   )
-
-input_Quad_AOO <- unique(input$Quad_AOO)
-input_Classe <- unique(input$Classe)
-
-
-output_trendline <- NULL
-for(j in input_Quad_AOO){
-
-  input2 <- input %>% dplyr::filter(Quad_AOO == j)
-
-  for(k in input_Classe){
-
-    input3 <- input2 %>% dplyr::filter(Classe == k)
-    input4 <- input3 %>% dplyr::select(contains("Porcentagem_AOO"))
-
-    if(sum(input4) == 0){} else{
-
-      input5 <- t(input4)
-      rownames(input5) <- 1:length(input5)
-      input6 <- data.frame(Ano = 1985:2020, Porcentagem_AOO = input5[,1])
-
-      trendline(input6$Ano, input6$Porcentagem_AOO, model="line2P", eDigit=4, main = paste0("AOO ", ESPECIE,": ", k, " (", j, ")"))
-      trendline_summary <- trendline_summary(input6$Ano, input6$Porcentagem_AOO, model="line2P", eDigit=4)
-      trendline_summary$parameter$a
-      output_trendline_ <- data.frame(QuadAOO = j, Classe = k, Taxa_anual = round(trendline_summary$parameter$a*100/length(input6$Ano), 2))
-
-      tsfit <- trendsegment(x = input6$Porcentagem_AOO, minsegL = 10) # Mudar para 3
-
-      plot(input6, type = "b", ylim = range(input6$Porcentagem_AOO, tsfit$est), main = paste0("AOO ", ESPECIE,": ", k, " (", j, ")"))
-      lines(input6$Ano, tsfit$est, col=2, lwd=2)
-
-      if(length(tsfit$cpt) == 0){no_trend <- T} else{
-        no_trend <- F
-        trendline(input6$Ano[tsfit$cpt[length(tsfit$cpt)]:36], input6$Porcentagem_AOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4, main = paste0("AOO ", ESPECIE,": ", k, " (", j, ")"), sub = "Última Tendência")
-        trendline_summary_last_trend <- trendline_summary(input6$Ano[tsfit$cpt[length(tsfit$cpt)]:36], input6$Porcentagem_AOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
-      }
-
-      if(no_trend == T){
-
-        output_trendline__ <- data.frame(Inicio_ultima_tendencia = "No trend", Taxa_ultima_tendencia = "No trend")
-
-      } else {
-
-        output_trendline__ <- data.frame(Inicio_ultima_tendencia = input6$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_summary_last_trend$parameter$a*100/trendline_summary_last_trend$N, 2))
-
-      }
-
-      output_trendline_ <- cbind(output_trendline_, output_trendline__)
-
-      output_trendline <- rbind(output_trendline, output_trendline_)
-
-      rm(no_trend)
-
-    }
-
-  }
-
+  
+} else {
+  
+  backgroundJobs_log <- data.table::fread(
+    
+    paste0(
+      
+      sub("Packages/CNCFloraR", "", getwd()),
+      "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+      ESPECIE,
+      ".csv"
+      
+    )
+    
+  )
+  
 }
 
-write.csv(
-
-  output_trendline,
-  paste0(
-
-    sub("Packages/CNCFloraR", "", getwd()),
-    "/CNCFlora_data/outputs/trendAnalysis results/QuadOfGrid/",
-    ESPECIE,
-    ".csv"
-
-    ),
-  row.names = F
-
+tryCatch(
+  
+  expr = {
+    
+    input <- fread(
+      
+      paste0(
+        
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/overlayAnalysis results/QuadOfGrid/",
+        ESPECIE,
+        ".csv"
+        
+      )
+      
+    )
+    
+    input_Quad_AOO <- unique(input$Quad_AOO)
+    input_Classe <- unique(input$Classe)
+    
+    
+    output_trendline <- NULL
+    for(j in input_Quad_AOO){
+      
+      input2 <- input %>% dplyr::filter(Quad_AOO == j)
+      
+      for(k in input_Classe){
+        
+        input3 <- input2 %>% dplyr::filter(Classe == k)
+        input4 <- input3 %>% dplyr::select(contains("Porcentagem_AOO"))
+        
+        if(sum(input4) == 0){} else{
+          
+          input5 <- t(input4)
+          rownames(input5) <- 1:length(input5)
+          input6 <- data.frame(Ano = 1985:2020, Porcentagem_AOO = input5[,1])
+          
+          trendline(input6$Ano, input6$Porcentagem_AOO, model="line2P", eDigit=4, main = paste0("AOO ", ESPECIE,": ", k, " (", j, ")"))
+          trendline_summary <- trendline_summary(input6$Ano, input6$Porcentagem_AOO, model="line2P", eDigit=4)
+          trendline_summary$parameter$a
+          output_trendline_ <- data.frame(QuadAOO = j, Classe = k, Taxa_anual = round(trendline_summary$parameter$a*100/length(input6$Ano), 2))
+          
+          tsfit <- trendsegment(x = input6$Porcentagem_AOO, minsegL = 10) # Mudar para 3
+          
+          plot(input6, type = "b", ylim = range(input6$Porcentagem_AOO, tsfit$est), main = paste0("AOO ", ESPECIE,": ", k, " (", j, ")"))
+          lines(input6$Ano, tsfit$est, col=2, lwd=2)
+          
+          if(length(tsfit$cpt) == 0){no_trend <- T} else{
+            no_trend <- F
+            trendline(input6$Ano[tsfit$cpt[length(tsfit$cpt)]:36], input6$Porcentagem_AOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4, main = paste0("AOO ", ESPECIE,": ", k, " (", j, ")"), sub = "Última Tendência")
+            trendline_summary_last_trend <- trendline_summary(input6$Ano[tsfit$cpt[length(tsfit$cpt)]:36], input6$Porcentagem_AOO[tsfit$cpt[length(tsfit$cpt)]:36], model="line2P", eDigit=4)
+          }
+          
+          if(no_trend == T){
+            
+            output_trendline__ <- data.frame(Inicio_ultima_tendencia = "No trend", Taxa_ultima_tendencia = "No trend")
+            
+          } else {
+            
+            output_trendline__ <- data.frame(Inicio_ultima_tendencia = input6$Ano[tsfit$cpt[length(tsfit$cpt)]], Taxa_ultima_tendencia = round(trendline_summary_last_trend$parameter$a*100/trendline_summary_last_trend$N, 2))
+            
+          }
+          
+          output_trendline_ <- cbind(output_trendline_, output_trendline__)
+          
+          output_trendline <- rbind(output_trendline, output_trendline_)
+          
+          rm(no_trend)
+          
+        }
+        
+      }
+      
+    }
+    
+    write.csv(
+      
+      output_trendline,
+      paste0(
+        
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/trendAnalysis results/QuadOfGrid/",
+        ESPECIE,
+        ".csv"
+        
+      ),
+      row.names = F
+      
+    )
+    
+    
+    # Finish background log ####
+    
+    backgroundJobs_log$end <-
+      format(Sys.Date(), "%d/%m/%Y")
+    
+    write.csv2(
+      
+      backgroundJobs_log,
+      paste0(
+        
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+        ESPECIE,
+        ".csv"
+        
+      ),
+      row.names = F
+      
+    )
+    
+  },
+  
+  error = function(e){
+    
+    backgroundJobs_log$end <-
+      "error"
+    
+    write.csv2(
+      
+      backgroundJobs_log,
+      paste0(
+        
+        sub("Packages/CNCFloraR", "", getwd()),
+        "/CNCFlora_data/outputs/overlayAnalysis logs/QuadOfGrid/",
+        ESPECIE,
+        ".csv"
+        
+      ),
+      row.names = F
+      
+    )
+    
+  }
+  
 )
